@@ -173,9 +173,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="Log4j组件"><a href="#Log4j组件" class="headerlink" title="Log4j组件"></a>Log4j组件</h2><ul>
-<li>Logger</li>
-<li>Appender</li>
+<li>Logger–具体的日志记录实例</li>
+<li>LoggerConfig–与Logger类似</li>
+<li>Appender—日志的输出位置</li>
 </ul>
+<p>Log4j1.x 的层次关系是通过 Loggers 之间的关系保持的。而 Log4j2.x是通过 LoggerConfig 对象来维持这种层次关系的。</p>
 
       
 
