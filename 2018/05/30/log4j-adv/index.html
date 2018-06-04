@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-05-31T02:20:41.330Z">
+<meta property="og:updated_time" content="2018-06-04T03:08:47.208Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -182,7 +182,10 @@
         <p>Log4j的进阶使用<br><a id="more"></a></p>
 <h2 id="Log4J组件"><a href="#Log4J组件" class="headerlink" title="Log4J组件"></a>Log4J组件</h2><ul>
 <li>Logger–具体的日志记录实例</li>
-<li>LoggerConfig–与Logger类似</li>
+<li>LoggerConfig–与Logger类似<ul>
+<li>1.x使用Loggers维持关系，2.x使用LoggerConfig来维持</li>
+</ul>
+</li>
 <li>Appender—日志的输出位置</li>
 </ul>
 <p>Log4j1.x 的层次关系是通过 Loggers 之间的关系保持的。而 Log4j2.x是通过 LoggerConfig 对象来维持这种层次关系的。</p>
