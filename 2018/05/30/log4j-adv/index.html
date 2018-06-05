@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-05T07:42:19.121Z">
+<meta property="og:updated_time" content="2018-06-05T07:51:12.114Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -206,7 +206,8 @@
 <li>Deny–立即忽略这个 LogEvent，并将这个 LogEvent 的控制权交还给它调用者。</li>
 <li>Neutral–指LogEvent将传递给其他Filters，如果没有别的Filters 了，那么这个LogEvent将被执行。</li>
 </ul>
-<h2 id="Appender"><a href="#Appender" class="headerlink" title="Appender"></a>Appender</h2><p>Log4j2中，每个输出位置表示一个Appender，一个Logger可以绑定不同的Appender。某个logger  中被启用的 logging request   将被转发到该Logger LoggerConfig 相关联的的所有Appenders上，并且还会被转发到LoggerConfig的父级的Appenders上。</p>
+<h2 id="Appender"><a href="#Appender" class="headerlink" title="Appender"></a>Appender</h2><p>Log4j2中，每个输出位置表示一个Appender，一个Logger可以绑定不同的Appender。某个logger  中被启用的 logging request   将被转发到该Logger LoggerConfig 相关联的的所有Appenders上，并且还会被转发到LoggerConfig的父级的Appenders上。Appenders的继承关系与LoggerConfig中的继承关系相同。</p>
+<p>避免继承关系的方法，将Appender中的additivity设置为false</p>
 
       
 
