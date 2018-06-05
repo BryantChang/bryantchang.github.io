@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-04T03:18:52.879Z">
+<meta property="og:updated_time" content="2018-06-05T05:43:54.448Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -194,12 +194,11 @@
 </ul>
 </li>
 </ul>
-<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><p>一个LoggerConfig 的名字是另外一个 LoggerConfig 名字 加上 . 和一些后缀字符。 那么这个 LoggerConfig 是另外的 LoggerConfig 的子类。 类似于 java 的 package 路径。 例如 : 一个 名称为 “com.foo”的 LoggerConfig 是 一个名称为 “com.foo.Bar” 的LoggerConfig 的父类。</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><p>一个LoggerConfig 的名字是另外一个 LoggerConfig 名字 加上 . 和一些后缀字符。 那么这个 LoggerConfig 是另外的 LoggerConfig 的子类。类似于java的package 路径。 例如:一个 名称为”com.foo”的 LoggerConfig是 一个名称为 “com.foo.Bar” 的LoggerConfig 的父类。</p>
 <p>其中Root LoggerConfig居于最顶层。与Root LoggerConfig关联的的Logger可以通过如下方式获得</p>
 <pre class="line-numbers language-java"><code class="language-java">    Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getRootLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>##</p>
-
+<h2 id="Log-Level"><a href="#Log-Level" class="headerlink" title="Log Level"></a>Log Level</h2>
       
 
       
