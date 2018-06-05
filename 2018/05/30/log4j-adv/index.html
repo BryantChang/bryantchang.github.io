@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-05T07:51:12.114Z">
+<meta property="og:updated_time" content="2018-06-05T08:15:23.960Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -66,7 +66,7 @@
 	        
 				<li><a href="/categories/hexo">博客搭建</a></li>
 	        
-				<li><a href="/categories/Log4j">Log4j</a></li>
+				<li><a href="/categories/log4j">Log4j</a></li>
 	        
 				<li><a href="/about">关于我</a></li>
 	        
@@ -142,7 +142,7 @@
 		        
 					<li style="width: 25%"><a href="/categories/hexo">博客搭建</a></li>
 		        
-					<li style="width: 25%"><a href="/categories/Log4j">Log4j</a></li>
+					<li style="width: 25%"><a href="/categories/log4j">Log4j</a></li>
 		        
 					<li style="width: 25%"><a href="/about">关于我</a></li>
 		        
@@ -208,6 +208,20 @@
 </ul>
 <h2 id="Appender"><a href="#Appender" class="headerlink" title="Appender"></a>Appender</h2><p>Log4j2中，每个输出位置表示一个Appender，一个Logger可以绑定不同的Appender。某个logger  中被启用的 logging request   将被转发到该Logger LoggerConfig 相关联的的所有Appenders上，并且还会被转发到LoggerConfig的父级的Appenders上。Appenders的继承关系与LoggerConfig中的继承关系相同。</p>
 <p>避免继承关系的方法，将Appender中的additivity设置为false</p>
+<p>输出的格式使用LayoutPattern指定</p>
+<h2 id="配置文件命名"><a href="#配置文件命名" class="headerlink" title="配置文件命名"></a>配置文件命名</h2><ol>
+<li>自动配置<br>Log4j2 可以在初始化的时候自动完成配置，当log4j2 启动时，会定位所有的 ConfigurationFactory 的配置，并且按照优先级的高底加载它们。Log4j2 包括四种 ConfigurationFactory 的实现，JSON， YAML， properties ，XML 。</li>
+<li>Log4j2 将从system property(JVM启动参数，或者System.setProperty设置) 读取 log4j.configurationFile 属性，如果设置了对应的文件，Log4j2的 ConfigurationFactory  将尝试根据文件扩展名来加载文件。</li>
+<li>如果system property  没有设置，properties ConfigurationFactory  将在classpath中查找 log4j2-test.properties  文件。</li>
+<li>如果没有找到，YAML ConfigurationFactory  将在 classpath中查找 log4j2-test.yaml  或者 log4j2-test.yml  文件。</li>
+<li>如果没有找到， Json ConfigurationFactory  将在classpath 中查找log4j2-test.json   或者  log4j2-test.jsn </li>
+<li>如果没有找到 XML  ConfigurationFactory  将在 classpath 中查找 log4j2-test.xml   </li>
+<li>如果 test 文件找不到， 则Properties ConfigurationFactory  将在classpath中查找log4j2.properties   文件</li>
+<li>如果未找到， YAML  ConfigurationFactory  将在classpath 中查找log4j2.yaml  或者 log4j2.yml</li>
+<li>如果未找到， JSON  ConfigurationFactory  将在 classpath中查找 log4j2.json 或者 log4j2.jsn </li>
+<li>如果未找到，XML  ConfigurationFactory  将在classpath中查找 log4j2.xml </li>
+<li>如果都未找到， DefaultConfiguration  将被使用，默认将日志输出到 console控制台。</li>
+</ol>
 
       
 
@@ -254,7 +268,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Log4j//" class="article-tag-list-link color1">Log4j</a>
+        			<a href="/categories/log4j//" class="article-tag-list-link color1">log4j</a>
         		</li>
       		
 		</ul>
