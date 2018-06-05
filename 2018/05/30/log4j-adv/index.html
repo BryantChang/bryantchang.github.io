@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-05T08:17:13.431Z">
+<meta property="og:updated_time" content="2018-06-05T09:19:40.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -209,7 +209,7 @@
 <h2 id="Appender"><a href="#Appender" class="headerlink" title="Appender"></a>Appender</h2><p>Log4j2中，每个输出位置表示一个Appender，一个Logger可以绑定不同的Appender。某个logger  中被启用的 logging request   将被转发到该Logger LoggerConfig 相关联的的所有Appenders上，并且还会被转发到LoggerConfig的父级的Appenders上。Appenders的继承关系与LoggerConfig中的继承关系相同。</p>
 <p>避免继承关系的方法，将Appender中的additivity设置为false</p>
 <p>输出的格式使用LayoutPattern指定</p>
-<h2 id="配置文件命名"><a href="#配置文件命名" class="headerlink" title="配置文件命名"></a>配置文件命名</h2><p>Log4j2 可以在初始化的时候自动完成配置，当log4j2 启动时，会定位所有的 ConfigurationFactory 的配置，并且按照优先级的高底加载它们。Log4j2 包括四种 ConfigurationFactory 的实现，JSON， YAML， properties ，XML 。</p>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>Log4j2 可以在初始化的时候自动完成配置，当log4j2 启动时，会定位所有的 ConfigurationFactory 的配置，并且按照优先级的高底加载它们。Log4j2 包括四种 ConfigurationFactory 的实现，JSON， YAML， properties ，XML 。</p>
 <ol>
 <li>Log4j2 将从system property(JVM启动参数，或者System.setProperty设置) 读取 log4j.configurationFile 属性，如果设置了对应的文件，Log4j2的 ConfigurationFactory  将尝试根据文件扩展名来加载文件。</li>
 <li>如果system property  没有设置，properties ConfigurationFactory  将在classpath中查找 log4j2-test.properties  文件。</li>
@@ -221,6 +221,34 @@
 <li>如果未找到， JSON  ConfigurationFactory  将在 classpath中查找 log4j2.json 或者 log4j2.jsn </li>
 <li>如果未找到，XML  ConfigurationFactory  将在classpath中查找 log4j2.xml </li>
 <li>如果都未找到， DefaultConfiguration  将被使用，默认将日志输出到 console控制台。</li>
+</ol>
+<h2 id="Filter-1"><a href="#Filter-1" class="headerlink" title="Filter"></a>Filter</h2><p>Filters  允许Log Events 被拦截过滤，当Filter 调用时，他的filter 方法将被执行，并且返回ACCEPT,DENY or NEUTRAL 其中一个结果。</p>
+<p>Filterl类型：</p>
+<ol>
+<li><p>BurstFilter<br>BurstFilter 提供了一种控制 log event 速度的机制，当达到最大值限制的时候，LogEvents就会被丢弃。</p>
+</li>
+<li><p>CompositeFilter<br>CompositeFilter 用来组合多个filter， CompositeFilter 可以通过 configuration 中的 filters 元素来表示，在 filters 中包含多个其它的Filter 。</p>
+</li>
+<li><p>DynamicThresholdFilter<br>DynamicThresholdFilter  可以对Log Event的属性指定一个 log level进行过滤。 例如ThreadContext Map中存放着某个 用户的 loginId ， 那么可以单独对这个loginId 指定 DEBUG 日志，而其他用户还是 INFO日志。</p>
+</li>
+<li><p>MapFilter<br>MapFilter  允许过滤 MapMessage 中的数据。</p>
+</li>
+</ol>
+<ol start="5">
+<li><p>MarkerFilter<br>MarkerFilter  将对比LogEvent 中的Marker 值， 如果相同，则执行过滤。</p>
+</li>
+<li><p>RegexFilter<br>RegexFilter 使用正则表达式来匹配Log Event是否将被过滤。</p>
+</li>
+<li><p>ScriptFilter<br>ScriptFilter  通过执行脚本来确定是否执行过滤。</p>
+</li>
+<li><p>StructuredDataFilter<br>MapFilter  的扩展，允许过滤 event id, type and message。</p>
+</li>
+<li><p>ThreadContextMapFilter<br>ThreadContextMapFilter  可以过滤ThreadContext Map 中的数据。</p>
+</li>
+<li><p>ThresholdFilter<br>如果LogEvent 中的 Log Level 大于 ThresholdFilter 中配置的 Log Level，那么返回 onMatch 的值， 否则返回 onMismatch  的值，例如 : 如果ThresholdFilter  配置的 Log Level 是 ERROR ， LogEvent 的Log Level 是 DEBUG。 那么 onMismatch 的值将被返回， 因为 ERROR  小于DEBUG。</p>
+</li>
+<li><p>TimeFilter<br>time filter 用来定义 过滤器在一天中的某一段时间生效， 可以控制日志在一天中的某一段时间写入或者不写入 。</p>
+</li>
 </ol>
 
       
