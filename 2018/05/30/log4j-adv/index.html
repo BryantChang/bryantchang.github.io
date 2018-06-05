@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-05T07:21:51.619Z">
+<meta property="og:updated_time" content="2018-06-05T07:30:56.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -200,6 +200,12 @@
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="LogConfig"><a href="#LogConfig" class="headerlink" title="LogConfig"></a>LogConfig</h2><p>logging configuration 中被定义时被创建。包含一组Filters来过滤传递到Appenders的LogEvent。LoggerConfig使用一组Appenders用来处理这些事件。</p>
 <h2 id="Log-Levels"><a href="#Log-Levels" class="headerlink" title="Log Levels"></a>Log Levels</h2><p>级别排序TRACE, DEBUG, INFO, WARN, ERROR, FATAL。日志级别会通过最长匹配的方式进行继承。根源是root Logger。若root Logger未分配级别，则使用默认配置。</p>
+<h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h2><p>Log4j2中提供Filter，控制权传递到LoggerConfig之前。每个Filter可以返回下面三个结果中的一个。</p>
+<ul>
+<li>Accept–不会再调用其他Filters 了，LogEvent 将被执行。</li>
+<li>Deny–立即忽略这个 LogEvent，并将这个 LogEvent 的控制权交还给它调用者。</li>
+<li>Neutral–指LogEvent将传递给其他Filters，如果没有别的Filters 了，那么这个LogEvent将被执行。</li>
+</ul>
 
       
 
