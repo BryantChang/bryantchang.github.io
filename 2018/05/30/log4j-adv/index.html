@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-05T07:15:57.993Z">
+<meta property="og:updated_time" content="2018-06-05T07:21:51.619Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -199,7 +199,7 @@
 <pre class="line-numbers language-java"><code class="language-java">    Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getRootLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="LogConfig"><a href="#LogConfig" class="headerlink" title="LogConfig"></a>LogConfig</h2><p>logging configuration 中被定义时被创建。包含一组Filters来过滤传递到Appenders的LogEvent。LoggerConfig使用一组Appenders用来处理这些事件。</p>
-<h2 id="Log-Levels"><a href="#Log-Levels" class="headerlink" title="Log Levels"></a>Log Levels</h2><p>级别排序TRACE, DEBUG, INFO, WARN, ERROR, FATAL</p>
+<h2 id="Log-Levels"><a href="#Log-Levels" class="headerlink" title="Log Levels"></a>Log Levels</h2><p>级别排序TRACE, DEBUG, INFO, WARN, ERROR, FATAL。日志级别会通过最长匹配的方式进行继承。根源是root Logger。若root Logger未分配级别，则使用默认配置。</p>
 
       
 
