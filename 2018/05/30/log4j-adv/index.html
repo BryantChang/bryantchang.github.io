@@ -20,7 +20,7 @@
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/asyncappender.png">
-<meta property="og:updated_time" content="2018-06-05T12:26:10.137Z">
+<meta property="og:updated_time" content="2018-06-05T12:32:13.133Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -274,13 +274,13 @@
 </ul>
 <h2 id="AsyncAppender异步记录日志"><a href="#AsyncAppender异步记录日志" class="headerlink" title="AsyncAppender异步记录日志"></a>AsyncAppender异步记录日志</h2><p>通过生产者消费者的模式异步将Logging Event传送到对应的Appender中<br>工作原理：如下图：<br><img src="/2018/05/30/log4j-adv/imgs/asyncappender.png" title="AsyncAppender"><br>生产者：app向AsyncAppender发送的Log Event<br>中转：Buffer与DiscardSummary<br>消费者：Dispatcher和各个dst Appender</p>
 <p>当logging Event进入AsyncAppender时，这个Appender会调用append方法，该方法在放入到buffer前，会检查buffer的大小。当消费能力不及生产能力时，AsyncAppender会把超出Buffer的Logging Event转发到DiscardSummary中，作为消费速度一旦跟不上生成速度，中转buffer的溢出处理的一种方案。</p>
-<p>Dispatcher则是将Buffer中的log event取出，送到对应的appender中，该组件实现了Runnable接口，是AsyncAppender的后台线程。</p>
+<p>Dispatcher则是将Buffer中的log event取出，送到对应的appender中，该组件实现了Runnable接口，是AsyncAppender的后台线程。<br>其他AsyncAppender的内容参考<a href="https://www.jianshu.com/p/502d70386371" target="_blank" rel="noopener">https://www.jianshu.com/p/502d70386371</a></p>
 <p>注意：</p>
 <ul>
 <li>默认当Buffer中的event到达buffer的80%时，AsyncAppender将丢弃TRACE、DEBUG和INFO级别的event。</li>
 <li>AsyncAppender不是一个真正意义上的Appender，只是一个中转，因此必须引入一个其他的Appender用于真正输出。</li>
 </ul>
-
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2>
       
 
       
