@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-04T03:08:47.208Z">
+<meta property="og:updated_time" content="2018-06-04T03:18:52.879Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -183,16 +183,22 @@
 <h2 id="Log4J组件"><a href="#Log4J组件" class="headerlink" title="Log4J组件"></a>Log4J组件</h2><ul>
 <li>Logger–具体的日志记录实例</li>
 <li>LoggerConfig–与Logger类似<ul>
-<li>1.x使用Loggers维持关系，2.x使用LoggerConfig来维持</li>
+<li>1.x使用Loggers维持关系，2.x使用LoggerConfig来维持。</li>
+<li>当Logger对象在 logging configuration 中被定义时，    LoggerConfig对象同时被创建。</li>
 </ul>
 </li>
 <li>Appender—日志的输出位置</li>
+<li>LoggerContext–LoggerContext 作为日志系统的锚点</li>
+<li>Configuration–每个 LoggerContext 有一个有效的Configuration<ul>
+<li>一个Configuration包含所有的Appenders，Filters，LoggerConfigs,与 包含StrSubstitutor的引用信息</li>
 </ul>
-<p>Log4j1.x 的层次关系是通过 Loggers 之间的关系保持的。而 Log4j2.x是通过 LoggerConfig 对象来维持这种层次关系的。</p>
+</li>
+</ul>
 <h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><p>一个LoggerConfig 的名字是另外一个 LoggerConfig 名字 加上 . 和一些后缀字符。 那么这个 LoggerConfig 是另外的 LoggerConfig 的子类。 类似于 java 的 package 路径。 例如 : 一个 名称为 “com.foo”的 LoggerConfig 是 一个名称为 “com.foo.Bar” 的LoggerConfig 的父类。</p>
 <p>其中Root LoggerConfig居于最顶层。与Root LoggerConfig关联的的Logger可以通过如下方式获得</p>
 <pre class="line-numbers language-java"><code class="language-java">    Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getRootLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>##</p>
 
       
 
@@ -460,11 +466,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
             
             <div class="clearfix"></div>
