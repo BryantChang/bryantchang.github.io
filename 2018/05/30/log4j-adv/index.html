@@ -20,7 +20,7 @@
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/asyncappender.png">
-<meta property="og:updated_time" content="2018-06-05T11:31:25.138Z">
+<meta property="og:updated_time" content="2018-06-05T11:39:13.180Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -239,7 +239,7 @@
 <li>ThresholdFilter<br>如果LogEvent 中的 Log Level 大于 ThresholdFilter 中配置的 Log Level，那么返回 onMatch 的值， 否则返回 onMismatch  的值，例如 : 如果ThresholdFilter  配置的 Log Level 是 ERROR ， LogEvent 的Log Level 是 DEBUG。 那么 onMismatch 的值将被返回， 因为 ERROR  小于DEBUG。</li>
 <li>TimeFilter<br>time filter 用来定义 过滤器在一天中的某一段时间生效， 可以控制日志在一天中的某一段时间写入或者不写入 。</li>
 </ol>
-<h2 id="AsyncAppender异步记录日志"><a href="#AsyncAppender异步记录日志" class="headerlink" title="AsyncAppender异步记录日志"></a>AsyncAppender异步记录日志</h2><p>工作原理：如下图：<br><img src="/2018/05/30/log4j-adv/imgs/asyncappender.png" title="AsyncAppender"><br>当logging Event进入AsyncAppender时，这个Appender会调用append方法，该方法在放入到buffer</p>
+<h2 id="AsyncAppender异步记录日志"><a href="#AsyncAppender异步记录日志" class="headerlink" title="AsyncAppender异步记录日志"></a>AsyncAppender异步记录日志</h2><p>通过生产者消费者的模式异步将Logging Event传送到对应的Appender中<br>工作原理：如下图：<br><img src="/2018/05/30/log4j-adv/imgs/asyncappender.png" title="AsyncAppender"><br>当logging Event进入AsyncAppender时，这个Appender会调用append方法，该方法在放入到buffer前，会检查buffer的大小。当小费能力不及生产能力时，</p>
 
       
 
@@ -507,11 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
             
             <div class="clearfix"></div>
