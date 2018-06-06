@@ -20,7 +20,7 @@
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/asyncappender.png">
-<meta property="og:updated_time" content="2018-06-06T04:13:15.715Z">
+<meta property="og:updated_time" content="2018-06-06T04:23:05.792Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -318,12 +318,17 @@
 <span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>log4j<span class="token punctuation">.</span>Logger<span class="token punctuation">;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Test</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span>Test<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getRootLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Hello World"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个实例里面，我们只设置了一个Root Appender，该Appender的输出位置为Console,我们使用LogManager.getRootLogger()方法获取root的Appender。并用这个对象调用info方法输出一个”Hello World”。</p>
+<p>最终结果：</p>
+<pre class="line-numbers language-text"><code class="language-text">2018-06-06 12:22:56.707 [main] INFO  - Hello World
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
       
 
