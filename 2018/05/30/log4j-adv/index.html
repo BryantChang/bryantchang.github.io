@@ -20,7 +20,7 @@
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/asyncappender.png">
-<meta property="og:updated_time" content="2018-06-06T04:02:40.093Z">
+<meta property="og:updated_time" content="2018-06-06T04:12:12.756Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
@@ -280,7 +280,51 @@
 <li>默认当Buffer中的event到达buffer的80%时，AsyncAppender将丢弃TRACE、DEBUG和INFO级别的event。</li>
 <li>AsyncAppender不是一个真正意义上的Appender，只是一个中转，因此必须引入一个其他的Appender用于真正输出。</li>
 </ul>
-<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="内容："><a href="#内容：" class="headerlink" title="内容："></a>内容：</h3><ul>
+<li>Appenders实验</li>
+<li>Filters实验</li>
+</ul>
+<h3 id="Appenders实验"><a href="#Appenders实验" class="headerlink" title="Appenders实验"></a>Appenders实验</h3><p>1、命令行输出</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span> <span class="token attr-name">status</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>info<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appenders</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Console</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Console<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>SYSTEM_OUT<span class="token punctuation">"</span></span> <span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>PatternLayout</span> <span class="token attr-name">pattern</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Console</span><span class="token punctuation">></span></span>
+
+        <span class="token comment" spellcheck="true">&lt;!--&lt;File name="File"  fileName="logs/test.log">--></span>
+            <span class="token comment" spellcheck="true">&lt;!--&lt;PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n"/>--></span>
+        <span class="token comment" spellcheck="true">&lt;!--&lt;/File>--></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>appenders</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>loggers</span><span class="token punctuation">></span></span>
+        <span class="token comment" spellcheck="true">&lt;!--&lt;logger name="com.bryantchang.PackageClass" level="debug" additivity="false">--></span>
+            <span class="token comment" spellcheck="true">&lt;!--&lt;appender-ref ref="File"/>--></span>
+        <span class="token comment" spellcheck="true">&lt;!--&lt;/logger>--></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>logger</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>test<span class="token punctuation">"</span></span> <span class="token attr-name">additivity</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appender-ref</span> <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Console<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>logger</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>root</span> <span class="token attr-name">level</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>info<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>appender-ref</span> <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Console<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>root</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>loggers</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Java代码：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>bryantchang<span class="token punctuation">;</span>
+
+
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>log4j<span class="token punctuation">.</span>LogManager<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>logging<span class="token punctuation">.</span>log4j<span class="token punctuation">.</span>Logger<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Test</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span>Test<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Hello World"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
       
 
       
