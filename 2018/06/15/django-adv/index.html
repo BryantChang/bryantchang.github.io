@@ -19,10 +19,14 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Django框架的一些进阶使用方法">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-15T05:24:09.854Z">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/django_prj.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_1.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_2.png">
+<meta property="og:updated_time" content="2018-06-15T06:26:50.915Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django进阶">
 <meta name="twitter:description" content="Django框架的一些进阶使用方法">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/django_prj.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -180,6 +184,38 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Django框架的一些进阶使用方法<br><a id="more"></a></p>
+<h2 id="urls-py的研究–在网页上做加减法"><a href="#urls-py的研究–在网页上做加减法" class="headerlink" title="urls.py的研究–在网页上做加减法"></a>urls.py的研究–在网页上做加减法</h2><p>首先新建app calc，进入到项目根目录</p>
+<pre class="line-numbers language-bash"><code class="language-bash">python manage.py startapp calc
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>完成后项目目录树如下：</p>
+<img src="/2018/06/15/django-adv/imgs/django_prj.png" title="项目目录树">
+<p>修改calc中的views.py</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>shortcuts <span class="token keyword">import</span> render
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>http <span class="token keyword">import</span> HttpResponse
+<span class="token comment" spellcheck="true"># Create your views here.</span>
+
+<span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">:</span>   <span class="token comment" spellcheck="true">#定义加法函数</span>
+    a <span class="token operator">=</span> request<span class="token punctuation">.</span>GET<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#get请求，默认值为0</span>
+    b <span class="token operator">=</span> request<span class="token punctuation">.</span>GET<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    c <span class="token operator">=</span> int<span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">+</span> int<span class="token punctuation">(</span>b<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> HttpResponse<span class="token punctuation">(</span>str<span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改HelloWorld目录中的urls.py，增加相应的路由</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>conf<span class="token punctuation">.</span>urls <span class="token keyword">import</span> include<span class="token punctuation">,</span> url
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib <span class="token keyword">import</span> admin
+<span class="token keyword">from</span> calc <span class="token keyword">import</span> views <span class="token keyword">as</span> calc_view
+
+<span class="token keyword">from</span> <span class="token punctuation">.</span> <span class="token keyword">import</span> view
+
+urlpatterns <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token comment" spellcheck="true"># url(r'^admin/', include(admin.site.urls)),</span>
+    url<span class="token punctuation">(</span>r<span class="token string">'^$'</span><span class="token punctuation">,</span> view<span class="token punctuation">.</span>hello<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    url<span class="token punctuation">(</span>r<span class="token string">'^add/$'</span><span class="token punctuation">,</span> calc_view<span class="token punctuation">.</span>add<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'add'</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>重新部署项目，验证效果</p>
+<p><a href="http://127.0.0.1:8080/add/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/</a><br><img src="/2018/06/15/django-adv/imgs/ex_1.png" title="默认情况"></p>
+<p>增加参数<br><a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a><br><img src="/2018/06/15/django-adv/imgs/ex_2.png" title="默认情况"></p>
 
       
 
