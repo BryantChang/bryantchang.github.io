@@ -23,7 +23,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_1.png">
 <meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_2.png">
 <meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_3.png">
-<meta property="og:updated_time" content="2018-06-15T07:02:50.828Z">
+<meta property="og:updated_time" content="2018-06-15T07:04:50.587Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django进阶">
 <meta name="twitter:description" content="Django框架的一些进阶使用方法">
@@ -191,10 +191,7 @@
 <p>完成后项目目录树如下：</p>
 <img src="/2018/06/15/django-adv/imgs/django_prj.png" title="项目目录树">
 <p>修改calc中的views.py</p>
-<ul>
-<li>参数形式 <a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a></li>
-</ul>
-<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>shortcuts <span class="token keyword">import</span> render
+<h2 id="参数形式-http-127-0-0-1-8080-add-a-4-amp-b-5"><a href="#参数形式-http-127-0-0-1-8080-add-a-4-amp-b-5" class="headerlink" title="参数形式 http://127.0.0.1:8080/add/?a=4&amp;b=5"></a>参数形式 <a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a></h2><pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>shortcuts <span class="token keyword">import</span> render
 <span class="token keyword">from</span> django<span class="token punctuation">.</span>http <span class="token keyword">import</span> HttpResponse
 <span class="token comment" spellcheck="true"># Create your views here.</span>
 
@@ -220,10 +217,7 @@ urlpatterns <span class="token operator">=</span> <span class="token punctuation
 <p>重新部署项目，验证效果</p>
 <p><a href="http://127.0.0.1:8080/add/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/</a><br><img src="/2018/06/15/django-adv/imgs/ex_1.png" title="默认情况"></p>
 <p>增加参数<br><a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a><br><img src="/2018/06/15/django-adv/imgs/ex_2.png" title="默认情况"></p>
-<ul>
-<li>路径法<a href="http://127.0.0.1:8080/add/4/5/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/4/5/</a></li>
-</ul>
-<p>在views.py中添加函数add2</p>
+<h2 id="路径法http-127-0-0-1-8080-add-4-5"><a href="#路径法http-127-0-0-1-8080-add-4-5" class="headerlink" title="路径法http://127.0.0.1:8080/add/4/5/"></a>路径法<a href="http://127.0.0.1:8080/add/4/5/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/4/5/</a></h2><p>在views.py中添加函数add2</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">add2</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">:</span>
     c <span class="token operator">=</span> int<span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">+</span> int<span class="token punctuation">(</span>b<span class="token punctuation">)</span>
     <span class="token keyword">return</span> HttpResponse<span class="token punctuation">(</span>str<span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">)</span>
