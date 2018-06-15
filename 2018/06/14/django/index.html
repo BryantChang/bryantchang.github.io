@@ -19,10 +19,13 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="django简介以及Hello World">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-06-14T08:56:48.057Z">
+<meta property="og:image" content="http://yoursite.com/2018/06/14/django/img/hello_world.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/14/django/img/hello_world2.png">
+<meta property="og:updated_time" content="2018-06-14T14:56:32.966Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django初识">
 <meta name="twitter:description" content="django简介以及Hello World">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/14/django/img/hello_world.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -184,6 +187,56 @@
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可是用pip安装</p>
 <pre class="line-numbers language-bash"><code class="language-bash">pip <span class="token function">install</span> django
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>创建项目</p>
+<pre class="line-numbers language-bash"><code class="language-bash">django-admin.py startproject HelloWorld
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>目录说明</p>
+<ul>
+<li>HelloWorld: 项目的容器</li>
+<li>manage.py: 一个实用的命令行工具，可让你以各种方式与该 Django 项目进行交互</li>
+<li>HelloWorld/__init__.py: 一个空文件，告诉 Python 该目录是一个 Python 包</li>
+<li>HelloWorld/settings.py: 该 Django 项目的设置/配置</li>
+<li>HelloWorld/urls.py: 该 Django 项目的 URL 声明; 一份由 Django 驱动的网站”目录”</li>
+<li>HelloWorld/wsgi.py: 一个 WSGI 兼容的 Web 服务器的入口，以便运行项目</li>
+</ul>
+<p>创建完项目后，在项目根目录上输入：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">python manage.py runserver 0.0.0.0:8080
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>输入完毕后即可检验项目是否创建成功：</p>
+<p>浏览器中输入<a href="http://127.0.0.1:8080能够看到结果" target="_blank" rel="noopener">http://127.0.0.1:8080能够看到结果</a></p>
+<img src="/2018/06/14/django/img/hello_world.png" title="helloworld结果">
+<p>创建view.py，代码如下:</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>http <span class="token keyword">import</span> HttpResponse
+
+<span class="token keyword">def</span> <span class="token function">hello</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> HttpResponse<span class="token punctuation">(</span><span class="token string">"Hello World !"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">#处理请求的函数</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>随后在urls.py添加如下代码</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token triple-quoted-string string">"""HelloWorld URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.8/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Add an import:  from blog import urls as blog_urls
+    2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
+"""</span>
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>conf<span class="token punctuation">.</span>urls <span class="token keyword">import</span> include<span class="token punctuation">,</span> url
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib <span class="token keyword">import</span> admin
+
+<span class="token keyword">from</span> <span class="token punctuation">.</span> <span class="token keyword">import</span> view
+
+urlpatterns <span class="token operator">=</span> <span class="token punctuation">[</span>
+    url<span class="token punctuation">(</span>r<span class="token string">'^$'</span><span class="token punctuation">,</span> view<span class="token punctuation">.</span>hello<span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>效果如下：<br><img src="/2018/06/14/django/img/hello_world2.png" title="helloworld结果2"></p>
 
       
 
