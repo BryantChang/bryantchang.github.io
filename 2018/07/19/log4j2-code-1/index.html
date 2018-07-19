@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j2源码阅读(1)">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-19T14:41:14.394Z">
+<meta property="og:updated_time" content="2018-07-19T14:51:44.484Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析1">
 <meta name="twitter:description" content="Log4j2源码阅读(1)">
@@ -184,6 +184,13 @@
 <li>LogManager<pre><code>根据配置指定LogContexFactory，初始化对应的LoggerContext
 </code></pre></li>
 <li>LoggerContext</li>
+</ul>
+<pre><code>1、解析log4j2.xml配置文件，解析为对应的java对象。
+2、通过LoggerRegisty缓存Logger配置
+3、Configuration配置信息
+4、start方法解析配置文件，转化为对应的java对象
+5、通过getLogger获取logger对象
+</code></pre><ul>
 <li>Logger</li>
 </ul>
 
