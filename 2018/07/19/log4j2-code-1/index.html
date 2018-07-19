@@ -11,18 +11,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>log4j2源码解析1 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Log4j2关键组件 LogManager  -  LoggerContext Logger">
+  <meta name="description" content="Log4j2源码阅读(1)">
 <meta name="keywords" content="Log4j">
 <meta property="og:type" content="article">
 <meta property="og:title" content="log4j2源码解析1">
 <meta property="og:url" content="http://yoursite.com/2018/07/19/log4j2-code-1/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
-<meta property="og:description" content="Log4j2关键组件 LogManager  -  LoggerContext Logger">
+<meta property="og:description" content="Log4j2源码阅读(1)">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-19T14:35:16.424Z">
+<meta property="og:updated_time" content="2018-07-19T14:41:14.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析1">
-<meta name="twitter:description" content="Log4j2关键组件 LogManager  -  LoggerContext Logger">
+<meta name="twitter:description" content="Log4j2源码阅读(1)">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -179,8 +179,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Log4j2关键组件"><a href="#Log4j2关键组件" class="headerlink" title="Log4j2关键组件"></a>Log4j2关键组件</h2><ul>
-<li>LogManager<br>  - </li>
+        <p>Log4j2源码阅读(1)<br><a id="more"></a></p>
+<h3 id="Log4j2关键组件"><a href="#Log4j2关键组件" class="headerlink" title="Log4j2关键组件"></a>Log4j2关键组件</h3><ul>
+<li>LogManager<pre><code>根据配置指定LogContexFactory，初始化对应的LoggerContext
+</code></pre></li>
 <li>LoggerContext</li>
 <li>Logger</li>
 </ul>
