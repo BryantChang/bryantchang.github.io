@@ -11,15 +11,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Java静态代码段的执行机制 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="Java">
+  <meta name="description" content="Java静态代码段">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java静态代码段的执行机制">
 <meta property="og:url" content="http://yoursite.com/2018/07/21/java-static-code-block/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
+<meta property="og:description" content="Java静态代码段">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-21T08:56:59.984Z">
+<meta property="og:updated_time" content="2018-07-21T09:16:33.628Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java静态代码段的执行机制">
+<meta name="twitter:description" content="Java静态代码段">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -193,7 +196,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>Java静态代码段<br><a id="more"></a></p>
+<p>最近在学习Log4j的源码，里面最关键的LogManager组件中有一大段由static关键字修饰的代码块，作用是根据配置初始化LoggerContextFactory。这之中细节这里不细说，主要是对于static代码块的分析。之前对于static代码段的印象是，它可以在构造函数之前执行，当类被装载时就会被运行，并且只会执行一次，用于初始化。今天我们通过实验来验证这一说法是否准确。</p>
+<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><h3 id="1、正常操作，通过new方法实例化对象"><a href="#1、正常操作，通过new方法实例化对象" class="headerlink" title="1、正常操作，通过new方法实例化对象"></a>1、正常操作，通过new方法实例化对象</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">MyClass</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"static code block"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token function">MyClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"construction method"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AnotherTest</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> ClassNotFoundException<span class="token punctuation">{</span>
+        MyClass obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><pre class="line-numbers language-text"><code class="language-text">static code block
+constructor invoked
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可以看到，基本符合上述的预期，静态代码块在构造函数之前执行</p>
+<h3 id="进一步验证"><a href="#进一步验证" class="headerlink" title="进一步验证"></a>进一步验证</h3>
       
 
       
@@ -449,6 +474,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">django</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
@@ -457,15 +486,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">django</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
