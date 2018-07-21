@@ -19,10 +19,12 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="git多公钥采坑记">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-21T04:25:23.036Z">
+<meta property="og:image" content="http://yoursite.com/2018/07/21/git-pubkey/imgs/host-pubkey.png">
+<meta property="og:updated_time" content="2018-07-21T06:57:21.054Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git多公钥配置">
 <meta name="twitter:description" content="git多公钥采坑记">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/21/git-pubkey/imgs/host-pubkey.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -183,11 +185,35 @@
         
       </header>
     
+    
+    <span class="archive-article-date">
+        阅读量 <span id="busuanzi_value_page_pv"></span>
+      </span>
+    
     <div class="article-entry" itemprop="articleBody">
       
         <p>git多公钥采坑记<br><a id="more"></a></p>
-<p>昨天在临走的时候，突然间发现自己的代码没法提交到公司的仓库了，<br>经过了40min的debug才定位到问题，原因是由于在前一天晚上更新了博客，在ssh-agent<br>上面缓存了访问github的identity，导致了无法通过ssh连接到公司的代码仓库。<br>由此引申出了一个问题，如何自由的在公司的代码仓库和github间进行切换。</p>
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2>
+<p>昨天在临走的时候，突然间发现自己的代码没法提交到公司的仓库了，经过了40min的debug才定位到问题，原因是由于在前一天晚上更新了博客，在ssh-agent上面缓存了访问github的identity，导致了无法通过ssh连接到公司的代码仓库。由此引申出了一个问题，如何自由的在公司的代码仓库和github间进行切换。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><ul>
+<li>首先，申请ssh到公司代码仓库的秘钥，使用</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash">ssh-keygen -t rsa -C <span class="token string">"xxx@company.com"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果不指定-f的位置，默认的公钥会存在~/.ssh/id_rsa 以及~/.ssh/id_rsa.pub</p>
+<ul>
+<li>随后，生成github的公钥，使用-f指定生成的位置</li>
+</ul>
+<pre class="line-numbers language-bash"><code class="language-bash">ssh-keygen -t rsa -C <span class="token string">"xxx@github.com"</span> -f id_rsa_github
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>将这两个公钥各自放在各自代码仓库的pubkey中。</p>
+<ul>
+<li>最后，配置~/.ssh/config文件，指定对于不同的host与公钥的对应关系</li>
+</ul>
+<img src="/2018/07/21/git-pubkey/imgs/host-pubkey.png" title="host和公钥的对应关系">
+<p>大功告成，如果还是有问题，可以通过下面命令先刷掉ssh-agent中的所有缓存identity</p>
+<pre class="line-numbers language-bash"><code class="language-bash">ssh-add -D
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
       
 
       
@@ -330,7 +356,7 @@
 
 
   
-  
+
   
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
@@ -365,7 +391,9 @@
       	</div>
     </div>
   </div>
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </footer>
+
     </div>
     <script>
 	var yiliaConfig = {
