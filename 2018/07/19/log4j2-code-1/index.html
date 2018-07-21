@@ -11,18 +11,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>log4j2源码解析1 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Log4j2源码阅读(1)">
+  <meta name="description" content="Log4j2源码">
 <meta name="keywords" content="Log4j">
 <meta property="og:type" content="article">
 <meta property="og:title" content="log4j2源码解析1">
 <meta property="og:url" content="http://yoursite.com/2018/07/19/log4j2-code-1/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
-<meta property="og:description" content="Log4j2源码阅读(1)">
+<meta property="og:description" content="Log4j2源码">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-19T14:51:44.484Z">
+<meta property="og:updated_time" content="2018-07-21T03:37:55.166Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析1">
-<meta name="twitter:description" content="Log4j2源码阅读(1)">
+<meta name="twitter:description" content="Log4j2源码">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -179,10 +179,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Log4j2源码阅读(1)<br><a id="more"></a></p>
+        <p>Log4j2源码<br><a id="more"></a></p>
 <h3 id="Log4j2关键组件"><a href="#Log4j2关键组件" class="headerlink" title="Log4j2关键组件"></a>Log4j2关键组件</h3><ul>
-<li>LogManager<pre><code>根据配置指定LogContexFactory，初始化对应的LoggerContext
-</code></pre></li>
+<li>LogManager</li>
+</ul>
+<pre><code>根据配置指定LogContexFactory，初始化对应的LoggerContext
+</code></pre><ul>
 <li>LoggerContext</li>
 </ul>
 <pre><code>1、解析log4j2.xml配置文件，解析为对应的java对象。
@@ -193,6 +195,7 @@
 </code></pre><ul>
 <li>Logger</li>
 </ul>
+<p>LogManager</p>
 
       
 
@@ -307,6 +310,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/07/21/git-pubkey/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          git多公钥配置
+        
+      </div>
+    </a>
   
   
     <a href="/2018/06/15/django-adv/" id="article-nav-older" class="article-nav-link-wrap">
@@ -452,6 +464,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
