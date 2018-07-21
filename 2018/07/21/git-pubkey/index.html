@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="git多公钥采坑记">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-21T04:19:21.931Z">
+<meta property="og:updated_time" content="2018-07-21T04:25:23.036Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git多公钥配置">
 <meta name="twitter:description" content="git多公钥采坑记">
@@ -67,6 +67,8 @@
 				<li><a href="/categories/hexo">博客搭建</a></li>
 	        
 				<li><a href="/categories/Log4j">Log4j</a></li>
+	        
+				<li><a href="/categories/git">Git &amp;&amp; SSH</a></li>
 	        
 				<li><a href="/about">关于我</a></li>
 	        
@@ -124,6 +126,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -138,13 +142,15 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 25%"><a href="/">主页</a></li>
+					<li style="width: 20%"><a href="/">主页</a></li>
 		        
-					<li style="width: 25%"><a href="/categories/hexo">博客搭建</a></li>
+					<li style="width: 20%"><a href="/categories/hexo">博客搭建</a></li>
 		        
-					<li style="width: 25%"><a href="/categories/Log4j">Log4j</a></li>
+					<li style="width: 20%"><a href="/categories/Log4j">Log4j</a></li>
 		        
-					<li style="width: 25%"><a href="/about">关于我</a></li>
+					<li style="width: 20%"><a href="/categories/git">Git &amp;&amp; SSH</a></li>
+		        
+					<li style="width: 20%"><a href="/about">关于我</a></li>
 		        
 				</ul>
 			</nav>
@@ -180,8 +186,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>git多公钥采坑记<br><a id="more"></a></p>
-<p>昨天在临走的时候，突然间发现自己的代码没法提交到公司的仓库了，<br>经过了40min的debug才定位到问题，原因是由于在前一天晚上更新了博客，在ssh-agent<br>上面缓存了访问github的identity，导致了无法通过ssh连接到公司的代码仓库。<br>由此引申出了一个问题，如何自由的在公司的代码仓库和github间进行切换</p>
-
+<p>昨天在临走的时候，突然间发现自己的代码没法提交到公司的仓库了，<br>经过了40min的debug才定位到问题，原因是由于在前一天晚上更新了博客，在ssh-agent<br>上面缓存了访问github的identity，导致了无法通过ssh连接到公司的代码仓库。<br>由此引申出了一个问题，如何自由的在公司的代码仓库和github间进行切换。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2>
       
 
       
