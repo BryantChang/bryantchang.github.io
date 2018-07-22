@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="LogManager启动流程解析">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-22T14:48:33.085Z">
+<meta property="og:updated_time" content="2018-07-22T14:53:14.826Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(1)--LogManager启动流程">
 <meta name="twitter:description" content="LogManager启动流程解析">
@@ -356,7 +356,7 @@ ReentrantLock.lock方法不允许Thread.interrupt中断,即使检测到Thread.is
 <pre class="line-numbers language-text"><code class="language-text">// STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
 // wait for a Provider to be installed. See LOG4J2-373
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>这也就是在ProviderUtil初始化过程中使用lockInterruptibly方法的原因也在于此，原因是中间允许OSGI的线程终端这个类的初始化。关于OSGI的具体用法，我会单独拉出一篇博客中会进行专门的讲解。在这篇博客中我们单纯只看OSGI初始化了那些Provider</p>
+<p>在ProviderUtil初始化过程中使用lockInterruptibly方法的原因也在于此，原因是中间允许OSGI的线程中断这个类的初始化。关于OSGI的具体用法，我会单独拉出一篇博客中会进行专门的讲解。在这篇博客中我们单纯只看OSGI初始化了那些Provider</p>
 <p>pom.xml中的代码如下：</p>
 <pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">></span></span>
         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.apache.felix<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
