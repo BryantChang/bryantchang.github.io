@@ -9,20 +9,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>log4j2源码解析--LogManager解析 | BryantChang的博客</title>
+  <title>log4j2源码解析(1)--LogManager启动流程 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Log4j2之LogManager">
+  <meta name="description" content="LogManager启动流程解析">
 <meta name="keywords" content="Log4j">
 <meta property="og:type" content="article">
-<meta property="og:title" content="log4j2源码解析--LogManager解析">
+<meta property="og:title" content="log4j2源码解析(1)--LogManager启动流程">
 <meta property="og:url" content="http://yoursite.com/2018/07/19/log4j2-code-1/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
-<meta property="og:description" content="Log4j2之LogManager">
+<meta property="og:description" content="LogManager启动流程解析">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-22T04:29:20.134Z">
+<meta property="og:updated_time" content="2018-07-22T11:27:58.495Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="log4j2源码解析--LogManager解析">
-<meta name="twitter:description" content="Log4j2之LogManager">
+<meta name="twitter:title" content="log4j2源码解析(1)--LogManager启动流程">
+<meta name="twitter:description" content="LogManager启动流程解析">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -178,7 +178,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      log4j2源码解析--LogManager解析
+      log4j2源码解析(1)--LogManager启动流程
     </h1>
   
 
@@ -196,7 +196,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Log4j2之LogManager<br><a id="more"></a></p>
+        <p>LogManager启动流程解析<br><a id="more"></a></p>
 <h2 id="Log4j2关键组件"><a href="#Log4j2关键组件" class="headerlink" title="Log4j2关键组件"></a>Log4j2关键组件</h2><ul>
 <li>LogManager</li>
 </ul>
@@ -212,7 +212,68 @@
 </code></pre><ul>
 <li>Logger</li>
 </ul>
-<h2 id="LogManager"><a href="#LogManager" class="headerlink" title="LogManager"></a>LogManager</h2>
+<h2 id="LogManager"><a href="#LogManager" class="headerlink" title="LogManager"></a>LogManager</h2><p>该组件是Log4J启动的入口，后续的LoggerContext以及Logger都是通过调用LogManager的静态方法获得。在<a href="https://bryantchang.github.io/2018/05/30/log4j2/" target="_blank" rel="noopener">Log4j初识</a>中，我们使用下面的代码获取Logger</p>
+<pre class="line-numbers language-java"><code class="language-java">Logger logger <span class="token operator">=</span> LogManager<span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以看出LogManager是十分关键的组件，因此在这篇博客中我们详细分析LogManager的启动流程。</p>
+<h2 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h2><p>LogManager启动的入口是下面的static代码块：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">static</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Shortcut binding to force a specific logging implementation.</span>
+        <span class="token keyword">final</span> PropertiesUtil managerProps <span class="token operator">=</span> PropertiesUtil<span class="token punctuation">.</span><span class="token function">getProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> String factoryClassName <span class="token operator">=</span> managerProps<span class="token punctuation">.</span><span class="token function">getStringProperty</span><span class="token punctuation">(</span>FACTORY_PROPERTY_NAME<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>factoryClassName <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                factory <span class="token operator">=</span> LoaderUtil<span class="token punctuation">.</span><span class="token function">newCheckedInstanceOf</span><span class="token punctuation">(</span>factoryClassName<span class="token punctuation">,</span> LoggerContextFactory<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">final</span> ClassNotFoundException cnfe<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOGGER<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unable to locate configured LoggerContextFactory {}"</span><span class="token punctuation">,</span> factoryClassName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">final</span> Exception ex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LOGGER<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unable to create configured LoggerContextFactory {}"</span><span class="token punctuation">,</span> factoryClassName<span class="token punctuation">,</span> ex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>factory <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> SortedMap<span class="token operator">&lt;</span>Integer<span class="token punctuation">,</span> LoggerContextFactory<span class="token operator">></span> factories <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TreeMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// note that the following initial call to ProviderUtil may block until a Provider has been installed when</span>
+            <span class="token comment" spellcheck="true">// running in an OSGi environment</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>ProviderUtil<span class="token punctuation">.</span><span class="token function">hasProviders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">final</span> Provider provider <span class="token operator">:</span> ProviderUtil<span class="token punctuation">.</span><span class="token function">getProviders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">final</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">LoggerContextFactory</span><span class="token operator">></span> factoryClass <span class="token operator">=</span> provider<span class="token punctuation">.</span><span class="token function">loadLoggerContextFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>factoryClass <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                            factories<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>provider<span class="token punctuation">.</span><span class="token function">getPriority</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> factoryClass<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">final</span> Exception e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                            LOGGER<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Unable to create class {} specified in provider URL {}"</span><span class="token punctuation">,</span> factoryClass<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> provider
+                                    <span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>factories<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    LOGGER<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Log4j2 could not find a logging implementation. "</span>
+                            <span class="token operator">+</span> <span class="token string">"Please add log4j-core to the classpath. Using SimpleLogger to log to the console..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleLoggerContextFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>factories<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    factory <span class="token operator">=</span> factories<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>factories<span class="token punctuation">.</span><span class="token function">lastKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">final</span> StringBuilder sb <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token string">"Multiple logging implementations found: \n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">final</span> Map<span class="token punctuation">.</span>Entry<span class="token operator">&lt;</span>Integer<span class="token punctuation">,</span> LoggerContextFactory<span class="token operator">></span> entry <span class="token operator">:</span> factories<span class="token punctuation">.</span><span class="token function">entrySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">"Factory: "</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>entry<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">", Weighting: "</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>entry<span class="token punctuation">.</span><span class="token function">getKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    factory <span class="token operator">=</span> factories<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>factories<span class="token punctuation">.</span><span class="token function">lastKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">"Using factory: "</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>factory<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    LOGGER<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span>sb<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                LOGGER<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Log4j2 could not find a logging implementation. "</span>
+                        <span class="token operator">+</span> <span class="token string">"Please add log4j-core to the classpath. Using SimpleLogger to log to the console..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleLoggerContextFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
       
 
       
@@ -481,11 +542,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
