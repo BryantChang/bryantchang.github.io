@@ -19,12 +19,10 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="git多公钥采坑记">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/07/21/git-pubkey/imgs/host-pubkey.png">
-<meta property="og:updated_time" content="2018-07-21T06:57:21.054Z">
+<meta property="og:updated_time" content="2018-07-22T04:33:15.939Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git多公钥配置">
 <meta name="twitter:description" content="git多公钥采坑记">
-<meta name="twitter:image" content="http://yoursite.com/2018/07/21/git-pubkey/imgs/host-pubkey.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -215,7 +213,14 @@
 <ul>
 <li>最后，配置~/.ssh/config文件，指定对于不同的host与公钥的对应关系</li>
 </ul>
-<img src="/2018/07/21/git-pubkey/imgs/host-pubkey.png" title="host和公钥的对应关系">
+<pre class="line-numbers language-bash"><code class="language-bash">Host github.com
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/id_rsa_github
+
+Host git.company.com
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/id_rsa
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>大功告成，如果还是有问题，可以通过下面命令先刷掉ssh-agent中的所有缓存identity</p>
 <pre class="line-numbers language-bash"><code class="language-bash">ssh-add -D
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -345,7 +350,7 @@
   
   
     <a href="/2018/07/19/log4j2-code-1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">log4j2源码解析1</div>
+      <div class="article-nav-title">log4j2源码解析--LogManager解析</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -496,15 +501,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
             
             <div class="clearfix"></div>
