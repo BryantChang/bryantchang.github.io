@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="LogManager启动流程解析">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-22T14:46:59.910Z">
+<meta property="og:updated_time" content="2018-07-22T14:48:33.085Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(1)--LogManager启动流程">
 <meta name="twitter:description" content="LogManager启动流程解析">
@@ -397,7 +397,7 @@ ReentrantLock.lock方法不允许Thread.interrupt中断,即使检测到Thread.is
 
                 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这段逻辑相对简单,只有简单的逻辑，如果不存在任何可用的provider，直接载入SimpleLoggerContextFactory的实例</p>
+<p>这段逻辑相对简单，如果不存在任何可用的provider，直接载入SimpleLoggerContextFactory的实例</p>
 <p>至此，所有的LogManager初始化的流程介绍完毕，后面的文章中我会通过具体的Log4J的代码示例继续介绍LogManager中的其他函数的流程。</p>
 
       
