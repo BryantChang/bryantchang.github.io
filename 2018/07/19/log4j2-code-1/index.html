@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="LogManager启动流程解析">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-22T11:27:58.495Z">
+<meta property="og:updated_time" content="2018-07-22T12:29:15.182Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(1)--LogManager启动流程">
 <meta name="twitter:description" content="LogManager启动流程解析">
@@ -273,6 +273,11 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这段静态代码段主要分为下面的几个步骤：</p>
+<pre class="line-numbers language-text"><code class="language-text">1、首先根据特定配置文件"log4j2.loggerContextFactory"中的配置信息获取loggerContextFactory
+2、如果没有找到对应的Factory的实现类则通过ProviderUtil中的getProviders()方法载入providers，随后通过provider的loadLoggerContextFactory方法载入LoggerContextFactory的实现类
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
       
 
@@ -542,11 +547,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -555,10 +564,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
             
             <div class="clearfix"></div>
