@@ -9,22 +9,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Java静态代码段的执行机制 | BryantChang的博客</title>
+  <title>BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Java静态代码段">
-<meta name="keywords" content="Java">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java静态代码段的执行机制">
-<meta property="og:url" content="http://yoursite.com/2018/07/21/java-static-code-block/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="BryantChang的博客">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
-<meta property="og:description" content="Java静态代码段">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/07/21/java-static-code-block/imgs/class_mem.png">
-<meta property="og:updated_time" content="2018-07-21T13:40:02.042Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java静态代码段的执行机制">
-<meta name="twitter:description" content="Java静态代码段">
-<meta name="twitter:image" content="http://yoursite.com/2018/07/21/java-static-code-block/imgs/class_mem.png">
+<meta name="twitter:title" content="BryantChang的博客">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -173,167 +166,33 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-java-static-code-block" class="article article-type-post " itemscope itemprop="blogPost">
+            
+  
+    <article id="post-firstblog" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      Java静态代码段的执行机制
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/30/firstblog/">我的第一篇博客</a>
     </h1>
   
 
         
-        <a href="/2018/07/21/java-static-code-block/" class="archive-article-date">
-  	<time datetime="2018-07-21T08:54:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-21</time>
+        <a href="/2018/05/30/firstblog/" class="archive-article-date">
+  	<time datetime="2018-05-30T04:58:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
 </a>
         
       </header>
     
     
-    <span class="archive-article-date">
-        阅读量 <span id="busuanzi_value_page_pv"></span>
-      </span>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Java静态代码段<br><a id="more"></a></p>
-<p>最近在学习Log4j的源码，里面最关键的LogManager组件中有一大段由static关键字修饰的代码块，作用是根据配置初始化LoggerContextFactory。这之中细节这里不细说，主要是对于static代码块的分析。之前对于static代码段的印象是，它可以在构造函数之前执行，当类被装载时就会被运行，并且只会执行一次，用于初始化。今天我们通过实验来验证这一说法是否准确。</p>
-<h2 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h2><h3 id="1、正常操作，通过new方法实例化对象"><a href="#1、正常操作，通过new方法实例化对象" class="headerlink" title="1、正常操作，通过new方法实例化对象"></a>1、正常操作，通过new方法实例化对象</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">MyClass</span> <span class="token punctuation">{</span>
-    <span class="token keyword">static</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"static code block"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">public</span> <span class="token function">MyClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"construction method"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AnotherTest</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> ClassNotFoundException<span class="token punctuation">{</span>
-        MyClass obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><pre class="line-numbers language-text"><code class="language-text">static code block
-constructor invoked
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>可以看到，基本符合上述的预期，静态代码块在构造函数之前执行</p>
-<h3 id="进一步验证"><a href="#进一步验证" class="headerlink" title="进一步验证"></a>进一步验证</h3><p>我们使用了另外两种方式装在MyClass类，分别为forName方法以及直接调用类名.class方法，代码如下：</p>
-<h4 id="第一种"><a href="#第一种" class="headerlink" title="第一种"></a>第一种</h4><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AnotherTest</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> ClassNotFoundException<span class="token punctuation">{</span>
-        Class <span class="token class-name">clz</span> <span class="token operator">=</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span><span class="token string">"com.bryantchang.staticblock.MyClass"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h4><pre class="line-numbers language-text"><code class="language-text">static code block
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>这符合预期，因为只是装载了该类，而并没有实例化，所以构造方法没有执行，而静态代码段似乎会在类装载的时候就执行。</p>
-<h4 id="第二种"><a href="#第二种" class="headerlink" title="第二种"></a>第二种</h4><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AnotherTest</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> ClassNotFoundException<span class="token punctuation">{</span>
-        Class<span class="token punctuation">[</span><span class="token punctuation">]</span> clzs <span class="token operator">=</span> <span class="token punctuation">{</span>MyClass<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>结果输出为空：这显然与预期不符，MyClass一定是要被装载后才能形成.class，通过翻看JVM虚拟机原理才发现static代码段真正的执行时机，这需要从Java类运行的实例说明。</p>
-<h2 id="Java类的关键运行步骤"><a href="#Java类的关键运行步骤" class="headerlink" title="Java类的关键运行步骤"></a>Java类的关键运行步骤</h2><p>来源《深入理解Java虚拟机》</p>
-<ul>
-<li>装载</li>
-<li>连接</li>
-<li>初始化</li>
-<li>使用</li>
-</ul>
-<p>其中，各个过程所进行的操作如下：</p>
-<pre class="line-numbers language-text"><code class="language-text">装载：将class文件字节码内容加载到内存中，并将静态数据转化为方法区中的运行时数据结构，在堆中生成一个代表这个类的java.lang.Class对象，作为方法区类数据的访问入口
-连接：将java累的二进制代码合并到JVM的运行状态中
-    验证：确保加载的类信息符合JVM规范
-    准备：正式为类变量分配内存并设置初始值（初始化static变量），这些内存都在方法区中分配
-    解析：JVM常量池的符号引用替换为直接引用
-初始化：
-    执行类构造方法client()方法。该方法由编译器自动收集勒种所有变量的赋值动作和静态语句块(static块)中的语句合并产生
-    当初始化一个类的时候，如果发现其父类还没有初始化，则需要先触发其父类的初始化。
-    虚拟机会保证一个类的clinit()方法在多线程的环境下被正确的加锁和同步。
-    当访问一个Java类的静态域时，只有真正声明这个域的类才会被初始化。
-使用：访问该类的属性和方法
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>我们可以看到static语句的执行发生在类的初始化阶段，因此我们需要知道执行类初始化操作的前提，当一个类被主动使用时，Java虚拟机就会进行初始化操作：</p>
-<ul>
-<li>创建某个类的新实例时(new反射，克隆，反序列化)</li>
-<li>调用类的静态方法时</li>
-<li>使用类或接口的静态属性时</li>
-<li>当调用Java API中的某些反射方法时，比如类Class中的方法，或者java.lang.reflect中的类的方法时</li>
-<li>初始化这个类的某个子类时</li>
-<li>当虚拟机启动被某个被表明为启动类时(包含main方法时)</li>
-</ul>
-<p>被动引用：</p>
-<ul>
-<li>当访问一个静态域时，只有真正声明这个域的类才会被初始化：通过子类引用父类的静态变量，不会导致子类初始化 </li>
-<li>通过数组定义类引用，不会触发此类的初始化: MyClass[] as = new MyClass[10]不会被初始化 </li>
-<li>引用常量不会触发此类的初始化（常量在编译阶段就存入了调用类的常量池中了）</li>
-</ul>
-<p>我们以一个具体的实例看出类的使用过程中各个区域与内存的对应关系：</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">MyClass</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> width <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
-    <span class="token keyword">static</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"static block invoked"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        width <span class="token operator">=</span> <span class="token number">300</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token function">MyClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"constructor invoked"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AnotherTest</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        MyClass obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>MyClass<span class="token punctuation">.</span>width<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<img src="/2018/07/21/java-static-code-block/imgs/class_mem.png" title="类加载实例">
-<p>而对于我们上面提到的两个例子，对于forName方法，我们查看源码是这样定义的：</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">forName</span><span class="token punctuation">(</span>String className<span class="token punctuation">)</span>
-                <span class="token keyword">throws</span> ClassNotFoundException <span class="token punctuation">{</span>
-        Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> caller <span class="token operator">=</span> Reflection<span class="token punctuation">.</span><span class="token function">getCallerClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token function">forName0</span><span class="token punctuation">(</span>className<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> ClassLoader<span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span>caller<span class="token punctuation">)</span><span class="token punctuation">,</span> caller<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>我们发现其调用了forName0方法，该方法定义如下,该方法是native方法，直接会依赖本地JVM的实现来实现该方法。</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">native</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> <span class="token function">forName0</span><span class="token punctuation">(</span>String name<span class="token punctuation">,</span> <span class="token keyword">boolean</span> initialize<span class="token punctuation">,</span>
-                                            ClassLoader loader<span class="token punctuation">,</span>
-                                            Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> caller<span class="token punctuation">)</span>
-        <span class="token keyword">throws</span> ClassNotFoundException<span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>该方法中有一个initialize参数，当该参数为false时，就不会执行类的初始化操作，static代码块就不会执行。</p>
-<p>至此我们完全了解了static代码块执行的准确时机。</p>
+        <h2 id="新的开始，新的气象"><a href="#新的开始，新的气象" class="headerlink" title="新的开始，新的气象"></a>新的开始，新的气象</h2><p>之前的博客管理起来感觉过于繁琐，因此重新学习了Hexo，使用这个工具搭建了新的博客，后期会将前面的文章进行迁移，敬请期待。</p>
 
       
 
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -344,104 +203,25 @@ constructor invoked
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">欢迎</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
-
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/05/30/firstblog/">展开全文 >></a>
+        </p>
       
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
-        </div>
-      </div>
-    </span>
-  </div>
-</div>
 
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/07/21/java-static-code-block/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2018/07/28/spring1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Spring初识
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2018/07/21/git-pubkey/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">git多公钥配置</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -461,25 +241,12 @@ constructor invoked
 
 
 
-  
 
   
-  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
-<script>
-  var cloudTieConfig = {
-    url: "http://yoursite.com/2018/07/21/java-static-code-block/", 
-    sourceId: "java-static-code-block",
-    productKey: "true",
-    target: "cloud-tie-wrapper"
-  };
-</script>
-<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
-
-  
-
-  
-
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    </nav>
   
 
 
@@ -504,8 +271,8 @@ constructor invoked
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: false,
-		isPost: true,
+		isHome: true,
+		isPost: false,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
