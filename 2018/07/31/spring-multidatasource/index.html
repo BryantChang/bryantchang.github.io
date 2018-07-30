@@ -9,15 +9,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | BryantChang的博客</title>
+  <title>spring+Jpa多数据源配置 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="BryantChang的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2018/page/2/index.html">
+  <meta name="description" content="Spring多数据源配置">
+<meta name="keywords" content="Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring+Jpa多数据源配置">
+<meta property="og:url" content="http://yoursite.com/2018/07/31/spring-multidatasource/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
+<meta property="og:description" content="Spring多数据源配置">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi1.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi2.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi3.png">
+<meta property="og:updated_time" content="2018-07-30T17:29:27.354Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BryantChang的博客">
+<meta name="twitter:title" content="spring+Jpa多数据源配置">
+<meta name="twitter:description" content="Spring多数据源配置">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi1.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -172,270 +181,396 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-spring-multidatasource" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      spring+Jpa多数据源配置
+    </h1>
   
+
+        
+        <a href="/2018/07/31/spring-multidatasource/" class="archive-article-date">
+  	<time datetime="2018-07-30T17:13:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-31</time>
+</a>
+        
+      </header>
     
     
+    <span class="archive-article-date">
+        阅读量 <span id="busuanzi_value_page_pv"></span>
+      </span>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring多数据源配置<br><a id="more"></a></p>
+<p>今天临下班时遇到了一个需求，我的管理平台需要从不同的数据库中获取数据信息，这就需要进行Spring的多数据源配置，对于这种配置，第一次永远都是痛苦的，不过经历了这次的折磨，今后肯定会对这种配置印象深刻。我们这里简单回顾一下流程。</p>
+<p>我们配置了两个数据库，一个是公司的数据库，另一个是我本地的一个数据库。首先是application.yml的配置(其中对于公司的数据库我们采取了假的地址，而本机的数据库是真是存在对应的表和库的)</p>
+<img src="/2018/07/31/spring-multidatasource/imgs/multi1.png" title="本地数据库">
+<img src="/2018/07/31/spring-multidatasource/imgs/multi2.png" title="本地数据库">
+<p>1、application.yml</p>
+<pre class="line-numbers language-yaml"><code class="language-yaml"><span class="token key atrule">datasource</span><span class="token punctuation">:</span>
+    <span class="token key atrule">primary</span><span class="token punctuation">:</span>
+      <span class="token key atrule">url</span><span class="token punctuation">:</span> jdbc<span class="token punctuation">:</span>mysql<span class="token punctuation">:</span>//companyurl.com<span class="token punctuation">:</span>5002/db1
+      <span class="token key atrule">username</span><span class="token punctuation">:</span> unameq
+      <span class="token key atrule">password</span><span class="token punctuation">:</span> passwd1
+      <span class="token key atrule">driver-class-name</span><span class="token punctuation">:</span> com.mysql.jdbc.Driver
+    <span class="token key atrule">secondary</span><span class="token punctuation">:</span>
+      <span class="token key atrule">url</span><span class="token punctuation">:</span> jdbc<span class="token punctuation">:</span>mysql<span class="token punctuation">:</span>//localhost<span class="token punctuation">:</span>3306/django_test
+      <span class="token key atrule">username</span><span class="token punctuation">:</span> root
+      <span class="token key atrule">password</span><span class="token punctuation">:</span> <span class="token number">123456</span>
+      <span class="token key atrule">driver-class-name</span><span class="token punctuation">:</span> com.mysql.jdbc.Driver
+  <span class="token key atrule">jpa</span><span class="token punctuation">:</span>
+    <span class="token key atrule">database-platform</span><span class="token punctuation">:</span> org.hibernate.dialect.MySQL5Dialect
+    <span class="token key atrule">hibernate</span><span class="token punctuation">:</span>
+      <span class="token key atrule">ddl-auto</span><span class="token punctuation">:</span> update
+      <span class="token key atrule">show-sql</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>2、创建总的DataSource配置文件以及两个Repostory的配置文件PrimaryConfig以及SecondaryConfig</p>
+<ul>
+<li>DataSourceConfig</li>
+</ul>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DataSourceConfig</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"primaryDataSource"</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@Qualifier</span><span class="token punctuation">(</span><span class="token string">"primaryDataSource"</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@ConfigurationProperties</span><span class="token punctuation">(</span>prefix<span class="token operator">=</span><span class="token string">"spring.datasource.primary"</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">//对应的数据库配置信息</span>
+    <span class="token keyword">public</span> DataSource <span class="token function">primaryDataSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> DataSourceBuilder<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"secondaryDataSource"</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@Qualifier</span><span class="token punctuation">(</span><span class="token string">"secondaryDataSource"</span><span class="token punctuation">)</span>
+    <span class="token annotation punctuation">@Primary</span>
+    <span class="token annotation punctuation">@ConfigurationProperties</span><span class="token punctuation">(</span>prefix<span class="token operator">=</span><span class="token string">"spring.datasource.secondary"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> DataSource <span class="token function">secondaryDataSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> DataSourceBuilder<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>PrimaryConfig</li>
+</ul>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableTransactionManagement</span>
+<span class="token annotation punctuation">@EnableJpaRepositories</span><span class="token punctuation">(</span>
+        entityManagerFactoryRef<span class="token operator">=</span><span class="token string">"entityManagerFactoryPrimary"</span><span class="token punctuation">,</span>
+        transactionManagerRef<span class="token operator">=</span><span class="token string">"transactionManagerPrimary"</span><span class="token punctuation">,</span>
+        basePackages<span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token string">"数据访问层所在的包"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//设置Repository所在位置</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PrimaryConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Autowired</span> <span class="token annotation punctuation">@Qualifier</span><span class="token punctuation">(</span><span class="token string">"primaryDataSource"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> DataSource primaryDataSource<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Primary</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"entityManagerPrimary"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> EntityManager <span class="token function">entityManager</span><span class="token punctuation">(</span>EntityManagerFactoryBuilder builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">entityManagerFactoryPrimary</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createEntityManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Primary</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"entityManagerFactoryPrimary"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> LocalContainerEntityManagerFactoryBean <span class="token function">entityManagerFactoryPrimary</span> <span class="token punctuation">(</span>EntityManagerFactoryBuilder builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> builder
+                <span class="token punctuation">.</span><span class="token function">dataSource</span><span class="token punctuation">(</span>primaryDataSource<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">properties</span><span class="token punctuation">(</span><span class="token function">getVendorProperties</span><span class="token punctuation">(</span>primaryDataSource<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">packages</span><span class="token punctuation">(</span><span class="token string">"实体类所在的包"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//设置实体类所在位置</span>
+                <span class="token punctuation">.</span><span class="token function">persistenceUnit</span><span class="token punctuation">(</span><span class="token string">"primaryPersistenceUnit"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> JpaProperties jpaProperties<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> <span class="token function">getVendorProperties</span><span class="token punctuation">(</span>DataSource dataSource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> jpaProperties<span class="token punctuation">.</span><span class="token function">getHibernateProperties</span><span class="token punctuation">(</span>dataSource<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Primary</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"transactionManagerPrimary"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> PlatformTransactionManager <span class="token function">transactionManagerPrimary</span><span class="token punctuation">(</span>EntityManagerFactoryBuilder builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">JpaTransactionManager</span><span class="token punctuation">(</span><span class="token function">entityManagerFactoryPrimary</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>SecondaryConfig</li>
+</ul>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token annotation punctuation">@EnableTransactionManagement</span>
+<span class="token annotation punctuation">@EnableJpaRepositories</span><span class="token punctuation">(</span>
+        entityManagerFactoryRef<span class="token operator">=</span><span class="token string">"entityManagerFactorySecondary"</span><span class="token punctuation">,</span>
+        transactionManagerRef<span class="token operator">=</span><span class="token string">"transactionManagerSecondary"</span><span class="token punctuation">,</span>
+        basePackages<span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token string">"数据访问层所在的包"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//设置Repository所在位置</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SecondaryConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token annotation punctuation">@Qualifier</span><span class="token punctuation">(</span><span class="token string">"secondaryDataSource"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> DataSource secondaryDataSource<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"entityManagerSecondary"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> EntityManager <span class="token function">entityManager</span><span class="token punctuation">(</span>EntityManagerFactoryBuilder builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">entityManagerFactorySecondary</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createEntityManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"entityManagerFactorySecondary"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> LocalContainerEntityManagerFactoryBean <span class="token function">entityManagerFactorySecondary</span><span class="token punctuation">(</span>EntityManagerFactoryBuilder builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> builder
+                <span class="token punctuation">.</span><span class="token function">dataSource</span><span class="token punctuation">(</span>secondaryDataSource<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">properties</span><span class="token punctuation">(</span><span class="token function">getVendorProperties</span><span class="token punctuation">(</span>secondaryDataSource<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">packages</span><span class="token punctuation">(</span><span class="token string">"实体类所在的包"</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//设置实体类所在位置</span>
+                <span class="token punctuation">.</span><span class="token function">persistenceUnit</span><span class="token punctuation">(</span><span class="token string">"secondaryPersistenceUnit"</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> JpaProperties jpaProperties<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> <span class="token function">getVendorProperties</span><span class="token punctuation">(</span>DataSource dataSource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> jpaProperties<span class="token punctuation">.</span><span class="token function">getHibernateProperties</span><span class="token punctuation">(</span>dataSource<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"transactionManagerSecondary"</span><span class="token punctuation">)</span>
+    PlatformTransactionManager <span class="token function">transactionManagerSecondary</span><span class="token punctuation">(</span>EntityManagerFactoryBuilder builder<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">JpaTransactionManager</span><span class="token punctuation">(</span><span class="token function">entityManagerFactorySecondary</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3、然后我对于本地数据库新建实体类PeoplePerson</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Entity</span>
+<span class="token annotation punctuation">@Table</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"people_person"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PeoplePerson</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Id</span>
+    <span class="token annotation punctuation">@GeneratedValue</span>
+    <span class="token keyword">private</span> Integer id<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Column</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"name"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> String name<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Column</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"age"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> Integer age<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">PeoplePerson</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> Integer <span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setId</span><span class="token punctuation">(</span>Integer id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">=</span> id<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setName</span><span class="token punctuation">(</span>String name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> Integer <span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> age<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setAge</span><span class="token punctuation">(</span>Integer age<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> age<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> String <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">"PeoplePerson{"</span> <span class="token operator">+</span>
+                <span class="token string">"id="</span> <span class="token operator">+</span> id <span class="token operator">+</span>
+                <span class="token string">", name='"</span> <span class="token operator">+</span> name <span class="token operator">+</span> <span class="token string">'\''</span> <span class="token operator">+</span>
+                <span class="token string">", age="</span> <span class="token operator">+</span> age <span class="token operator">+</span>
+                <span class="token string">'}'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>并创建对应的Repositoy，PeoplePersonDao并创建了一个findAll的方法</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Transactional</span>
+<span class="token annotation punctuation">@Repository</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">PeoplePersonDao</span> <span class="token keyword">extends</span> <span class="token class-name">JpaRepository</span><span class="token operator">&lt;</span>PeoplePerson<span class="token punctuation">,</span> Long<span class="token operator">></span> <span class="token punctuation">{</span>
+    List<span class="token operator">&lt;</span>PeoplePerson<span class="token operator">></span> <span class="token function">findAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>4、最后，在test包中进行测试</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
+<span class="token keyword">private</span> PeoplePersonDao peoplePersonDao<span class="token punctuation">;</span>
+<span class="token annotation punctuation">@Test</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">testMultiDataSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   List<span class="token operator">&lt;</span>PeoplePerson<span class="token operator">></span> list <span class="token operator">=</span> peoplePersonDao<span class="token punctuation">.</span><span class="token function">findAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> list<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>list<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>测试结果<br><img src="/2018/07/31/spring-multidatasource/imgs/multi3.png" title="本地数据库"></p>
+<p>对于这种套路性的东西，总结一遍是非常必要的，下次可以节省许多不必要的时间，对于内部原理，我将在完成对Ioc和Aop分析后反过来分析其原理。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/19/log4j2-code-1/" class="archive-article-date">
-  	<time datetime="2018-07-19T14:01:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/19/log4j2-code-1/">log4j2源码解析(1)--LogManager启动流程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Log4j</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Log4j//" class="article-tag-list-link color1">Log4j</a>
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/07/31/spring-multidatasource/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/06/15/django-adv/" class="archive-article-date">
-  	<time datetime="2018-06-15T05:22:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/07/28/spring2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Spring Ioc原理(1)</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/15/django-adv/">django进阶</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">django</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/django//" class="article-tag-list-link color2">django</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/06/14/django/" class="archive-article-date">
-  	<time datetime="2018-06-14T08:47:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/14/django/">django初识</a>
-    </h1>
+
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">django</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/django//" class="article-tag-list-link color2">django</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/30/theme-hexo/" class="archive-article-date">
-  	<time datetime="2018-05-30T13:51:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/30/theme-hexo/">Hexo修改主题</a>
-    </h1>
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2018/07/31/spring-multidatasource/", 
+    sourceId: "spring-multidatasource",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/hexo//" class="article-tag-list-link color5">hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/30/log4j-adv/" class="archive-article-date">
-  	<time datetime="2018-05-30T06:37:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/30/log4j-adv/">Log4J进阶</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Log4j</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Log4j//" class="article-tag-list-link color1">Log4j</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2018/">&laquo; Prev</a><a class="page-number" href="/archives/2018/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/2018/page/3/">3</a><a class="extend next" rel="next" href="/archives/2018/page/3/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -461,8 +596,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
