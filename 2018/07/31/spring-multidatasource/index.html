@@ -22,7 +22,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi1.png">
 <meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi2.png">
 <meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi3.png">
-<meta property="og:updated_time" content="2018-07-30T17:30:53.858Z">
+<meta property="og:updated_time" content="2018-08-02T07:39:43.844Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring+Jpa多数据源配置">
 <meta name="twitter:description" content="Spring多数据源配置">
@@ -408,7 +408,8 @@
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>测试结果<br><img src="/2018/07/31/spring-multidatasource/imgs/multi3.png" title="本地数据库"></p>
-<p>对于这种套路性的东西，总结一遍是非常必要的，下次可以节省许多不必要的时间，对于内部原理，我将在完成对Ioc和Aop分析后反过来分析其原理。</p>
+<h2 id="一些坑"><a href="#一些坑" class="headerlink" title="一些坑"></a>一些坑</h2><pre><code>不仅仅是dao层扫描的包需要区分，对于实体类所在的包，不同的DataSource的配置中也需要区分开
+</code></pre><p>对于这种套路性的东西，总结一遍是非常必要的，下次可以节省许多不必要的时间，对于内部原理，我将在完成对Ioc和Aop分析后反过来分析其原理。</p>
 
       
 
@@ -673,11 +674,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
