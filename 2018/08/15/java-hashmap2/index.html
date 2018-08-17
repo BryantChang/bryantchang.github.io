@@ -23,7 +23,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap2.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap3.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap4.png">
-<meta property="og:updated_time" content="2018-08-15T13:38:14.746Z">
+<meta property="og:updated_time" content="2018-08-17T16:54:26.882Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HashMap漫谈(2)">
 <meta name="twitter:description" content="HashMap原理解析–JDK1.8">
@@ -497,8 +497,135 @@
 <pre><code>1、链表长度大于等于 TREEIFY_THRESHOLD
 2、桶数组容量大于等于 MIN_TREEIFY_CAPACITY
 </code></pre><p>这里我们看到最后从Node变为了TreeNode，通过调用replacementTreeNode方法，我们首先看一下TreeNode的结构定义</p>
-<pre class="line-numbers language-java"><code class="language-java">
-<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">TreeNode</span><span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> <span class="token keyword">extends</span> <span class="token class-name">LinkedHashMap<span class="token punctuation">.</span>Entry</span><span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> <span class="token punctuation">{</span>
+    TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> parent<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// red-black tree links</span>
+    TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> left<span class="token punctuation">;</span>
+    TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> right<span class="token punctuation">;</span>
+    TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> prev<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// needed to unlink next upon deletion</span>
+    <span class="token keyword">boolean</span> red<span class="token punctuation">;</span>
+    <span class="token function">TreeNode</span><span class="token punctuation">(</span><span class="token keyword">int</span> hash<span class="token punctuation">,</span> K key<span class="token punctuation">,</span> V val<span class="token punctuation">,</span> Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> next<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>hash<span class="token punctuation">,</span> key<span class="token punctuation">,</span> val<span class="token punctuation">,</span> next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * Returns root of tree containing this node.
+     */</span>
+    <span class="token keyword">final</span> TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> <span class="token function">root</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> r <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">,</span> p<span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>p <span class="token operator">=</span> r<span class="token punctuation">.</span>parent<span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span>
+                <span class="token keyword">return</span> r<span class="token punctuation">;</span>
+            r <span class="token operator">=</span> p<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们看到TreeNode拥有了树结构的一般属性，包括一个父节点，以及左子节点和右子节点,我们可以看到TreeNode继承自Node类，因此保留了next属性，这样的话在红黑树链化的时候可以非常轻松的实现。有点跑题了，这里我们是说的是链表的树化，对于这个操作，有一个比较关键的因素就是，如何比较key的大小，因为key不是基本数据类别。对于HashMap来说，由于并没有像TreeMap一样要求顺序，所以并不强制要求继承Comparable接口，然而对于链表树化的过程中又必须这么做。因此HashMap给出了下面的策略：</p>
+<pre><code>1、首先比较key的hash值，如果相同，则执行下面的操作
+2、检测key所在的类是否继承了Comparable接口并实现了compareTo方法
+3、如果都没有，则执行仲裁方法tieBreakOrder
+</code></pre><p>出于好奇，我们来看一下这个tieBreakOrder方法</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">tieBreakOrder</span><span class="token punctuation">(</span>Object a<span class="token punctuation">,</span> Object b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> d<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>a <span class="token operator">==</span> null <span class="token operator">||</span> b <span class="token operator">==</span> null <span class="token operator">||</span>
+        <span class="token punctuation">(</span>d <span class="token operator">=</span> a<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+         <span class="token function">compareTo</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        d <span class="token operator">=</span> <span class="token punctuation">(</span>System<span class="token punctuation">.</span><span class="token function">identityHashCode</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">&lt;=</span> System<span class="token punctuation">.</span><span class="token function">identityHashCode</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span> <span class="token operator">?</span>
+             <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> d<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们看这种方式是处理了两种情况，分别为：</p>
+<pre><code>1、两个key对象有一个为空
+2、两个对象的全限定名完全一样
+</code></pre><p>仲裁手段是分别调用System.identityHashCode(obj)比较生成的hash。</p>
+<p>这样我们就大致讲完了put部分，接下来我们说get方法</p>
+<h2 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h2><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> V <span class="token function">get</span><span class="token punctuation">(</span>Object key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> e<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>e <span class="token operator">=</span> <span class="token function">getNode</span><span class="token punctuation">(</span><span class="token function">hash</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span> null <span class="token operator">:</span> e<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们可以看到，这个方法是将key 算完hash以后调用getNode方法获取Node节点</p>
+<p>对于getNode方法，我们根据put方法，应该可以推测这个方法的流程</p>
+<pre><code>1、根据hash找到对应的table数组下标
+2、在这个table中，如果是链式结构，直接遍历找到对应的节点
+3、如果是树形结构，就把table[0]当做root节点遍历红黑树，找到对应节点并返回。
+4、如果没有找到，则返回null
+</code></pre><p>我们来看一下真实的方法</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">final</span> Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> <span class="token function">getNode</span><span class="token punctuation">(</span><span class="token keyword">int</span> hash<span class="token punctuation">,</span> Object key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> tab<span class="token punctuation">;</span> Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> first<span class="token punctuation">,</span> e<span class="token punctuation">;</span> <span class="token keyword">int</span> n<span class="token punctuation">;</span> K k<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>tab <span class="token operator">=</span> table<span class="token punctuation">)</span> <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> tab<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
+        <span class="token punctuation">(</span>first <span class="token operator">=</span> tab<span class="token punctuation">[</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> hash<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>first<span class="token punctuation">.</span>hash <span class="token operator">==</span> hash <span class="token operator">&amp;&amp;</span> <span class="token comment" spellcheck="true">// always check first node</span>
+            <span class="token punctuation">(</span><span class="token punctuation">(</span>k <span class="token operator">=</span> first<span class="token punctuation">.</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> key <span class="token operator">||</span> <span class="token punctuation">(</span>key <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> key<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> first<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>e <span class="token operator">=</span> first<span class="token punctuation">.</span>next<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>first <span class="token keyword">instanceof</span> <span class="token class-name">TreeNode</span><span class="token punctuation">)</span>
+                <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">)</span>first<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getTreeNode</span><span class="token punctuation">(</span>hash<span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">do</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>hash <span class="token operator">==</span> hash <span class="token operator">&amp;&amp;</span>
+                    <span class="token punctuation">(</span><span class="token punctuation">(</span>k <span class="token operator">=</span> e<span class="token punctuation">.</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> key <span class="token operator">||</span> <span class="token punctuation">(</span>key <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> key<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token keyword">return</span> e<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>e <span class="token operator">=</span> e<span class="token punctuation">.</span>next<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="remove方法"><a href="#remove方法" class="headerlink" title="remove方法"></a>remove方法</h2><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> V <span class="token function">remove</span><span class="token punctuation">(</span>Object key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> e<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>e <span class="token operator">=</span> <span class="token function">removeNode</span><span class="token punctuation">(</span><span class="token function">hash</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> null<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> null <span class="token operator">?</span>
+        null <span class="token operator">:</span> e<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>和get方法类似，也是先计算key的hash，然后找到对应的节点，调用removeNode删除。具体的removeNode如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">final</span> Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> <span class="token function">removeNode</span><span class="token punctuation">(</span><span class="token keyword">int</span> hash<span class="token punctuation">,</span> Object key<span class="token punctuation">,</span> Object value<span class="token punctuation">,</span>
+                               <span class="token keyword">boolean</span> matchValue<span class="token punctuation">,</span> <span class="token keyword">boolean</span> movable<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> tab<span class="token punctuation">;</span> Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> p<span class="token punctuation">;</span> <span class="token keyword">int</span> n<span class="token punctuation">,</span> index<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>tab <span class="token operator">=</span> table<span class="token punctuation">)</span> <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>n <span class="token operator">=</span> tab<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
+        <span class="token punctuation">(</span>p <span class="token operator">=</span> tab<span class="token punctuation">[</span>index <span class="token operator">=</span> <span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> hash<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span> node <span class="token operator">=</span> null<span class="token punctuation">,</span> e<span class="token punctuation">;</span> K k<span class="token punctuation">;</span> V v<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>p<span class="token punctuation">.</span>hash <span class="token operator">==</span> hash <span class="token operator">&amp;&amp;</span>
+            <span class="token punctuation">(</span><span class="token punctuation">(</span>k <span class="token operator">=</span> p<span class="token punctuation">.</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> key <span class="token operator">||</span> <span class="token punctuation">(</span>key <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> key<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            node <span class="token operator">=</span> p<span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>e <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token keyword">instanceof</span> <span class="token class-name">TreeNode</span><span class="token punctuation">)</span>
+                node <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">)</span>p<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getTreeNode</span><span class="token punctuation">(</span>hash<span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">do</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>hash <span class="token operator">==</span> hash <span class="token operator">&amp;&amp;</span>
+                        <span class="token punctuation">(</span><span class="token punctuation">(</span>k <span class="token operator">=</span> e<span class="token punctuation">.</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> key <span class="token operator">||</span>
+                         <span class="token punctuation">(</span>key <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> key<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        node <span class="token operator">=</span> e<span class="token punctuation">;</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    p <span class="token operator">=</span> e<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>e <span class="token operator">=</span> e<span class="token punctuation">.</span>next<span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token operator">!</span>matchValue <span class="token operator">||</span> <span class="token punctuation">(</span>v <span class="token operator">=</span> node<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token operator">==</span> value <span class="token operator">||</span>
+                             <span class="token punctuation">(</span>value <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> value<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token keyword">instanceof</span> <span class="token class-name">TreeNode</span><span class="token punctuation">)</span>
+                <span class="token punctuation">(</span><span class="token punctuation">(</span>TreeNode<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">)</span>node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">removeTreeNode</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> tab<span class="token punctuation">,</span> movable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>node <span class="token operator">==</span> p<span class="token punctuation">)</span>
+                tab<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">=</span> node<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token keyword">else</span>
+                p<span class="token punctuation">.</span>next <span class="token operator">=</span> node<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+            <span class="token operator">++</span>modCount<span class="token punctuation">;</span>
+            <span class="token operator">--</span>size<span class="token punctuation">;</span>
+            <span class="token function">afterNodeRemoval</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> node<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>具体流程如下：</p>
+<pre><code>1、根据hash找到对应的table数组下标
+2、在这个table中，如果是链式结构，直接遍历找到对应的节点，并删除
+3、如果是树形结构，就把table[0]当做root节点遍历红黑树，找到对应节点并删除，删除完毕后调整红黑树(包含在removeTreeNode方法)，必要时会链化。
+4、如果没有找到，则返回null
+</code></pre><p>至此，我们介绍了JDK1.8中的HashMap的实现原理，以及和1.7的对比。后面的文章中，我将会继续介绍Java中其他数据结构的实现。</p>
 
       
 
@@ -755,6 +882,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">django</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
@@ -763,15 +894,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">django</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
