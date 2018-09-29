@@ -20,7 +20,7 @@
 <meta property="og:description" content="Configuration的获取以及初始化">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/09/29/log4j2-code-3/imgs/node_dependency.png">
-<meta property="og:updated_time" content="2018-09-29T10:36:47.873Z">
+<meta property="og:updated_time" content="2018-09-29T10:42:35.667Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(3)--Configuration">
 <meta name="twitter:description" content="Configuration的获取以及初始化">
@@ -552,7 +552,7 @@ XMLConfiguration
         <span class="token function">setParents</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>该方法的主要工作就是根据上面的Node依赖树，自动为Node的object字段来赋值，这样就可以对Logger对象的一个核心字段进行赋值了，即privateConfig。但是，在进行获取logger之前，并不会创建这个对象，至此，Congiguration以创建完成，成功启动并更新了LoggerContext中的configuration字段,下一篇文章中，将介绍privateConfig对象是如何根据configuration对象建立的。</p>
+<p>该方法的主要工作就是根据上面的Node依赖树，自动为Node的object字段来赋值，这样就可以对Logger对象的一个核心字段进行赋值了，即privateConfig。但是，在进行获取logger之前，并不会创建这个对象，至此，Congiguration以创建完成，成功启动并更新了LoggerContext中的configuration字段,下一篇文章中，将结合getLogger方法介绍privateConfig对象是如何根据configuration对象建立的。</p>
 
       
 
