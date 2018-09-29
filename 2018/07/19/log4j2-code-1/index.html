@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="LogManager启动流程解析">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-07-22T14:53:14.826Z">
+<meta property="og:updated_time" content="2018-09-28T09:26:41.600Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(1)--LogManager启动流程">
 <meta name="twitter:description" content="LogManager启动流程解析">
@@ -216,7 +216,7 @@
 </code></pre><ul>
 <li>LoggerContext</li>
 </ul>
-<pre><code>1、解析log4j2.xml配置文件，解析为对应的java对象。
+<pre><code>1、解析配置文件，解析为对应的java对象。
 2、通过LoggerRegisty缓存Logger配置
 3、Configuration配置信息
 4、start方法解析配置文件，转化为对应的java对象
@@ -315,6 +315,7 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在默认情况下，不存在初始的默认配置文件log4j2.component.properties，因此需要从其他途径获取LoggerContextFactory。</p>
 <h2 id="通过provider实例化LoggerContextFactory对象"><a href="#通过provider实例化LoggerContextFactory对象" class="headerlink" title="通过provider实例化LoggerContextFactory对象"></a>通过provider实例化LoggerContextFactory对象</h2><p>代码：</p>
 <pre class="line-numbers language-java"><code class="language-java">            <span class="token keyword">final</span> SortedMap<span class="token operator">&lt;</span>Integer<span class="token punctuation">,</span> LoggerContextFactory<span class="token operator">></span> factories <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TreeMap</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token comment" spellcheck="true">// note that the following initial call to ProviderUtil may block until a Provider has been installed when</span>
@@ -368,28 +369,13 @@ ReentrantLock.lock方法不允许Thread.interrupt中断,即使检测到Thread.is
 <pre class="line-numbers language-text"><code class="language-text">// STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
 // wait for a Provider to be installed. See LOG4J2-373
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>在ProviderUtil初始化过程中使用lockInterruptibly方法的原因也在于此，原因是中间允许OSGI的线程中断这个类的初始化。关于OSGI的具体用法，我会单独拉出一篇博客中会进行专门的讲解。在这篇博客中我们单纯只看OSGI初始化了那些Provider</p>
-<p>pom.xml中的代码如下：</p>
-<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>plugin</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.apache.felix<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>maven-bundle-plugin<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>configuration</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>instructions</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Bundle-SymbolicName</span><span class="token punctuation">></span></span>org.apache.logging.log4j.core<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Bundle-SymbolicName</span><span class="token punctuation">></span></span>
-            <span class="token comment" spellcheck="true">&lt;!-- TODO: exclude internal classes from export --></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Export-Package</span><span class="token punctuation">></span></span>org.apache.logging.log4j.core.*<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Export-Package</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Import-Package</span><span class="token punctuation">></span></span>
-              sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.util,
-              *
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Import-Package</span><span class="token punctuation">></span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Bundle-Activator</span><span class="token punctuation">></span></span>org.apache.logging.log4j.core.osgi.Activator<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Bundle-Activator</span><span class="token punctuation">></span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>instructions</span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>configuration</span><span class="token punctuation">></span></span>
- <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>plugin</span><span class="token punctuation">></span></span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>我们发现系统通过org.apache.logging.log4j.core.osgi.Activator类载入了provider实例，其中实例的名称为org.apache.logging.log4j.core.impl.Log4jProvider。</p>
-<p>至此我们已经分析完了通过provider载入LoggerContextFactory的逻辑。</p>
+<p>在ProviderUtil初始化过程中使用lockInterruptibly方法的原因也在于此，原因是中间允许OSGI的线程中断这个类的初始化。关于OSGI的具体用法，我会单独拉出一篇博客中会进行专门的讲解。在这篇博客中我们单纯只看OSGI初始化了那些Provider，同时里面还存在SPI的概念，关于SPI的机制，后续也会拉出一篇文章来讲。</p>
+<p>这里面，log4j2是通过META-INF中的log4j-provider.properties文件获取具体的LoggerContextFactory,我们以示例程序中的编译结果为例，查看是否存在这个文件以及文件的内容，通过查找我们可以看到，这个配置文件确实存在于log4j的jar包中 “file:/user/home/.m2/repository/org/apache/logging/log4j/log4j-core/2.8.2/log4j-core-2.8.2.jar!/META-INF/log4j-provider.properties”,我们查看这个文件:</p>
+<pre class="line-numbers language-properties"><code class="language-properties"><span class="token attr-name">LoggerContextFactory</span> <span class="token punctuation">=</span> <span class="token attr-value">org.apache.logging.log4j.core.impl.Log4jContextFactory</span>
+<span class="token attr-name">Log4jAPIVersion</span> <span class="token punctuation">=</span> <span class="token attr-value">2.6.0</span>
+<span class="token attr-name">FactoryPriority</span><span class="token punctuation">=</span> <span class="token attr-value">10</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>因此默认的LoggerContextFactory是Log4jContextFactory。</p>
 <h2 id="判断是否成功载入了Provider逻辑"><a href="#判断是否成功载入了Provider逻辑" class="headerlink" title="判断是否成功载入了Provider逻辑"></a>判断是否成功载入了Provider逻辑</h2><p>代码如下：</p>
 <pre class="line-numbers language-java"><code class="language-java">            <span class="token keyword">if</span> <span class="token punctuation">(</span>factories<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
                     LOGGER<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"Log4j2 could not find a logging implementation. "</span>
@@ -684,11 +670,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -701,10 +691,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
             
             <div class="clearfix"></div>

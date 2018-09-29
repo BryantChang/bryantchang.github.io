@@ -19,7 +19,7 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="LoggerContext作用及初始化流程">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-16T14:51:32.957Z">
+<meta property="og:updated_time" content="2018-09-29T03:17:54.653Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(2)--LoggerContext">
 <meta name="twitter:description" content="LoggerContext作用及初始化流程">
@@ -289,7 +289,7 @@
     LOGGER<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"Using configurationFactory {}"</span><span class="token punctuation">,</span> configFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> configFactory<span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这是一个典型的单例模式，使用了双重检查锁的方式获取实例，这个方法里面有一个操作步骤我们要重点介绍，就是PluginManager实例的创建，PluginManager主要用于管理Log4J中的插件，这些Plugin主要是一些对应不同格式的配置文件的解析器，PluginManager中使用category对不同类型的插件进行缓存。</p>
+<p>这是一个典型的单例模式，使用了双重检查锁的方式获取实例，这个方法里面有一个操作步骤我们要重点介绍，就是PluginManager实例的创建，PluginManager主要用于管理Log4J中的插件，这些Plugin主要是一些对应不同格式的配置文件的解析器，PluginManager中使用category对不同类型的插件进行缓存,其中初始的配置文件为META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat在collectPlugin方法中会初始化所有的plugin，其中</p>
 <p>获取到ConfigurationFactory的实例之后，就是获取Configuration的过程，主要流程是根据配置的格式，从遍历上面提到列表中的factory，加载到对应的ConfigurationFactory，随后通过这个Factory去解析配置文件最终获取到Configuration。代码流程如下：</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> Configuration <span class="token function">getConfiguration</span><span class="token punctuation">(</span><span class="token keyword">final</span> LoggerContext loggerContext<span class="token punctuation">,</span> <span class="token keyword">final</span> String name<span class="token punctuation">,</span> <span class="token keyword">final</span> URI configLocation<span class="token punctuation">,</span> <span class="token keyword">final</span> ClassLoader loader<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isActive</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -311,7 +311,7 @@
     <span class="token keyword">return</span> <span class="token function">getConfiguration</span><span class="token punctuation">(</span>loggerContext<span class="token punctuation">,</span> name<span class="token punctuation">,</span> configLocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>注意这里的getConfiguration(loggerContext,source);是一个多态方法，会根据不同类型的配置发文件，调用相应的ConfigureFactory的方法，将配置文件中的tag变为java对象。下一篇文章中，我会以xml类型的文件详细介绍将tag变化为Java对象的过程。</p>
+<p>注意这里的getConfiguration(loggerContext,source);是一个多态方法，会根据不同类型的配置发文件，调用相应的ConfigureFactory的方法，将配置文件中的tag变为java对象。</p>
 
       
 
@@ -426,6 +426,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/09/29/log4j2-code-3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          log4j2源码解析(3)--Configuration
+        
+      </div>
+    </a>
   
   
     <a href="/2018/08/15/java-hashmap2/" id="article-nav-older" class="article-nav-link-wrap">
@@ -576,11 +585,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,10 +606,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
             
             <div class="clearfix"></div>
