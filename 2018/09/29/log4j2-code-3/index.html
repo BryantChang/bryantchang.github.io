@@ -20,7 +20,7 @@
 <meta property="og:description" content="Configuration的获取以及初始化">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/09/29/log4j2-code-3/imgs/node_dependency.png">
-<meta property="og:updated_time" content="2018-09-29T10:48:42.046Z">
+<meta property="og:updated_time" content="2018-09-29T10:52:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(3)--Configuration">
 <meta name="twitter:description" content="Configuration的获取以及初始化">
@@ -69,6 +69,8 @@
 				<li><a href="/categories/hexo">博客搭建</a></li>
 	        
 				<li><a href="/categories/Log4j">Log4j</a></li>
+	        
+				<li><a href="/categories/Bookkeeper">Bookkeper</a></li>
 	        
 				<li><a href="/categories/Java">Java</a></li>
 	        
@@ -142,6 +144,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -156,21 +160,23 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 12.5%"><a href="/">主页</a></li>
+					<li style="width: 11.11111111111111%"><a href="/">主页</a></li>
 		        
-					<li style="width: 12.5%"><a href="/categories/hexo">博客搭建</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/hexo">博客搭建</a></li>
 		        
-					<li style="width: 12.5%"><a href="/categories/Log4j">Log4j</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/Log4j">Log4j</a></li>
 		        
-					<li style="width: 12.5%"><a href="/categories/Java">Java</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/Bookkeeper">Bookkeper</a></li>
 		        
-					<li style="width: 12.5%"><a href="/categories/Spring/">Spring</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/Java">Java</a></li>
 		        
-					<li style="width: 12.5%"><a href="/categories/git">Git &amp;&amp; SSH</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/Spring/">Spring</a></li>
 		        
-					<li style="width: 12.5%"><a href="/categories/diary">杂记</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/git">Git &amp;&amp; SSH</a></li>
 		        
-					<li style="width: 12.5%"><a href="/about">关于我</a></li>
+					<li style="width: 11.11111111111111%"><a href="/categories/diary">杂记</a></li>
+		        
+					<li style="width: 11.11111111111111%"><a href="/about">关于我</a></li>
 		        
 				</ul>
 			</nav>
@@ -552,7 +558,7 @@ XMLConfiguration
         <span class="token function">setParents</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>该方法的主要工作就是根据上面的Node依赖树，自动为Node的object字段来赋值，同时，将所有的LogConfig构建为一个列表，可以按名称获取相应的LogConfig，对于每个logger，都会维护一个自己的LogConfig,但进行类一定的封装，变为了PrivateConfig类的实例。下一篇文章中，我将会介绍如何根据name创建对应的logger，即getLogger方法的大致流程。</p>
+<p>该方法的主要工作就是根据上面的Node依赖树，自动为Node的object字段来赋值，同时，将所有的LogConfig构建为一个列表，可以按名称获取相应的LogConfig，在LogConfig中维护了每个logger对应的appender，layout等实例的对应关系，并同时启动了所有的logger和appender。对于每个logger，都会维护一个自己的LogConfig,但进行类一定的封装，变为了PrivateConfig类的实例。下一篇文章中，我将会介绍如何根据name创建对应的logger，即getLogger方法的大致流程。</p>
 
       
 
@@ -668,6 +674,15 @@ XMLConfiguration
   
 <nav id="article-nav">
   
+    <a href="/2018/10/21/bookkeeper/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Bookkeeper简介
+        
+      </div>
+    </a>
+  
   
     <a href="/2018/09/15/log4j2-code-2/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">log4j2源码解析(2)--LoggerContext</div>
@@ -731,7 +746,7 @@ XMLConfiguration
       	</div>
     </div>
   </div>
-  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 </footer>
 
     </div>
@@ -809,15 +824,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Bookkeeper</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">django</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -838,6 +853,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
             
             <div class="clearfix"></div>
