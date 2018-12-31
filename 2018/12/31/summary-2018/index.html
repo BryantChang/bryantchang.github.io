@@ -9,15 +9,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>BryantChang的博客</title>
+  <title>2018年技术盘点 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="BryantChang的博客">
-<meta property="og:url" content="http://yoursite.com/page/2/index.html">
+  <meta name="description" content="2018技术盘点">
+<meta name="keywords" content="diary">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018年技术盘点">
+<meta property="og:url" content="http://yoursite.com/2018/12/31/summary-2018/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
+<meta property="og:description" content="2018技术盘点">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2018.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2019.png">
+<meta property="og:updated_time" content="2018-12-31T14:40:49.054Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BryantChang的博客">
+<meta name="twitter:title" content="2018年技术盘点">
+<meta name="twitter:description" content="2018技术盘点">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2018.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -184,119 +192,74 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-java-hashmap2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-summary-2018" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/15/java-hashmap2/">HashMap漫谈(2)</a>
+    <h1 class="article-title" itemprop="name">
+      2018年技术盘点
     </h1>
   
 
         
-        <a href="/2018/08/15/java-hashmap2/" class="archive-article-date">
-  	<time datetime="2018-08-15T11:13:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-15</time>
+        <a href="/2018/12/31/summary-2018/" class="archive-article-date">
+  	<time datetime="2018-12-31T10:52:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-12-31</time>
 </a>
         
       </header>
     
     
+    <span class="archive-article-date">
+        阅读量 <span id="busuanzi_value_page_pv"></span>
+      </span>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>HashMap原理解析–JDK1.8<br>
-        
+        <p>2018技术盘点<br><a id="more"></a></p>
+<p>2018年的最后一天，安安静静的在家里进行这一年的盘点，这一年发生的事情着实不少。印象深刻的也很多，下午花了4个小时盘点了这一年生活方面的点滴。作为一个码农，2018年作为自己正式迈入码农圈的第一个半年，在技术方面自然也学到了不少东西。所以借着2018年最后几个小时，对这半年来自己在技术上的成长做一次盘点，为后续的职业生涯奠定一个风向标。</p>
+<h2 id="个人技能树"><a href="#个人技能树" class="headerlink" title="个人技能树"></a>个人技能树</h2><p>对于个人总结而言主要分为两个维度，首先是从业务的角度，其次是从个人成长的角度。然而对于博客而言，今天就先暂时不对业务方面进行总结了，毕竟业务方面已经通过绩效评价已经总结过了。这篇博客则对个人这半年来在技术上的成长进行盘点。</p>
+<h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>下图主要展示了在这半年的时间中个人涉猎的技术。下文则具体总结自己对于这些技术的掌握情况。<br><img src="/2018/12/31/summary-2018/imgs/skill_2018.png" title="Blink Architecture"></p>
+<h3 id="日志收集链路"><a href="#日志收集链路" class="headerlink" title="日志收集链路"></a>日志收集链路</h3><p>在日志收集链路中，自己主要针对日志收集SDK Log4j2以及收集的通道性的组件Flume进行了解</p>
+<h4 id="Log4j2"><a href="#Log4j2" class="headerlink" title="Log4j2"></a>Log4j2</h4><p>对于Log4j2，自己通过源码的学习，了解了其中LogManager的启动原理，了解了其中最核心的组件LogContext，Configure之间的关系。其次，更细节的，掌握了其中Plugin的开发流程以及Plugin的核心管理组件PluginManager的工作原理。最后，研读了AsyncAppender以及AsyncLogger的源码。对于Log4j这一Java最为常用的日志组件有了全方位的认识以及更深入的理解。对于之前的一些打印日志出现的异常，现在已经能够比较快速地定位到源码层次的问题所在。</p>
+<h4 id="Flume"><a href="#Flume" class="headerlink" title="Flume"></a>Flume</h4><p>Flume在整个日志收集链路扮演者一个十分重要的角色，主要功能个人理解为一层前后解耦的一级消息队列，负责中转前端日志组件发来的日志，然后通过source-&gt;channel-&gt;sink这一很通用的日志传输模型将消息发送到后端日志存储，例如Kafka，Pulsar等。通过半年的工作，对Flume的原理有了更深入的理解，然而在源码方面，感觉还是有所欠缺，目前对于源码层次的掌握，只存在于Flume的启动流程。其中对于Supervisor的设计模式对后续的其他代码的开发具有比较大的借鉴意义。</p>
+<h3 id="实时计算引擎Flink"><a href="#实时计算引擎Flink" class="headerlink" title="实时计算引擎Flink"></a>实时计算引擎Flink</h3><p>作为日志收集的下游，实时计算引擎方面在这半年接触的更多是Flink，这主要是因为Flink目前迅速的发展趋势，以及阿里巴巴的大力宣传，这半年来，自己通过参加Flink Meetup以及12月刚刚结束的Flink Forward China，了解了目前各大互联网公司对Flink这款新兴实时计算引擎的应用。个人方面，了解了Flink中的核心组件，例如JobManager，TaskManager的大致定位，作业提交流程以及Flink中核心的State定义以及数据形态。但不足之处在于实战经验过少。</p>
+<h3 id="实时数据存储"><a href="#实时数据存储" class="headerlink" title="实时数据存储"></a>实时数据存储</h3><p>与以HDFS为核心的离线存储不同，实时计算由于对时效性要求更高，所以需要对以Kafka为核心的实时存储进行深入理解。在这半年中，通过精度论文《Kafka: a Distributed Messaging System for Log Processing》了解了Kafka中的数据模型，包括Topic，Partition，offset，以及通信模型Consumer，Producer，Broker之间的交互。跟自己入职面试时相比，对Kafka的理解应该是更加深入的（面试时貌似是好多概念都不懂呢）</p>
+<h3 id="Pulsar"><a href="#Pulsar" class="headerlink" title="Pulsar"></a>Pulsar</h3><p>Pulsar是前Twitter工程师研发的，号称比Kafka更加云原生的实时计算存储组件，其核心则是将存储于处理完全进行分离，broker与底层Topic能够灵活的进行分离部署，对于数据存储于数据计算的关系，Pulsar认为，存储计算分离不仅能够更加灵活的独立调整底层的存储能力外，重要的还有存储计算分离能够在计算完全不受影响的情况下对存储节点进行重启。Pulsar将订阅这一动词做成了一个抽象的概念，下面可以继承三种消费状态，“独占式”，“灾备式”以及共享式，能够灵活的适应线上对于消息队列以及类似Kafka这种实时存储的场景。</p>
+<h3 id="Bookeeper"><a href="#Bookeeper" class="headerlink" title="Bookeeper"></a>Bookeeper</h3><p>作为Pulsar的底层存储，Bookeeper是转为Append only这种日志结构的数据量身定做的存储系统，在设计上，与Kafka有一些相似的特性，这里面相关的特性主要集中在论文《Durability with BookKeeper》中，由于阅读笔记的思维导图过大，我将抽空将思维导图文档化，总结出相应的博客</p>
+<h3 id="数据存储系统通用原理"><a href="#数据存储系统通用原理" class="headerlink" title="数据存储系统通用原理"></a>数据存储系统通用原理</h3><p>今年下半年的一大重要发现就是发现了一本好书《Desingning Data Intensive Applications》这本书真的是我这几年发现的少见的好书，虽然很厚，但是每一页都十分重要，相比现在大多数技术书都是你抄我，我抄你这种模式真的是少见了，这本书首先一点就是介绍的十分全面，从纵向维度，主要包括数据结构，数据存储，数据查询进行阐述，横向维度，则设计单机数据存储系统以及分布式系统，其中还包括一些分布式系统中一些特有的问题进行描述，包括分布式事务，分布式锁等方面。第二则是十分易懂，自己曾经看过一些相关的数，感觉没有一本书能像这本书一样能把一个十分晦涩的原理介绍的十分清晰地，这充分体现了作者的底蕴，毕竟自己理解很容易，能让人理解却绝非易事。在19年，自己希望吧所剩的看完后，再重新看一遍这本书，对于每一张进行整理，最后尽可能多的理解这些原理，最后达到玩转存储系统的目的。</p>
+<h3 id="系统栈处理问题"><a href="#系统栈处理问题" class="headerlink" title="系统栈处理问题"></a>系统栈处理问题</h3><p>对于这一方面，更应该是细水长流的问题，这点我深信不疑。我曾在毕业论文里就谈到过，大数据处理系统的一个非常重要的特点就是，系统栈十分复杂，各个层级之间会相互影响。所以作为大数据系统的开发者，遇到旁人所说的“疑难杂症”的概率会高于其他业务线，因为越是底层的系统，和操作系统打交道越多，自己一直觉得，大数据系统中，从尽可能要节约成本的角度出发，一定要尽可能的压榨干每一台提供服务的服务器的一切资源。如何从操作系统的指标中快速地发现系统异常的具体原因的技能应该是我们每个系统开发者必须具备的能力，否则早晚会面临淘汰。在这个方面，自己只能一点点的根据外部的资料以及平时组内查问题的套路中得到一些经验，这里极客时间倪鹏飞老师的《Linux性能优化指南》是个不错的选择。</p>
+<h3 id="编程语言与框架"><a href="#编程语言与框架" class="headerlink" title="编程语言与框架"></a>编程语言与框架</h3><p>最后则是一些实战性的东西，这里主要和我这半年来所涉及的工程有关，这些东西的学习感觉本着实用的原则即可，随着工程一点点的进行总结积累。</p>
+<h2 id="自己期待的技能树"><a href="#自己期待的技能树" class="headerlink" title="自己期待的技能树"></a>自己期待的技能树</h2><img src="/2018/12/31/summary-2018/imgs/skill_2019.png" title="Blink Architecture">
+<p>还有2小时就到新的一年了，通过了这半年的适应，自己也算是适应了职场的工作节奏，对于自己所研究的方向也有了初步的认识，所以在19年到来之际，列出了自己期望达到的技能树。</p>
+<h3 id="硬实力"><a href="#硬实力" class="headerlink" title="硬实力"></a>硬实力</h3><p>我主要将自己需要具备的能力分为两个大的能力，软实力与硬实力，硬实力则是自己身为一个大数据系统开发人员，尤其偏向存储方向的开发人员应该掌握的技能。<br>首先明确自己的主攻方向，大数据处理平台数据收集一环，这一环作为大数据处理平台的源头，虽说看似涉及的绝对核心引擎以及开源组件有限，但是却是相当关键，因为如果数据不存在了，后面的一切能力等于空谈。作为数据收集链路而言，个人将其分为以下的三个环节，分别为上报，介质以及传输通道。对于上报而言，主要还是通过通用的日志上报组件进行上报，对于Java而言，最核心的就是Log4j，因此对于这款组件的掌握需要全面，透彻。而介质可以理解为组件将日志最终打印到那里，是直接通过网络上报，还是缓存在本地磁盘中。这里更像提得是第二种情况，对于磁盘文件的监控，其实是一个非常复杂和困难的，因为这涉及了linux系统在文件操作时所做的具体操作，只有抓住这些操作的核心特征，才能够对各种事件进行准确的识别。<br>完成了收集，需要一个存储引擎最终将日志进行保存，以便后续的消费，这里的存储引擎应特质那些具有时效性的实时存储，例如Kafka，Pulsar，bk等等，自己需要对这些引擎进行探究，以便能够根据实际场景灵活选取。这里之所以将离线存储也放进来，是为了通过对比实时存储以及离线存储找出其中的异同，存储最终都是和存储介质打交道，只不过上层逻辑不同，对存储介质的读写方式有差异。所以试图总结出开发存储系统中的共性问题，对于解决个性问题显然是个利远大于弊的方式。<br>作为工程师而言，不应将自己的边界定的过于狭窄，需要把边界放的宽一些，作为日志下游的消费方，计算，查询引擎必不可少，作为实时存储来讲，如何针对计算引擎以及部署方式优化存储引擎也十分重要，因此个人认为需要对计算和查询引擎有一些原理上的掌握。</p>
+<h3 id="软实力"><a href="#软实力" class="headerlink" title="软实力"></a>软实力</h3><p>相比硬实力而言，软实力基本是一些更抽象化的内容，根据提升方面的不同，自己同样分为两块，一块是技术方面的软实力，另一方面则覆盖面更广一些，包括自己的性格，习惯等。这里的技术软实力我还是想具体一点说，基本应该就是如何从系统栈的角度解决问题，代码的运行，尤其是大数据程序的运行一定脱离不开其所在的系统栈，不仅仅是软件栈，还包括操作系统以及硬件的交互，对一个系统的优化或排查问题应当从整体的系统栈出发，从包括代码层，运行时环境层，操作系统层以及硬件层综合考虑，往往比“头疼医头，脚疼医脚”的这种局部治疗方法从长期看能够取得更加好的效果，当然这也是存在代价的，因为从整体考虑问题的方式在最开始一定会比之前的方式考虑时间要长，但在一些优先级不高的问题上，自己认为有必要坚持这种全局的思考问题的方式。<br>其次就是如何提高自己其他方面的软实力，包括性格，个人职业规划如何思考问题等方面，这些则应该敦促自己多看一些相关书籍时常为自己充电，让自己时刻保持一个积极乐观，对世界充满好奇的方式在自己的职业生涯一步一个脚印的踏踏实实的行走。</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>终于赶在新年之前完成了这篇盘点文，更多的应该是对自己的激励，对比自己期望的技能树与目前的技能树，会发现自己需要补充的太多太多。技术就是这样，要么追求卓越，要不就不要做，不管到什么时候都要提醒自己，做技术不仅是为了挣钱，否则很容易产生惰性。希望自己19年能够距离自己期望的技能树越来越近，技术更上一层楼，大家新年快乐~~~</p>
+
       
 
       
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/15/java-hashmap2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-flink-meetup-beijing" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/12/flink-meetup-beijing/">Flink Meetup北京站感想</a>
-    </h1>
-  
-
-        
-        <a href="/2018/08/12/flink-meetup-beijing/" class="archive-article-date">
-  	<time datetime="2018-08-12T03:10:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-12</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>参与Flink Meetup北京站的感受</p>
-        
-      
-
       
     </div>
     <div class="article-info article-info-index">
@@ -327,16 +290,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/12/flink-meetup-beijing/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/12/31/summary-2018/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2018/11/18/log4j-async/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">log4j异步那些事(1)--AsyncAppender</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -356,270 +378,25 @@
 
 
 
-
-  
-    <article id="post-java-hashmap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/10/java-hashmap/">HashMap漫谈(1)</a>
-    </h1>
   
 
-        
-        <a href="/2018/08/10/java-hashmap/" class="archive-article-date">
-  	<time datetime="2018-08-10T14:16:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-10</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>HashMap原理解析–JDK1.7<br>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/10/java-hashmap/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-spring3" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/04/spring3/">spring Ioc原理(2)</a>
-    </h1>
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2018/12/31/summary-2018/", 
+    sourceId: "summary-2018",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-        
-        <a href="/2018/08/04/spring3/" class="archive-article-date">
-  	<time datetime="2018-08-04T06:40:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-04</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>从具体实例分析Spring初始化流程</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/04/spring3/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-spring-multidatasource" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/31/spring-multidatasource/">spring+Jpa多数据源配置</a>
-    </h1>
   
 
-        
-        <a href="/2018/07/31/spring-multidatasource/" class="archive-article-date">
-  	<time datetime="2018-07-30T17:13:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-31</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spring多数据源配置<br>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/31/spring-multidatasource/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-  
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+
   
 
 
@@ -644,8 +421,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
