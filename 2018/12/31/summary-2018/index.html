@@ -21,7 +21,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2018.png">
 <meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2019.png">
-<meta property="og:updated_time" content="2018-12-31T14:42:38.665Z">
+<meta property="og:updated_time" content="2018-12-31T15:14:34.312Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2018年技术盘点">
 <meta name="twitter:description" content="2018技术盘点">
@@ -225,7 +225,7 @@
 <h4 id="Log4j2"><a href="#Log4j2" class="headerlink" title="Log4j2"></a>Log4j2</h4><p>对于Log4j2，自己通过源码的学习，了解了其中LogManager的启动原理，了解了其中最核心的组件LogContext，Configure之间的关系。其次，更细节的，掌握了其中Plugin的开发流程以及Plugin的核心管理组件PluginManager的工作原理。最后，研读了AsyncAppender以及AsyncLogger的源码。对于Log4j这一Java最为常用的日志组件有了全方位的认识以及更深入的理解。对于之前的一些打印日志出现的异常，现在已经能够比较快速地定位到源码层次的问题所在。</p>
 <h4 id="Flume"><a href="#Flume" class="headerlink" title="Flume"></a>Flume</h4><p>Flume在整个日志收集链路扮演者一个十分重要的角色，主要功能个人理解为一层前后解耦的一级消息队列，负责中转前端日志组件发来的日志，然后通过source-&gt;channel-&gt;sink这一很通用的日志传输模型将消息发送到后端日志存储，例如Kafka，Pulsar等。通过半年的工作，对Flume的原理有了更深入的理解，然而在源码方面，感觉还是有所欠缺，目前对于源码层次的掌握，只存在于Flume的启动流程。其中对于Supervisor的设计模式对后续的其他代码的开发具有比较大的借鉴意义。</p>
 <h3 id="实时计算引擎Flink"><a href="#实时计算引擎Flink" class="headerlink" title="实时计算引擎Flink"></a>实时计算引擎Flink</h3><p>作为日志收集的下游，实时计算引擎方面在这半年接触的更多是Flink，这主要是因为Flink目前迅速的发展趋势，以及阿里巴巴的大力宣传，这半年来，自己通过参加Flink Meetup以及12月刚刚结束的Flink Forward China，了解了目前各大互联网公司对Flink这款新兴实时计算引擎的应用。个人方面，了解了Flink中的核心组件，例如JobManager，TaskManager的大致定位，作业提交流程以及Flink中核心的State定义以及数据形态。但不足之处在于实战经验过少。</p>
-<h3 id="实时数据存储"><a href="#实时数据存储" class="headerlink" title="实时数据存储"></a>实时数据存储</h3><p>与以HDFS为核心的离线存储不同，实时计算由于对时效性要求更高，所以需要对以Kafka为核心的实时存储进行深入理解。在这半年中，通过精度论文《Kafka: a Distributed Messaging System for Log Processing》了解了Kafka中的数据模型，包括Topic，Partition，offset，以及通信模型Consumer，Producer，Broker之间的交互。跟自己入职面试时相比，对Kafka的理解应该是更加深入的（面试时貌似是好多概念都不懂呢）</p>
+<h3 id="实时数据存储"><a href="#实时数据存储" class="headerlink" title="实时数据存储"></a>实时数据存储</h3><p>与以HDFS为核心的离线存储不同，实时计算由于对时效性要求更高，所以需要对以Kafka为核心的实时存储进行深入理解。在这半年中，通过精读论文《Kafka: a Distributed Messaging System for Log Processing》了解了Kafka中的数据模型，包括Topic，Partition，offset，以及通信模型Consumer，Producer，Broker之间的交互。跟自己入职面试时相比，对Kafka的理解应该是更加深入的（面试时貌似是好多概念都不懂呢）</p>
 <h3 id="Pulsar"><a href="#Pulsar" class="headerlink" title="Pulsar"></a>Pulsar</h3><p>Pulsar是前Twitter工程师研发的，号称比Kafka更加云原生的实时计算存储组件，其核心则是将存储于处理完全进行分离，broker与底层Topic能够灵活的进行分离部署，对于数据存储于数据计算的关系，Pulsar认为，存储计算分离不仅能够更加灵活的独立调整底层的存储能力外，重要的还有存储计算分离能够在计算完全不受影响的情况下对存储节点进行重启。Pulsar将订阅这一动词做成了一个抽象的概念，下面可以继承三种消费状态，“独占式”，“灾备式”以及共享式，能够灵活的适应线上对于消息队列以及类似Kafka这种实时存储的场景。</p>
 <h3 id="Bookeeper"><a href="#Bookeeper" class="headerlink" title="Bookeeper"></a>Bookeeper</h3><p>作为Pulsar的底层存储，Bookeeper是转为Append only这种日志结构的数据量身定做的存储系统，在设计上，与Kafka有一些相似的特性，这里面相关的特性主要集中在论文《Durability with BookKeeper》中，由于阅读笔记的思维导图过大，我将抽空将思维导图文档化，总结出相应的博客</p>
 <h3 id="数据存储系统通用原理"><a href="#数据存储系统通用原理" class="headerlink" title="数据存储系统通用原理"></a>数据存储系统通用原理</h3><p>今年下半年的一大重要发现就是发现了一本好书《Desingning Data Intensive Applications》这本书真的是我这几年发现的少见的好书，虽然很厚，但是每一页都十分重要，相比现在大多数技术书都是你抄我，我抄你这种模式真的是少见了，这本书首先一点就是介绍的十分全面，从纵向维度，主要包括数据结构，数据存储，数据查询进行阐述，横向维度，则设计单机数据存储系统以及分布式系统，其中还包括一些分布式系统中一些特有的问题进行描述，包括分布式事务，分布式锁等方面。第二则是十分易懂，自己曾经看过一些相关的数，感觉没有一本书能像这本书一样能把一个十分晦涩的原理介绍的十分清晰地，这充分体现了作者的底蕴，毕竟自己理解很容易，能让人理解却绝非易事。在19年，自己希望吧所剩的看完后，再重新看一遍这本书，对于每一张进行整理，最后尽可能多的理解这些原理，最后达到玩转存储系统的目的。</p>
