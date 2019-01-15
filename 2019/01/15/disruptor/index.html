@@ -9,23 +9,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Spring Ioc原理(1) | BryantChang的博客</title>
+  <title>disruptor实践 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Ioc基本原理与原型实现">
-<meta name="keywords" content="Spring">
+  <meta name="description" content="Disruptor 使用方法">
+<meta name="keywords" content="Java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring Ioc原理(1)">
-<meta property="og:url" content="http://yoursite.com/2018/07/28/spring2/index.html">
+<meta property="og:title" content="disruptor实践">
+<meta property="og:url" content="http://yoursite.com/2019/01/15/disruptor/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
-<meta property="og:description" content="Ioc基本原理与原型实现">
+<meta property="og:description" content="Disruptor 使用方法">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/07/28/spring2/imgs/Ioc_diff.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/28/spring2/imgs/reflection1.png">
-<meta property="og:updated_time" content="2018-07-29T15:24:40.000Z">
+<meta property="og:updated_time" content="2019-01-15T13:11:23.124Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring Ioc原理(1)">
-<meta name="twitter:description" content="Ioc基本原理与原型实现">
-<meta name="twitter:image" content="http://yoursite.com/2018/07/28/spring2/imgs/Ioc_diff.png">
+<meta name="twitter:title" content="disruptor实践">
+<meta name="twitter:description" content="Disruptor 使用方法">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -192,20 +189,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-spring2" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-disruptor" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Spring Ioc原理(1)
+      disruptor实践
     </h1>
   
 
         
-        <a href="/2018/07/28/spring2/" class="archive-article-date">
-  	<time datetime="2018-07-28T14:28:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-28</time>
+        <a href="/2019/01/15/disruptor/" class="archive-article-date">
+  	<time datetime="2019-01-15T09:15:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
 </a>
         
       </header>
@@ -217,144 +214,117 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Ioc基本原理与原型实现</p>
-<a id="more"></a>
-<h2 id="什么是Ioc-Inversion-of-Control"><a href="#什么是Ioc-Inversion-of-Control" class="headerlink" title="什么是Ioc(Inversion of Control)"></a>什么是Ioc(Inversion of Control)</h2><ul>
-<li>控制反转</li>
-<li>一种设计思想</li>
-<li>将设计好的对象交个容器控制，而非对象内部直接控制</li>
+        <p>Disruptor 使用方法<br><a id="more"></a></p>
+<p>这篇文章我犹豫了很久到底要不要单独写，因为只是一个第三方库的使用实例展示。但是Disruptor是Log4j2中异步Logger的核心数据结构，讲解其原理前有必要单独介绍一下Disruptor的简单使用方法。这篇文章用一个简单的Demo简介Disruptor的使用方法</p>
+<h2 id="Disruptor介绍"><a href="#Disruptor介绍" class="headerlink" title="Disruptor介绍"></a>Disruptor介绍</h2><h2 id="What"><a href="#What" class="headerlink" title="What"></a>What</h2><p>Disruptor是LMAX的一个并发框架，LMAX是一个新型的零售交易平台，特点是低延迟&amp;高吞吐，这个框架构建在JVM之上，整个业务逻辑的处理器完全在内存之上运行，业务逻辑处理器的核心是Disruptors，这是一个并发组件，能够在无锁的情况下实现网络的Queue并发操作。我们可以很简单的在该框架上实现生产者-消费者模型。</p>
+<h2 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h2><ul>
+<li>阻塞队列无锁化</li>
+<li>使⽤用环形结构，数组结构不不会被回收，避免频繁gc</li>
+<li>属性填充:通过冗余信息避免cache伪共享伪共享</li>
+<li>定位⽅方式: 与HashMap类似，使⽤用取余操作，提升效率</li>
 </ul>
-<p>对于Ioc概念的进一步理解</p>
-<h3 id="控制什么，谁来控制"><a href="#控制什么，谁来控制" class="headerlink" title="控制什么，谁来控制"></a>控制什么，谁来控制</h3><p>传统的Java设计中，直接会在对象的内部通过new进行对象的创建，是程序主动创建以来对象；对Ioc来说，有一个专门的容器专门管理这些对象的生命周期，控制对象的创建；所以在Ioc中，是通过Ioc容器控制对象，由Ioc容器控制外部资源的获取。</p>
-<h3 id="为何反转，反转了哪些"><a href="#为何反转，反转了哪些" class="headerlink" title="为何反转，反转了哪些"></a>为何反转，反转了哪些</h3><p>传统应用中是由我们自己在对象中主动控制去直接获取以来对象；反转则是通过容器来进行对象的依赖和创建，这里，对象只是被动的接收依赖对象，因此称为反转，而反转的则是依赖对象的获取被反转了。</p>
-<p>下面我以两张示意图来示意Ioc的机制</p>
-<img src="/2018/07/28/spring2/imgs/Ioc_diff.png" title="helloworld结果">
-<p>从图中我们直观的看出Ioc将对象依赖的获取权利由原来的客户端程序反转到Ioc容器</p>
-<h2 id="Ioc作用"><a href="#Ioc作用" class="headerlink" title="Ioc作用"></a>Ioc作用</h2><p>Ioc不是一种具体的技术，而是一种设计思想，Ioc的目的是为了如何指导我们编写出更加松耦合，更加优雅的程序。传统的应用程序使我们在类的内部显式的创建依赖的对象。从而导致类于类之间耦合度过高。而使用了Ioc的设计思想，将对象的创建，查找依赖，以及生命周期的控制权交给了Ioc容器。对象之间耦合较松，更加灵活。</p>
-<h2 id="Ioc与DI-依赖注入"><a href="#Ioc与DI-依赖注入" class="headerlink" title="Ioc与DI(依赖注入)"></a>Ioc与DI(依赖注入)</h2><p>DI是组件之间依赖关系由容器在运行期决定，形象的说，即由容器动态的将某个依赖关系注入到组件之中，DI是Ioc的另外一种表达方式，相当于Ioc思想的具体实现</p>
-<h3 id="理解DI的关键点"><a href="#理解DI的关键点" class="headerlink" title="理解DI的关键点"></a>理解DI的关键点</h3><ul>
-<li>谁依赖谁—应用程序应用于Ioc容器</li>
-<li>为何需要依赖—应用程序需要Ioc容器来提供对象需要的外部资源</li>
-<li>谁注入谁—Ioc容器注入应用程序的对象，应用程序依赖的独享</li>
-<li>注入的内容—Ioc容器注入某个对象所需要的外部资源(对象，资源，常量数据)</li>
-</ul>
-<h2 id="Ioc实现的背后原理—反射与工厂模式"><a href="#Ioc实现的背后原理—反射与工厂模式" class="headerlink" title="Ioc实现的背后原理—反射与工厂模式"></a>Ioc实现的背后原理—反射与工厂模式</h2><p>反射实现的一个重要原因是因为每个类在加载的过程中都会生成一个代表这个类的java.lang.Class对象作为方法区数据访问的入口，具体的类加载过程详见<a href="https://bryantchang.github.io/2018/07/21/java-static-code-block/" target="_blank" rel="noopener">Java静态代码执行机制</a>，所谓反射，就是通过获取某个类的class对象后反向的获取某个类或对象的属性及方法信息。</p>
-<h3 id="获取Class对象的几种方式"><a href="#获取Class对象的几种方式" class="headerlink" title="获取Class对象的几种方式"></a>获取Class对象的几种方式</h3><ul>
-<li>object.getClass()</li>
-</ul>
-<pre class="line-numbers language-java"><code class="language-java">Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> dateCls <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>dateCls<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="How"><a href="#How" class="headerlink" title="How"></a>How</h2><p>Disruptor使用方法如下：</p>
 <ul>
-<li>所有数据类型的(包括基本数据类型)都包含一个静态的”class”对象</li>
+<li>定义事件</li>
+<li>定义事件工厂</li>
+<li>定义事件处理Handler</li>
+<li>创建处理线程池</li>
+<li>启动Disruptor</li>
+<li>发布事件</li>
+<li>关闭Disruptor</li>
 </ul>
-<pre class="line-numbers language-java"><code class="language-java">Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> dateCls2 <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">;</span>
-System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>dateCls2<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<ul>
-<li>Class类的静态方法forName(String className)</li>
-</ul>
-<pre class="line-numbers language-java"><code class="language-java">Class<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> dateCls3 <span class="token operator">=</span> null<span class="token punctuation">;</span>
-<span class="token keyword">try</span> <span class="token punctuation">{</span>
-    dateCls3 <span class="token operator">=</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span><span class="token string">"java.util.Date"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ClassNotFoundException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>下面我以一个Demo详细说明Disruptor的使用方法，Demo的功能非常简单，是一个典型的生产者-消费者模型，生产者负责生产String类型的消息，消费者消费消费数据并在Console输出，下面分步说明</p>
+<h3 id="定义事件"><a href="#定义事件" class="headerlink" title="定义事件"></a>定义事件</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringEvent</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> String value<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> String <span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> value<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setValue</span><span class="token punctuation">(</span>String value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>value <span class="token operator">=</span> value<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>dateCls3<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="反射的应用–工厂模式"><a href="#反射的应用–工厂模式" class="headerlink" title="反射的应用–工厂模式"></a>反射的应用–工厂模式</h2><p>反射的作用十分广泛。最典型的应用就是工厂设计模式的应用。考虑如下的需求，如果有一个水果类，派生出很多种水果类型，每当给出一种水果的名字，都可以生产出一种对应的水果对象。最常见的思路就是利用工厂设计模式。</p>
-<h3 id="基本的工厂模式-使用new创建对象"><a href="#基本的工厂模式-使用new创建对象" class="headerlink" title="基本的工厂模式(使用new创建对象)"></a>基本的工厂模式(使用new创建对象)</h3><p>1、首先声明Ifruit接口类</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IFruit</span> <span class="token punctuation">{</span>
-    <span class="token keyword">void</span> <span class="token function">eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>2、创建两个实现类Apple和Orange</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Apple</span> <span class="token keyword">implements</span> <span class="token class-name">IFruit</span><span class="token punctuation">{</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="事件工厂"><a href="#事件工厂" class="headerlink" title="事件工厂"></a>事件工厂</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringEventFactory</span> <span class="token keyword">implements</span> <span class="token class-name">EventFactory</span> <span class="token punctuation">{</span>
     <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"苹果"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> Object <span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">StringEvent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Orange</span> <span class="token keyword">implements</span> <span class="token class-name">IFruit</span> <span class="token punctuation">{</span>
+<h3 id="事件处理函数"><a href="#事件处理函数" class="headerlink" title="事件处理函数"></a>事件处理函数</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringEventHandler</span> <span class="token keyword">implements</span> <span class="token class-name">EventHandler</span><span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> <span class="token punctuation">{</span>
     <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"橙子"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEvent</span><span class="token punctuation">(</span>StringEvent longEvent<span class="token punctuation">,</span> <span class="token keyword">long</span> l<span class="token punctuation">,</span> <span class="token keyword">boolean</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>longEvent<span class="token punctuation">.</span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>3、创建水果工厂类FruitFactory</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FruitFactory</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> IFruit <span class="token function">getInstance</span><span class="token punctuation">(</span>String fruitName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        IFruit instance <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>fruitName<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"Apple"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Apple</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>fruitName<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token string">"Orage"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Orange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token punctuation">{</span>
-            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"illeagle class name"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h3 id="发布事件方法"><a href="#发布事件方法" class="headerlink" title="发布事件方法"></a>发布事件方法</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringEventProducer</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> RingBuffer<span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> ringBuffer<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token function">StringEventProducer</span><span class="token punctuation">(</span>RingBuffer<span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> ringBuffer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>ringBuffer <span class="token operator">=</span> ringBuffer<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onData</span><span class="token punctuation">(</span>String value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">long</span> seq <span class="token operator">=</span> ringBuffer<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//获取下一个空闲事件槽</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            StringEvent event <span class="token operator">=</span> ringBuffer<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>seq<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            event<span class="token punctuation">.</span><span class="token function">setValue</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            ringBuffer<span class="token punctuation">.</span><span class="token function">publish</span><span class="token punctuation">(</span>seq<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//向对应的事件槽发布事件</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DisruptorTest</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> InterruptedException <span class="token punctuation">{</span>
+        Executor executor <span class="token operator">=</span> Executors<span class="token punctuation">.</span><span class="token function">newSingleThreadExecutor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//定义线程池</span>
+        StringEventFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringEventFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> bufferSize <span class="token operator">=</span> <span class="token number">1024</span><span class="token punctuation">;</span>
+        Disruptor<span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> disruptor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Disruptor</span><span class="token operator">&lt;</span>StringEvent<span class="token operator">></span><span class="token punctuation">(</span>factory<span class="token punctuation">,</span> bufferSize<span class="token punctuation">,</span> executor<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//实例化Disruptor</span>
+        disruptor<span class="token punctuation">.</span><span class="token function">handleEventsWith</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringEventHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//绑定事件处理函数</span>
+        disruptor<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//启动Disruptor</span>
+        RingBuffer<span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> ringBuffer <span class="token operator">=</span> disruptor<span class="token punctuation">.</span><span class="token function">getRingBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        StringEventProducer producer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringEventProducer</span><span class="token punctuation">(</span>ringBuffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>Long i <span class="token operator">=</span> 0L<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> 100L<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            producer<span class="token punctuation">.</span><span class="token function">onData</span><span class="token punctuation">(</span><span class="token string">"BryantChangXY"</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Thread<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
 
-        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+        disruptor<span class="token punctuation">.</span><span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span>ExecutorService<span class="token punctuation">)</span> executor<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>4、主类</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TestDemo</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        IFruit obj <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        obj <span class="token operator">=</span> FruitFactory<span class="token punctuation">.</span><span class="token function">getFruit</span><span class="token punctuation">(</span><span class="token string">"Apple"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//创建了苹果类</span>
-        obj<span class="token punctuation">.</span><span class="token function">eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//调用接口的eat方法</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><pre><code>BryantChangXY92
+BryantChangXY93
+BryantChangXY94
+BryantChangXY95
+BryantChangXY96
+BryantChangXY97
+BryantChangXY98
+BryantChangXY99
+</code></pre><p>在这个Demo的实现过程中，最重要的步骤则是事件发布与事件处理，事件发布主要是通过调用ringBuffer.next()方法获取RingBuffer的下一个空闲事件槽，并调用publish方法将事件发布出去。publish方法如果调用异常，当多线程同时生产时会造成冲突，为此Disruptor框架给出了Translator的方式，这个方式保证每一次publish是事务的，代码流程如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StringEventProducerWithTranslator</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> EventTranslatorOneArg<span class="token operator">&lt;</span>StringEvent<span class="token punctuation">,</span> String<span class="token operator">></span> TRANSLATOR <span class="token operator">=</span>
+            <span class="token keyword">new</span> <span class="token class-name">EventTranslatorOneArg</span><span class="token operator">&lt;</span>StringEvent<span class="token punctuation">,</span> String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">translateTo</span><span class="token punctuation">(</span>StringEvent event<span class="token punctuation">,</span> <span class="token keyword">long</span> sequence<span class="token punctuation">,</span> String bb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    event<span class="token punctuation">.</span><span class="token function">setValue</span><span class="token punctuation">(</span>bb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> RingBuffer<span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> ringBuffer<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token function">StringEventProducerWithTranslator</span><span class="token punctuation">(</span>RingBuffer<span class="token operator">&lt;</span>StringEvent<span class="token operator">></span> ringBuffer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>ringBuffer <span class="token operator">=</span> ringBuffer<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onData</span><span class="token punctuation">(</span>String data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ringBuffer<span class="token punctuation">.</span><span class="token function">publishEvent</span><span class="token punctuation">(</span>TRANSLATOR<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>传统工厂模式的类关系图</p>
-<img src="/2018/07/28/spring2/imgs/reflection1.png" title="传统工厂模式">
-<p>对于传统的工厂设计模式，有一个比较严重的问题。如果需要添加新的水果类，就需要改动Factory类的代码，这会给编程带来很大的不便。因此一个比较好的方法时采用反射的方式进行解决。</p>
-<p>我们对工厂类进行如下的修改，代码如下：</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> IFruit <span class="token function">getInstance</span><span class="token punctuation">(</span>String className<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    IFruit fruit <span class="token operator">=</span> null<span class="token punctuation">;</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        fruit <span class="token operator">=</span> <span class="token punctuation">(</span>IFruit<span class="token punctuation">)</span> Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>className<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//Class类的forName方法构造类的实例</span>
-    <span class="token punctuation">}</span><span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> fruit<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>对主类的修改：</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    IFruit obj <span class="token operator">=</span> null<span class="token punctuation">;</span>
-    obj <span class="token operator">=</span> FruitFactoryByReflection<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token string">"com.bryantchang.reflectionTest.Apple"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    obj<span class="token punctuation">.</span><span class="token function">eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>对于使用反射机制实现的工厂模式，相比传统的工厂设计模式，当增加新类型的时候，只需要将类名传入工厂即可获取对应类型的对象。使得代码变得更加灵活，然而用户无法准确传入完整的包名和类型，因此我们对于这个工厂方法进行了进一步的改造。形成了Ioc思想的雏形。</p>
-<p>1、首先创建一个处理bean资源文件的类BeanResourceOps</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanResourceOps</span> <span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> Properties <span class="token function">getBeanProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
-        Properties beanProperty <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Properties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        File beanResourceFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"/Users/changshilu/Desktop/work/meituan/codes/test_codes/personal_growth/testJava/src/main/resources/fruit.properties"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>beanResourceFile<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            beanProperty<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>beanResourceFile<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token punctuation">{</span>
-            beanProperty<span class="token punctuation">.</span><span class="token function">setProperty</span><span class="token punctuation">(</span><span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"com.bryantchang.reflectionTest.Apple"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            beanProperty<span class="token punctuation">.</span><span class="token function">setProperty</span><span class="token punctuation">(</span><span class="token string">"orange"</span><span class="token punctuation">,</span> <span class="token string">"com.bryantchang.reflectionTest.Orange"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            beanProperty<span class="token punctuation">.</span><span class="token function">store</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span>beanResourceFile<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"fruit bean infos"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> beanProperty<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>2、修改主类代码</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
-    IFruit obj <span class="token operator">=</span> null<span class="token punctuation">;</span>
-    Properties fruitProperties <span class="token operator">=</span> BeanResourceOps<span class="token punctuation">.</span><span class="token function">getBeanProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    obj <span class="token operator">=</span> FruitFactoryByReflection<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span>fruitProperties<span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token string">"apple"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    obj<span class="token punctuation">.</span><span class="token function">eat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这样，我们完成了一个Ioc思想的初步实现，当然上述的机制完成的并不彻底，对于bean的声明周期并没有明确的进行管理，对于bean的注入也过于简单。在后续的博客中，我们将结合Spring中Ioc容器的源代码，并抽取出其中的精华部分，自己实现一个Ioc容器。</p>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此，我们介绍了Disruptor的核心使用流程。下面的文章中我将详细介绍AsyncLogger的设计架构以及流程，同时解读异步Appender和异步Logger的区别</p>
 
       
 
@@ -389,7 +359,7 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -401,7 +371,7 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -456,7 +426,7 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/07/28/spring2/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/01/15/disruptor/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -470,18 +440,9 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
   
 <nav id="article-nav">
   
-    <a href="/2018/07/31/spring-multidatasource/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          spring+Jpa多数据源配置
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/07/28/spring1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Spring初识</div>
+    <a href="/2019/01/15/log4j2-asyncLogger/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">log4j2异步那些事(2)--AsyncLogger</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -512,8 +473,8 @@ System<span class="token punctuation">.</span>out<span class="token punctuation"
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2018/07/28/spring2/", 
-    sourceId: "spring2",
+    url: "http://yoursite.com/2019/01/15/disruptor/", 
+    sourceId: "disruptor",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };
