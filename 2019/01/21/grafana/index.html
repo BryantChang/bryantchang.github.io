@@ -9,16 +9,31 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>grafana | BryantChang的博客</title>
+  <title>Grafana安装与使用 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
-<meta property="og:title" content="grafana">
+  <meta name="description" content="Grafana的安装与使用">
+<meta name="keywords" content="tools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Grafana安装与使用">
 <meta property="og:url" content="http://yoursite.com/2019/01/21/grafana/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
+<meta property="og:description" content="Grafana的安装与使用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-21T11:39:31.731Z">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/overview.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/add_ds.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/config_ds.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/new_dashboard.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/new_table.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/edit_sql.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/sql_res.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/setting_vars.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/select_vars.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/21/grafana/imgs/res.png">
+<meta property="og:updated_time" content="2019-01-21T17:17:52.671Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="grafana">
+<meta name="twitter:title" content="Grafana安装与使用">
+<meta name="twitter:description" content="Grafana的安装与使用">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/21/grafana/imgs/overview.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -192,7 +207,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      grafana
+      Grafana安装与使用
     </h1>
   
 
@@ -210,7 +225,45 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>Grafana的安装与使用<br><a id="more"></a></p>
+<p>这篇文章应该算是一次平时的工具使用记录。对于Grafana这个前端组件，之前没有接触过。不过今天初步使用之后，感觉对于我们这些长期忙着搞服务端性能优化的码农来说可以说是个福音。后端可对接丰富的数据源，前端有多种类型的数据，最主要的是还可以通过简单的查询可以对后端的数据进行灵活的展示，在一些系统监控场景下用处十分广泛。这篇文章就算个抛砖引玉，只是个简单的使用流程，如果想了解更高级的使用流程，可以参考官方文档<a href="http://docs.grafana.org" target="_blank" rel="noopener">Grafana官方文档</a></p>
+<h2 id="本文实现的功能"><a href="#本文实现的功能" class="headerlink" title="本文实现的功能"></a>本文实现的功能</h2><img src="/2019/01/21/grafana/imgs/overview.png" title="Overview">
+<p>如果你根据这篇文章操作一遍，你将在Grafana中得到一个表格，表格的内容则来自MySQL数据库，下面开始。</p>
+<h2 id="安装与启动"><a href="#安装与启动" class="headerlink" title="安装与启动"></a>安装与启动</h2><p>我们首先在mac上安装一个Grafana，命令很简单</p>
+<pre class="line-numbers language-bash"><code class="language-bash">brew <span class="token function">install</span> grafana
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>安装完毕，启动，这里顺便把停止命令一并说明</p>
+<pre class="line-numbers language-bash"><code class="language-bash">brew services start grafana <span class="token comment" spellcheck="true">##启动Grafana</span>
+brew services stop grafana <span class="token comment" spellcheck="true">##停止Grafana</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="添加数据源"><a href="#添加数据源" class="headerlink" title="添加数据源"></a>添加数据源</h2><p>接下来就进入主题，由于Grafana只是个数据展示的工具，具体展示哪些数据，这些数据从哪里来需要我们进行配置，首先需要进行数据源的配置，本文我以MySQL为例，之后如果有其他数据源，我会补充到这篇文章里。</p>
+<p>在Configuration选项里新建一个数据源，我们可以看到这里有非常丰富的数据源可供我们选择，这里我们选择MySQL<br><img src="/2019/01/21/grafana/imgs/add_ds.png" title="Overview"></p>
+<p>我们在这个配置中配置好MySQL相应的链接信息，点击完成则可以使用这个数据源，为了做这次实验，我们提前准备了一些数据，数据表结构如下<br><img src="/2019/01/21/grafana/imgs/config_ds.png" title="Overview"></p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> test_for_grafana
+<span class="token punctuation">(</span>
+  my_key   <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">''</span> <span class="token operator">not</span> <span class="token boolean">null</span>
+    <span class="token keyword">primary</span> <span class="token keyword">key</span><span class="token punctuation">,</span>
+  my_value <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">''</span> <span class="token boolean">null</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>具体的数据如下</p>
+<pre><code>aaa,aaa
+bbb,bbb
+ccc,ccc
+ddd,ddd
+</code></pre><h2 id="配置Dashboard"><a href="#配置Dashboard" class="headerlink" title="配置Dashboard"></a>配置Dashboard</h2><img src="/2019/01/21/grafana/imgs/new_dashboard.png" title="Overview">
+<p>准备完数据，接下来开始配置大盘，本文我们配置一张表格，表格中的数据来自MySQL。我们点击new Dashboard，<br><img src="/2019/01/21/grafana/imgs/new_table.png" title="Overview"><br>创建一张表格，下面开始配置数据源,这里可以发现可以选择数据源，这里我们选择刚才的MySQL数据源，随后我们填写对应的SQL语句<br><img src="/2019/01/21/grafana/imgs/edit_sql.png" title="Overview"></p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> test_for_grafana
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>填写完毕，我们就可以在大盘中看到我们的表格<br><img src="/2019/01/21/grafana/imgs/sql_res.png" title="Overview"></p>
+<h2 id="添加变量"><a href="#添加变量" class="headerlink" title="添加变量"></a>添加变量</h2><img src="/2019/01/21/grafana/imgs/setting_vars.png" title="Overview">
+<img src="/2019/01/21/grafana/imgs/select_vars.png" title="Overview">
+<p>进阶一下，我们接下来开始配置模板变量，这个最后的得到的效果是通过变量my_key获取相应的数据。我们点击Dashboard上面的settings选项，对其中的变量信息进行编辑，其中name是变量名，label是需要展示的内容，type代表候选项的来源，常见的是通过某个查询获取，所以选择SQL。最后，通过主查询和变量进行关联，我们将刚才的主查询SQL换成下列语句。</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> test_for_grafana <span class="token keyword">where</span> my_key <span class="token operator">=</span> <span class="token string">'$my_key'</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<img src="/2019/01/21/grafana/imgs/res.png" title="Overview">
+<p>至此，一个简单的case就完成了，后续通过进一步的熟悉，将会在这篇文章中补充其他各种数据源的接入方法。终于写完了，赶紧睡觉去了。。。。</p>
+
       
 
       
@@ -239,7 +292,29 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tools//" class="article-tag-list-link color1">tools</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
