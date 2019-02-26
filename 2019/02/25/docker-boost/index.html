@@ -9,15 +9,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>BryantChang的博客</title>
+  <title>使用Docker搭建C++ Boost开发环境 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="BryantChang的博客">
-<meta property="og:url" content="http://yoursite.com/page/5/index.html">
+  <meta name="description" content="Docker进阶 &amp;amp; C++ boost入门">
+<meta name="keywords" content="tools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Docker搭建C++ Boost开发环境">
+<meta property="og:url" content="http://yoursite.com/2019/02/25/docker-boost/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
+<meta property="og:description" content="Docker进阶 &amp;amp; C++ boost入门">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_search.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_hello_world.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_boost_hello.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_login.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_commit.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_push.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/show.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_search_image.png">
+<meta property="og:updated_time" content="2019-02-26T12:56:41.901Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BryantChang的博客">
+<meta name="twitter:title" content="使用Docker搭建C++ Boost开发环境">
+<meta name="twitter:description" content="Docker进阶 &amp;amp; C++ boost入门">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_search.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -184,33 +198,133 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-django-adv" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-docker-boost" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/15/django-adv/">django进阶</a>
+    <h1 class="article-title" itemprop="name">
+      使用Docker搭建C++ Boost开发环境
     </h1>
   
 
         
-        <a href="/2018/06/15/django-adv/" class="archive-article-date">
-  	<time datetime="2018-06-15T05:22:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-15</time>
+        <a href="/2019/02/25/docker-boost/" class="archive-article-date">
+  	<time datetime="2019-02-25T12:07:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-25</time>
 </a>
         
       </header>
     
     
+    <span class="archive-article-date">
+        阅读量 <span id="busuanzi_value_page_pv"></span>
+      </span>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Django框架的一些进阶使用方法<br>
-        
+        <p>Docker进阶 &amp; C++ boost入门<br><a id="more"></a></p>
+<p>昨天玩docker玩到夜里一点多，总算是使用docker搭建了一个能够编译引用了C++ boost库的应用程序的开发环境，犹豫了许久要不要输出这篇博客，后来觉得可以简单写一写，主要原因两个，其一是因为这可以让我再加深一些对docker常用命令的印象；其二是为学习后面的C++ boost库开一个头，有一个能够编译boost程序的快捷的环境。所以正好用一篇文章达到两个目的。因此得出这篇文章就会围绕我上面提到的两个点进行展开，分别是如何使用docker搭建一个独立可运行的centos并能够通过外部ssh连接到这个container container并提交到自己个人的docker hub仓库，以及如何在centos中安装boost库，并完成一个显示boost版本的c++程序，下面正式进入主题</p>
+<h2 id="Docker创建Centos镜像"><a href="#Docker创建Centos镜像" class="headerlink" title="Docker创建Centos镜像"></a>Docker创建Centos镜像</h2><h3 id="启动镜像"><a href="#启动镜像" class="headerlink" title="启动镜像"></a>启动镜像</h3><p>实际上这一步非常简单，只需要从远程仓库搜索到指定的docker image，拉下来，并使用docker run执行之就可以了，这里搜索直接使用下面的命令搜索在Docker hub中所有可用的image</p>
+<pre class="line-numbers language-bash"><code class="language-bash">docker search centos6.5
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里出现了一系列备选的image选项，从中选取任意一个就可以，这里我选择了star数最多的，与github类似，star代表了这个镜像的流行程度和靠谱程度</p>
+<img src="/2019/02/25/docker-boost/imgs/docker_search.png" title="Overview">
+<p>下面就可以直接使用docker run来运行这个image，具体到我这里，命令如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash">docker run -it --name<span class="token operator">=</span><span class="token string">"bryantchang_boost_proj"</span> --user root -p 2200:22 --privileged<span class="token operator">=</span>true --cap-add<span class="token operator">=</span>SYS_PTRACE --cap-add<span class="token operator">=</span>SYS_TIME --security-opt seccomp<span class="token operator">=</span>unconfined -v /Users/bryantchang/Desktop/codes/tools/docker/srcs:/home/bryantchang/docker_proj hasedon/centos6.5 /bin/bash
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里面有一些重要的参数需要说明：</p>
+<pre><code>-it  使用交互模式运行(-i 和 -t是两个独立的配置项，不过很大概率上他们是被绑在一起使用的)
+-p 2200:22 将docker中的22端口映射到本机的2200端口，那么我们在docker中部署好sshd server之后，可以通过访问2200端口访问到内部的docker容器
+--name 这个container的名字
+--user 运行image的用户名
+--privileged 是否对image拥有系统权限，如果这个参数不设置成true，及时使用root用户启动了image，也只是普通用户而已
+--cap-add 这个景象中拥有的能力，例如用于支持gdb的SYS_PTRACE，用于显示时间的SYS_TIME
+-v : 将本地的某个目录映射到image中的某个指定目录(文件的本地与远程的映射)
+/bin/bash 启动container后就是/bin/bash
+</code></pre><p>这里需要说明一下，这里通过docker内部部署sshd server来让外部访问docker container的方式并不推荐，这里只是为了介绍-p的含义，docker的4中推荐的访问方式详见<a href="https://www.cnblogs.com/xhyan/p/6593075.html" target="_blank" rel="noopener">docker的4种推荐访问方式</a></p>
+<p>当然这里面也有一些问题，稍后我会说明。这时，一个干净的centos6.5镜像就被部署在了本地的docker engine中，下面先暂时抛开docker环境，我们把操作的对象集中于Centos6.5本身，下面的主题就是如何在centos中安装boost库</p>
+<h2 id="Centos安装boost库以及c-编译环境-gdb"><a href="#Centos安装boost库以及c-编译环境-gdb" class="headerlink" title="Centos安装boost库以及c++编译环境+gdb"></a>Centos安装boost库以及c++编译环境+gdb</h2><p>首先安装基本的lib</p>
+<pre class="line-numbers language-bash"><code class="language-bash">yum upgrade
+yum update
+yum <span class="token function">install</span> -y
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>安装gcc g++以及gdb，这里都是一些简单的命令，不过多赘述，直接上命令</p>
+<pre class="line-numbers language-bash"><code class="language-bash">yum -y <span class="token function">install</span> gcc  <span class="token comment" spellcheck="true">#安装gcc</span>
+yum -y <span class="token function">install</span> gdb  <span class="token comment" spellcheck="true">#安装gdb</span>
+yum -y <span class="token function">install</span> gcc-c++ <span class="token comment" spellcheck="true">#安装g++</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>安装完这些简单的lib和工具，现在先简单写个cpp程序测试一下是不是上述工具是否安装成功,写了一个最简单的Hello World，代码如下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;iostream></span></span>
+<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"Hello World"</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash"><code class="language-bash">g++ -o main main.cpp
+./main
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>效果如下<br><img src="/2019/02/25/docker-boost/imgs/docker_hello_world.png" title="Overview"><br>程序运行成功，说明环境安装完成。至于gdb，直接输入gdb就可以看到是否安装成功</p>
+<p>其次，安装boost库，安装方法也十分简单，首先下载boost的压缩包,这里我们安装的是1.64.0</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">wget</span> http://ufpr.dl.sourceforge.net/project/boost/boost/1.64.0/boost_1_64_0.tar.bz2
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>解压后直接通过bootstrap和b2进行安装</p>
+<pre class="line-numbers language-bash"><code class="language-bash">./bootstrapt.sh
+./b2 --buildtype<span class="token operator">=</span>complete <span class="token function">install</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这里我用的是完全安装，脚本将会自动安装调试版，正式版，静态库和动态库。</p>
+<p>完成安装后，boost库宣告安装完成，下面我们用一个boost中的helloworld程序打印我当前的boost版本，代码如下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;iostream></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;boost/version.hpp></span></span>
+<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token string">"Boost 版本"</span> <span class="token operator">&lt;&lt;</span> BOOST_VERSION <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还是按照之前的方式进行编译，并运行，运行结果如下<br><img src="/2019/02/25/docker-boost/imgs/docker_boost_hello.png" title="Overview"></p>
+<p>到此，我们完成了boost库的安装，接下来则是保存当前的镜像状态，将这个镜像提交到个人的dockerhub，如果没有dockerhub的话，需要类似github一样在<a href="hub.docker.com">Docker hub仓库</a>注册新的账户，注册完后，在本机输入下面命令连上dockerhub的提交客户端,如果出现如下信息，说明登录成功</p>
+<pre class="line-numbers language-bash"><code class="language-bash">docker login
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<img src="/2019/02/25/docker-boost/imgs/docker_login.png" title="Overview">
+<p>下面我们完成最后一步，将image提交到个人仓库</p>
+<h2 id="调教当前image到docker-hub"><a href="#调教当前image到docker-hub" class="headerlink" title="调教当前image到docker hub"></a>调教当前image到docker hub</h2><p>与github类似，提交到docker镜像仓库也有两步，commit和push，commit为本地提交，命令如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash">docker commit -a bryantchangxy -m <span class="token string">"boost commit"</span> bryantchang_boost_proj bryantchangxy/gcc_boost:latest
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中 -a为提交的用户，-m 为提交时的摘要，bryantchang_boost_proj这个名字则是你运行的container的名字，如果没有的话就要填写当前运行container id bryantchangxy/gcc_boost:latest则是你自己仓库下的某个具体的某个项目，完成后会生成一个sha256的代码用于标示本次提交</p>
+<img src="/2019/02/25/docker-boost/imgs/docker_commit.png" title="Overview">
+<p>完成后，正式push到个人仓库，命令如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash">docker push bryantchangxy/gcc_boost:latest
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<img src="/2019/02/25/docker-boost/imgs/docker_push.png" title="Overview">
+<p>成功后就可在个人的仓库中看到自己的image了<br><img src="/2019/02/25/docker-boost/imgs/show.png" title="Overview"></p>
+<p>同时还能够通过docker search搜索到自己的的image<br><img src="/2019/02/25/docker-boost/imgs/docker_search_image.png" title="Overview"></p>
+<p>大功告成，最后为我的image做个广告，自己在这个景象中安装了常用语言的编译，执行环境，如java，scala，go等还有mvn等一系列工具，欢迎大家下载，star，下面的文章将正式围绕boost这个准标准库的特性展开。</p>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -221,7 +335,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">django</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
         		</li>
       		
 		</ul>
@@ -233,7 +347,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/django//" class="article-tag-list-link color2">django</a>
+        			<a href="/categories/tools//" class="article-tag-list-link color1">tools</a>
         		</li>
       		
 		</ul>
@@ -241,16 +355,75 @@
 
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/15/django-adv/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/02/25/docker-boost/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2019/02/17/docker-utilization/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Docker简介与简单实用</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -270,356 +443,25 @@
 
 
 
-
-  
-    <article id="post-django" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/14/django/">django初识</a>
-    </h1>
   
 
-        
-        <a href="/2018/06/14/django/" class="archive-article-date">
-  	<time datetime="2018-06-14T08:47:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-14</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>django简介以及Hello World<br>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">django</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/django//" class="article-tag-list-link color2">django</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/14/django/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-theme-hexo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/30/theme-hexo/">Hexo修改主题</a>
-    </h1>
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2019/02/25/docker-boost/", 
+    sourceId: "docker-boost",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-        
-        <a href="/2018/05/30/theme-hexo/" class="archive-article-date">
-  	<time datetime="2018-05-30T13:51:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>以我的博客为例说明如何修改Hexo主题</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/hexo//" class="article-tag-list-link color5">hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/30/theme-hexo/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-log4j-adv" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/30/log4j-adv/">Log4J进阶</a>
-    </h1>
   
 
-        
-        <a href="/2018/05/30/log4j-adv/" class="archive-article-date">
-  	<time datetime="2018-05-30T06:37:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Log4j的进阶使用<br>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Log4j</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Log4j//" class="article-tag-list-link color1">Log4j</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/30/log4j-adv/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-log4j2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/30/log4j2/">Log4j初识</a>
-    </h1>
   
 
-        
-        <a href="/2018/05/30/log4j2/" class="archive-article-date">
-  	<time datetime="2018-05-30T06:09:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>简单介绍Log4J的使用方法<br>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Log4j</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Log4j//" class="article-tag-list-link color1">Log4j</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/30/log4j2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -644,8 +486,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
