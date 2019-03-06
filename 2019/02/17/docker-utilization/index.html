@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/images.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/result_no_redis.png">
 <meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/result_succ.png">
-<meta property="og:updated_time" content="2019-03-06T07:09:19.398Z">
+<meta property="og:updated_time" content="2019-03-06T07:35:39.372Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker简介与简单实用">
 <meta name="twitter:description" content="Docker简介以及常用使用命令">
@@ -270,7 +270,7 @@
 </li>
 </ul>
 <h4 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h4><p>与虚拟机不同，Docker是通过软件层的虚拟化实现了更加轻量级的虚拟化，其架构图如下<br><img src="/2019/02/17/docker-utilization/imgs/vir_docker.png" title="Overview"><br>初步看来，Docker所在的层级与虚拟机所在的层次相同，都是在宿主机的操作系统上部署，但是Docker完全是软件，不需要硬件进行支持，它利用的是操作系统自带的资源隔离机制对硬件资源进行隔离，例如Win中的Hyper-v，linux中的cgroup等，由docker的后端程序docker engine调用这些接口完成资源隔离。Docker在创建容器时并不运行完整的操作系统，使用的资源更少，部署，启动更快。但提供的隔离粒度不足，所以Docker更加适合单个用户使用，而虚拟机则更适合在多个用户混合的多租户类型的场景中执行。</p>
-<h2 id="为什么用Docker"><a href="#为什么用Docker" class="headerlink" title="为什么用Docker"></a>为什么用Docker</h2><p>其实这个问题我在介绍虚拟机与Docker的区别时已经提到，Docker由于其使用了更加轻量级的隔离机制，不论是在部署，启动恢复上均比虚拟机要快上数个数量级，因此，如果是个人用户想要快速构建某个特定的环境，比如想要测试某个代码在linux的运行情况，而使用的是mac系统或win系统，或者练习搭建环境等，通过Docker可以快速满足需求。下面就结合两个简单案例来介绍Docker的使用方法，一个是Hello World，另一个则是按照docker官方文档部署一个Flask后端服务。</p>
+<h2 id="为什么用Docker"><a href="#为什么用Docker" class="headerlink" title="为什么用Docker"></a>为什么用Docker</h2><p>其实这个问题我在介绍虚拟机与Docker的区别时已经提到，Docker由于其使用了更加轻量级的隔离机制，不论是在部署，启动恢复上均比虚拟机要快上数个数量级，因此，如果是个人用户想要快速构建某个特定的环境，比如想要测试某个代码在linux的运行情况，而使用的是mac系统或win系统，或者练习搭建环境等，通过Docker可以快速满足需求。</p>
 <h2 id="Docker简单使用方法"><a href="#Docker简单使用方法" class="headerlink" title="Docker简单使用方法"></a>Docker简单使用方法</h2><h3 id="Docker架构"><a href="#Docker架构" class="headerlink" title="Docker架构"></a>Docker架构</h3><p>介绍使用方法前，先明确Docker中的几个基本组件以及这些组件的交互关系。<br><img src="/2019/02/17/docker-utilization/imgs/docker_arc.png" title="Overview"></p>
 <ul>
 <li>Docker镜像：Docker 镜像是用于创建 Docker 容器的模板</li>
