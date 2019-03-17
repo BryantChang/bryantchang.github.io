@@ -23,7 +23,8 @@
 <meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/linux_perf_tools_full.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/process_state.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/cpu_cache.png">
-<meta property="og:updated_time" content="2019-03-17T13:12:00.180Z">
+<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/cpu_metric_s.png">
+<meta property="og:updated_time" content="2019-03-17T13:16:30.496Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能瓶颈诊断--CPU篇(一）">
 <meta name="twitter:description" content="性能诊断套路之CPU篇，常见CPU指标以及相应原理">
@@ -302,7 +303,7 @@ SHCED_NORMAL：普通的分时进程
 <h3 id="CPU使用率"><a href="#CPU使用率" class="headerlink" title="CPU使用率"></a>CPU使用率</h3><p>一般意义上，我们通常所说的CPU使用率定义如下：CPU使用率，是除了空闲时间外其他时间占总花间的百分比，为了计算CPU使用率，性能工具会隔一段时间去两次值，做差后在计算这段时间内的CPU平均使用率。这里简单介绍一下CPU时间，为了维护CPU时间，Linux通过事先定义节拍率(HZ)，触发时间中断并使用全局变量Jiffies记录开机以来的节拍数，每发生一次中断,Jiffies变量+1。但是这个节拍率是内核变量，用户空间的程序无法直接访问，为了方便用户空间进程使用这个变量，系统提供了用户空间的节拍率USER_HZ。</p>
 <h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断是系统用来相应硬件设备请求的一种机制，它会打断进程的正常调度和执行，然后调用内核中的中断处理程序来响应请求。中断处理总体可以分为两个阶段，上半部以及下半部，上半部分是，用于处理硬件请求，称为硬中断，用来快速处理中断，在中断禁止模式下运行。下半部则是软中断，延迟执行上半部分未完成的工作，通常由内核线程执行。下面通过一个例子来说明，例如网卡接收数据，当网卡接收到数据后会通过硬件中断的方式通知内核程序有新数据了。这是对于上半部分，直接将网卡数据读入内存，然后更新寄存器状态，然后直接发送软中断信号，通知内核线程进行后半部操作。在收到信号后，线程从内存中获取数据，按照网络协议栈，对数据进行逐层的解析和处理，最后发送给应用程序。</p>
 <p>至此，我介绍了常见的CPU指标以及其中涉及的原理。为了让大家更直观的了解这些指标，我用了一张思维导图进行诠释，如图所示</p>
-
+<img src="/2019/03/09/cpu-profile/imgs/cpu_metric_s.png" title="cpu_metric">
 <p>相信大家通过这篇文章，对这些CPU指标有了初步的了解。在下一篇文章中，我将介绍这些CPU指标的查看方式以及涉及的工具，并用一些实例总结系统CPU问题的常见步骤和套路。</p>
 
       
