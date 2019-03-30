@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread8.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread9.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread11.png">
-<meta property="og:updated_time" content="2019-03-30T06:47:31.739Z">
+<meta property="og:updated_time" content="2019-03-30T06:51:15.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能瓶颈诊断--CPU篇(二）">
 <meta name="twitter:description" content="性能诊断套路之CPU篇，常见CPU指标获取方式以及CPU瓶颈诊断套路">
@@ -361,7 +361,7 @@ RCU_SOFTIRQ:RCU锁中断
 <p>哈哈，我们终于看到了这个“傻傻”的方法，原来是个死循环导致的CPU使用率增高。至此，我们通过一些性能工具排查出了这个系统存在的性能问题，这个问题在我们看来，可能显得比较“幼稚”，这里我的目的完全只是为了通过这个简单的实例来告诉大家一些排查系统性能问题的通用套路。这里，我无法覆盖到所有的性能工具的使用以及所有的排查套路，这里我稍稍使用并修改倪老师课件中的一张图，这张图比较清晰的展示了排查CPU问题的一些套路与系统工具的对应关系。</p>
 <img src="/2019/03/17/cpu-profile-two/imgs/thread11.png" title="interrupts">
 <p>从这张图中，我们能够看到，其实一个系统故障的排查真的是有一定的套路可循的。当我们的系统出现性能问题时，这种问题可能是我们通过监控告警得知，或是一些系统性能指标的下降，例如吞吐降低，相应时间变长等。当出现问题时，我们遵循的一个也是从一般到特殊的思路，首先通过Top，vmstat等方式获取到系统总体状态，然后找到需要排查的异常进程，通过pidstat，/prpc中的相应指标进行详细分析。最后我们再从代码层面对进程进行深入分析，相应的工具包括perf，jstack，pstack等。</p>
-<p>前后拖拖拉拉写了这么久，终于把CPU相关的性能分析博客完成了，下面会继续内存和网络，我会继续努力，加油！</p>
+<p>前后拖拖拉拉写了这么久，终于把CPU相关的性能分析博客完成了，下面会继续内存和网络，加油！</p>
 
       
 
@@ -622,10 +622,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Profiling</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
@@ -647,6 +643,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Profiling</a>
               </li>
              
               <li class="article-tag-list-item">
