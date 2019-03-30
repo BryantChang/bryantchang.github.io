@@ -26,7 +26,17 @@
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/pidstatw.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/interrupts.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/softirq.png">
-<meta property="og:updated_time" content="2019-03-17T13:13:21.289Z">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/cpu_metric.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread1.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread2.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread4.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread5.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread6.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread7.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread8.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread9.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread11.png">
+<meta property="og:updated_time" content="2019-03-30T06:47:31.739Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能瓶颈诊断--CPU篇(二）">
 <meta name="twitter:description" content="性能诊断套路之CPU篇，常见CPU指标获取方式以及CPU瓶颈诊断套路">
@@ -297,7 +307,61 @@ BLOCK:
 SCSI:SCSI命令后台中断处理
 TASKLET:常规tasklet处理
 RCU_SOFTIRQ:RCU锁中断
-</code></pre><p>OK，介绍了这么一些工具，下面我通过几个事例的分析，总结出系统CPU瓶颈的诊断的基本套路。这里面的案例</p>
+</code></pre><p>OK，讲到这里我对应前一篇文章中的相关指标进行了更详细的分类，下面我将上一篇文章中的思维导图进行一些扩充，对每个大的性能指标进行了更加精细的分类，同时，将每个指标对应的检测工具也一并放进图中，具体如下图所示</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/cpu_metric.png" title="interrupts">
+<p>简单介绍完获取CPU指标的主流工具，下面通过一些简单的实例进一步巩固这些工具的使用。在这部分中，我们使用一个用于进行系统压力测试的标准测试工具sysbench，这个工具能够对系统产生不同维度的压力，在不同的角度对系统进行压力测试，包括CPU，内存以及I/O等等。下面我使用sysbench模拟对系统资源的某种压力，然后使用上述介绍的工具反推出可能是什么类型的压力。</p>
+<h2 id="性能工具初体验"><a href="#性能工具初体验" class="headerlink" title="性能工具初体验"></a>性能工具初体验</h2><p>我们执行了sysbench命令，在另一个终端使用工具来看现在系统的变化，我们首先使用top观察系统总体的变化</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread1.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread2.png" title="interrupts">
+<p>通过这两张图可以看到，有两个比较明显的变化，首先是系统平均负载，可以看到1min，3min，15min负载均有了不同程度的升高，这说明处于就绪状态的进程数有了增多。第二个明显的变化在于各个状态的CPU使用率。尤其是sys的使用率，从之前的2.8%直接飙升至53.3%，这里我们根据前面对CPU相关原理分析的时候提到过，在CPU进行上下文切换时会保存上下文，会陷入到内核态。所以我们有个初步的推断，可能是某些程序导致了CPU中排队的进程或线程增多导致了系统的变化。所以为了探究CPU进程的排队的情况和上下文切换的情况，我们分别使用两个工具，分别为vmstat，pidstat。</p>
+<p>首先在命令运行时，我们使用vmstat查看系统的CPU的排队情况。如图所示</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread4.png" title="interrupts">
+<p>执行命令后<br><img src="/2019/03/17/cpu-profile-two/imgs/thread5.png" title="interrupts"></p>
+<p>在分析图片前，首先再介绍下vmstat中关于进程数的两个指标，r和b，r统计的CPU中处于就绪状态的进程数。而b则统计了处于阻塞状态的进程数。现在我们再来审视上面两张图，在命令执行之前，处于就绪状态的进程/线程数(r)均为0，而在命令开始执行之后，处于就绪状态的任务开始增加，从0开始变成7-8左右。这初步验证了之前的判断，是这个sysbench命令增加了系统中的就绪队列的任务数，那么对于刚才sys%使用率很高的原因，我们判断是由于大量任务在争抢CPU时间片，使得CPU进行频繁的上下文切换，这里应该是由于进程到达特定的时间片而进行的非自愿上下文切换。为了验证这一点，我们使用能够统计上下文切换频率的pidstat。我们首先执行命令，通过top获取到命令对应的进程号。如图所示：</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread6.png" title="interrupts">
+<p>随后使用pidstat查看sysbench进程涉及到的上下文切换频率指标。具体命令如下：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">watch</span> -d <span class="token string">"pidstat -wt -p 23862  1"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里面，watch指令是通过定时执行某条指令，并把与上一次不相同的内容通过高亮的形式进行展示。而对于我们执行指令后的结果，如图所示</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread7.png" title="interrupts">
+<p>我们发现，总体上看，非自愿上下文切换的频率的变化幅度要高于自愿上下文切换的频率变化幅度。通过上面一顿工具的使用，我们大致定位到了系统到底发生了什么，应该就是sysbench命令使得CPU中处于就绪态的任务升高，加剧了任务对于CPU时间片的抢占。下面我们正式揭面我们刚才执行的sysbench命令。命令如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash">sysbench --threads<span class="token operator">=</span>30 --max-time<span class="token operator">=</span>300 threads run
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这个命令的目的就是模拟30个线程的调度。在前面对于中断部分的描述中我们能够看到，过多的进程/线程调度，系统会频繁的进行上下文切换</p>
+<h2 id="性能工具拓展"><a href="#性能工具拓展" class="headerlink" title="性能工具拓展"></a>性能工具拓展</h2><p>下面一个案例我们将会诊断一个java程序的性能问题，选用这个的原因主要是我想要介绍一些java程序性能问题的排查工具。</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread8.png" title="interrupts">
+<p>从图中能够看出，CPU平均负载有显著的升高，最终稳定在9.97左右，同时用户态的CPU使用率非常高，几乎达到了100%，然后，我们通过top查看我们java进程的线程使用情况，然后查看该进程中各个线程的CPU使用情况，命令如下。</p>
+<p>了解了系统总体的状态，下面我们将对这个进程进行详细的分析。首先，我们使用top命令分析这个java进程中各个线程的CPU使用情况，命令如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">top</span> -H -p pid
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>查看到结果如下</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread9.png" title="interrupts">
+<p>从图中能够看出，有10个线程的CPU使用率相对较高。下面，我们需要了解进程运行的状态，由于这是一个Java程序，因此我们有特定的方法了解出当前java进程的执行状态，这就是jstack。jstack能够获取当前java程序执行的快照，我们通过这个命令，查看当前各个线程的执行情况，命令如下</p>
+<pre class="line-numbers language-bash"><code class="language-bash">jstack -l pid
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里我截取部分的日志内容，内容如下</p>
+<pre class="line-numbers language-text"><code class="language-text">"pool-1-thread-10" #18 prio=5 os_prio=0 tid=0x00007fc18c21c000 nid=0x193b runnable [0x00007fc1768e7000]
+   java.lang.Thread.State: RUNNABLE
+    at com.bryantchang.java_profile.CPUStressThread.run(CPUProfiling.java:12)
+    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+    at java.lang.Thread.run(Thread.java:748)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过jstack日志，我们看到有10都处于上述截取日志部分的状态，都陷入了线程对象的run方法。现在我们查看这个方法的源码</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">double</span> m <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>哈哈，我们终于看到了这个“傻傻”的方法，原来是个死循环导致的CPU使用率增高。至此，我们通过一些性能工具排查出了这个系统存在的性能问题，这个问题在我们看来，可能显得比较“幼稚”，这里我的目的完全只是为了通过这个简单的实例来告诉大家一些排查系统性能问题的通用套路。这里，我无法覆盖到所有的性能工具的使用以及所有的排查套路，这里我稍稍使用并修改倪老师课件中的一张图，这张图比较清晰的展示了排查CPU问题的一些套路与系统工具的对应关系。</p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread11.png" title="interrupts">
+<p>从这张图中，我们能够看到，其实一个系统故障的排查真的是有一定的套路可循的。当我们的系统出现性能问题时，这种问题可能是我们通过监控告警得知，或是一些系统性能指标的下降，例如吞吐降低，相应时间变长等。当出现问题时，我们遵循的一个也是从一般到特殊的思路，首先通过Top，vmstat等方式获取到系统总体状态，然后找到需要排查的异常进程，通过pidstat，/prpc中的相应指标进行详细分析。最后我们再从代码层面对进程进行深入分析，相应的工具包括perf，jstack，pstack等。</p>
+<p>前后拖拖拉拉写了这么久，终于把CPU相关的性能分析博客完成了，下面会继续内存和网络，我会继续努力，加油！</p>
 
       
 
