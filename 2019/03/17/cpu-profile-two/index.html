@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread8.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread9.png">
 <meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread11.png">
-<meta property="og:updated_time" content="2019-03-30T06:51:15.511Z">
+<meta property="og:updated_time" content="2019-04-01T08:49:14.495Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能瓶颈诊断--CPU篇(二）">
 <meta name="twitter:description" content="性能诊断套路之CPU篇，常见CPU指标获取方式以及CPU瓶颈诊断套路">
@@ -248,7 +248,7 @@
 <h2 id="CPU使用率-amp-load"><a href="#CPU使用率-amp-load" class="headerlink" title="CPU使用率&amp;load"></a>CPU使用率&amp;load</h2><p>这里面我稍微调换一下顺序，其实当系统发生瓶颈时，我们第一会关注的还是CPU使用率以及平均负载情况，使用的工具一般也是最常用的即top。下面一张图简单展示top的界面</p>
 <img src="/2019/03/17/cpu-profile-two/imgs/top.png" title="top">
 <p>top个人把它定位成一个万金油的性能监控工具，因为这个工具能够反映出的性能指标覆盖面是最广的，我们一块一块的来看，首先是上面的第一行，第一行展示了当前CPU的基本信息，包括了以下的信息</p>
-<pre><code>CPU启动时间 用户数量 平均负载(1min,3min,15min)
+<pre><code>CPU启动时间 用户数量 平均负载(1min,5min,15min)
 </code></pre><p>接下来第二行展示了当前系统运行的进程情况，包括了不同状态下的进程数</p>
 <pre><code>总进程数 运行状态下的进程数 休眠状态下的进程数 停止状态进程数 僵死状态进程数
 </code></pre><p>第三行展示了各种状态的CPU利用率下面分别介绍一下这些使用率以及含义</p>
