@@ -28,7 +28,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/06/02/net-protocol1/imgs/arp.png">
 <meta property="og:image" content="http://yoursite.com/2019/06/02/net-protocol1/imgs/icmp_stru.png">
 <meta property="og:image" content="http://yoursite.com/2019/06/02/net-protocol1/imgs/ping_icmp.jpg">
-<meta property="og:updated_time" content="2019-06-30T15:43:47.458Z">
+<meta property="og:updated_time" content="2019-06-30T15:44:25.632Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="苦练基本功--网络篇1">
 <meta name="twitter:description" content="《趣谈网络协议》学后总结一">
@@ -316,6 +316,7 @@ route add -net 10.0.0.0 netmask 255.255.255.0 gw 10.139.128.1 dev eth0 <span cla
 <p>(该图片来自网络)</p>
 <p>ICMP包含两种类型，分别为查询报文类型以及差错报文类型，其中查询报文是客户端主动发起的，我们用到的ping用到的就是查询报文类型。ping的主动请求成为ICMP ECHO REQUEST，请求的回复成为ICMO ECHO REPLY。相比原生ICMP，ping中多了两个字段，其中一个为标识符，另一个为序号。下面简单介绍ping命令的流程</p>
 <img src="/2019/06/02/net-protocol1/imgs/ping_icmp.jpg" title="helloworld结果"> 
+<p>(本图片来自网络)</p>
 <p>图中展示了一个典型的ping命令示例，假设A的IP地址为192.168.1.1，主机B的IP地址192.168.1.2，ping命令执行时，源主机首先构建了一个ICMP的请求包，其中核心包含类型字段和序列号。每发出一个数据包，序列号+1。随后有ICMP协议将数据包和IP地址192.168.1.1一起交给IP层。将源地址设置为本机地址，目标地址设置为192.168.1.2构建一个IP包。<br>随后需要装填MAC地址，由于两个地址在同一个自网内，所以直接通过ARP映射关系表获取目标主机的MAC地址，如果没有则构建ARP请求获取目标MAC。如果不再同一网段，则首先将数据发送到网关，网关是路由器，通过网关的路由表获取如何到达目标主机的网关，通过一跳一跳的路由，知道获取到目标的MAC地址。<br>主机B收到数据帧后，对比MAC地址，如果符合，则将包收入，然后判断IP地址，如果满足则将IP地址提取出来交给本机的IP层。主机B会构建一个ICMP应答包，数据类型为0，序号和请求数据序号相同。通过相似的方式发送给主机A。如果一段时间没有收到，则认为主机不可达，如果收到，则说明可达，用当前时刻减去该数据包从主机发出的时刻，即为包发送的延迟。<br>至此。我们终于完成了一套上网设备的搭建，这里面涉及的协议主要包含物理层，链路层，还有网络层。后面的文章中我将继续围绕输入url后发生的事情这个场景介绍数据究竟如何在网络之间进行传输，以及这些数据是如何被应用层应用。还包括url如何变换为ip，以及图片，网页等信息具体的访问方式等继续串讲网络协议。敬请关注~~~~</p>
 
       
@@ -601,15 +602,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">basic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Profiling</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">diary</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">basic</a>
               </li>
             
             <div class="clearfix"></div>
