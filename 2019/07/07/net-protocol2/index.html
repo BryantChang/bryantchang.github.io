@@ -9,15 +9,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 欢迎 | BryantChang的博客</title>
+  <title>苦练基本功--网络篇2 | BryantChang的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="BryantChang的博客">
-<meta property="og:url" content="http://yoursite.com/tags/欢迎/index.html">
+  <meta name="description" content="《趣谈网络协议》学后总结二">
+<meta name="keywords" content="basic">
+<meta property="og:type" content="article">
+<meta property="og:title" content="苦练基本功--网络篇2">
+<meta property="og:url" content="http://yoursite.com/2019/07/07/net-protocol2/index.html">
 <meta property="og:site_name" content="BryantChang的博客">
+<meta property="og:description" content="《趣谈网络协议》学后总结二">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-08T02:15:18.753Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BryantChang的博客">
+<meta name="twitter:title" content="苦练基本功--网络篇2">
+<meta name="twitter:description" content="《趣谈网络协议》学后总结二">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -200,60 +205,196 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-net-protocol2" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/30/firstblog/" class="archive-article-date">
-  	<time datetime="2018-05-30T04:58:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-30</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/30/firstblog/">我的第一篇博客</a>
+    <h1 class="article-title" itemprop="name">
+      苦练基本功--网络篇2
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/07/07/net-protocol2/" class="archive-article-date">
+  	<time datetime="2019-07-07T10:40:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-07</time>
+</a>
+        
+      </header>
+    
+    
+    <span class="archive-article-date">
+        阅读量 <span id="busuanzi_value_page_pv"></span>
+      </span>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>《趣谈网络协议》学后总结二<br><a id="more"></a></p>
+<p>上一篇文章主要讲了要在家中搭建一个能够上网的环境所涉及的一些网络协议，主要降到了物理层，数据链路层，以及网络层，包括与对端设备通信的基础MAC地址，具有定位功能的IP地址，IP地址是如何被设置到计算机上，其中涉及的DHCP协议。拥有了这两个地址之后如果有多台机器进行通信，如何通过交换机形成简单的局域网，不同局域网之间如何让通过路由器组成广域网。以及在通信的过程中，IP是如何与MAC协同工作打到通信目的的。实际上，有了上面设备和协议，我们有了一个通信的基础。但我们发现，实际上我们的数据还并没有真正发出去，正是因为少了传输层，只有有了传输层，数据真正的发出去了，上面的应用层才能够真正提供自己的职责。这篇文章中，我将主要讲述传输层以及应用层的几个关键的协议，包括DNS,HTTP,HTTPS，VPN等每天都被我们反复提到以及使用的应用层协议。相信通过这篇文章，一个正常的网络通信流程就应该会比较清晰的呈现在各位眼前了。下面直接进入主题。</p>
+<h1 id="传输层，网络传输的重要一环"><a href="#传输层，网络传输的重要一环" class="headerlink" title="传输层，网络传输的重要一环"></a>传输层，网络传输的重要一环</h1><p>上面我们已经介绍过了物理层，这一层主要是实际数据的传输，数据链路层保证的是数据传输过程中的通常，例如多路信道控制，MAC地址保证数据能够传输到正确的设备对应的网卡上，交换机保证了多台机器组成的局域网LAN范围内正确的进行通信。IP地址保证了我们能够在茫茫的网络中找到其中的任意一台机器。路由器保证了不同局域网之间的能够进行通信。然而我们却发现，这些东西完全没有给应用层的接口，我们回想下网络程序运行的流程，这里先简单回顾一下，后面还会详细讲解，我们首先会将这个程序通过bind原语和某一个特定的端口相绑定，然后如果需要通信到对方端口，使用connect原语进行链接。如果我们写的是简单的c-s架构 </p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">欢迎</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">basic</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/basic//" class="article-tag-list-link color1">basic</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/07/net-protocol2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/06/02/net-protocol1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">苦练基本功--网络篇1</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
   
 
-    
+  
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2019/07/07/net-protocol2/", 
+    sourceId: "net-protocol2",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+  
+
+  
+
+  
 
 
           </div>
@@ -278,9 +419,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
