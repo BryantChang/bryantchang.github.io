@@ -19,10 +19,12 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="《趣谈网络协议》学后总结二">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-08T02:15:18.753Z">
+<meta property="og:image" content="http://yoursite.com/2019/07/07/net-protocol2/imgs/udp.png">
+<meta property="og:updated_time" content="2019-08-21T06:46:21.755Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="苦练基本功--网络篇2">
 <meta name="twitter:description" content="《趣谈网络协议》学后总结二">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/07/net-protocol2/imgs/udp.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -68,7 +70,7 @@
 	        
 				<li><a href="/categories/Log4j">日志收集</a></li>
 	        
-				<li><a href="/categories/Bigdata">大数据处理</a></li>
+				<li><a href="/categories/design">系统设计</a></li>
 	        
 				<li><a href="/categories/Code">程序语言</a></li>
 	        
@@ -176,7 +178,7 @@
 		        
 					<li style="width: 9.090909090909092%"><a href="/categories/Log4j">日志收集</a></li>
 		        
-					<li style="width: 9.090909090909092%"><a href="/categories/Bigdata">大数据处理</a></li>
+					<li style="width: 9.090909090909092%"><a href="/categories/design">系统设计</a></li>
 		        
 					<li style="width: 9.090909090909092%"><a href="/categories/Code">程序语言</a></li>
 		        
@@ -232,7 +234,26 @@
       
         <p>《趣谈网络协议》学后总结二<br><a id="more"></a></p>
 <p>上一篇文章主要讲了要在家中搭建一个能够上网的环境所涉及的一些网络协议，主要降到了物理层，数据链路层，以及网络层，包括与对端设备通信的基础MAC地址，具有定位功能的IP地址，IP地址是如何被设置到计算机上，其中涉及的DHCP协议。拥有了这两个地址之后如果有多台机器进行通信，如何通过交换机形成简单的局域网，不同局域网之间如何让通过路由器组成广域网。以及在通信的过程中，IP是如何与MAC协同工作打到通信目的的。实际上，有了上面设备和协议，我们有了一个通信的基础。但我们发现，实际上我们的数据还并没有真正发出去，正是因为少了传输层，只有有了传输层，数据真正的发出去了，上面的应用层才能够真正提供自己的职责。这篇文章中，我将主要讲述传输层以及应用层的几个关键的协议，包括DNS,HTTP,HTTPS，VPN等每天都被我们反复提到以及使用的应用层协议。相信通过这篇文章，一个正常的网络通信流程就应该会比较清晰的呈现在各位眼前了。下面直接进入主题。</p>
-<h1 id="传输层，网络传输的重要一环"><a href="#传输层，网络传输的重要一环" class="headerlink" title="传输层，网络传输的重要一环"></a>传输层，网络传输的重要一环</h1><p>上面我们已经介绍过了物理层，这一层主要是实际数据的传输，数据链路层保证的是数据传输过程中的通常，例如多路信道控制，MAC地址保证数据能够传输到正确的设备对应的网卡上，交换机保证了多台机器组成的局域网LAN范围内正确的进行通信。IP地址保证了我们能够在茫茫的网络中找到其中的任意一台机器。路由器保证了不同局域网之间的能够进行通信。然而我们却发现，这些东西完全没有给应用层的接口，我们回想下网络程序运行的流程，这里先简单回顾一下，后面还会详细讲解，我们首先会将这个程序通过bind原语和某一个特定的端口相绑定，然后如果需要通信到对方端口，使用connect原语进行链接。如果我们写的是简单的c-s架构 </p>
+<h1 id="传输层，网络传输的重要一环"><a href="#传输层，网络传输的重要一环" class="headerlink" title="传输层，网络传输的重要一环"></a>传输层，网络传输的重要一环</h1><p>上面我们已经介绍过了物理层，这一层主要是实际数据的传输，数据链路层保证的是数据传输过程中的通常，例如多路信道控制，MAC地址保证数据能够传输到正确的设备对应的网卡上，交换机保证了多台机器组成的局域网LAN范围内正确的进行通信。IP地址保证了我们能够在茫茫的网络中找到其中的任意一台机器。路由器保证了不同局域网之间的能够进行通信。然而我们却发现，这些东西完全没有给应用层的接口，我们回想下网络程序运行的流程，这里先简单回顾一下，后面还会详细讲解，假设这是一个简单的c-s架构的，首先我们会在server端创建一个socket，然后监听一个端口，然后我们就可以在client端向server所在的IP以及端口发送数据。这就完成了一个最简单的client端与server端的通信。因此，除了有我们前面提到的MAC地址和IP,还需要有一个具体的端口，当数据根据到达指定IP对应MAC地址对应的网卡时，操作系统会将数据发送给指定的端口，每个端口都对应一个特定的网络程序。数据到达了指定端口后，也就到达了指定程序，程序对这些数据进行处理。处理完再把返回结果以类似的方式发送给发送方。所以我会把端口比喻为一个人能做的不同的事情。哪个端口来了数据，可能就相当于让这个人做这件事。</p>
+<p>那么整个的网络数据传输过程就可以被抽象成下面的过程：我想让现在在xxx公司的BryantChangXY同学为我们唱一首歌，来自xxx公司就相当于IP地址，我们通过路由协议协议找到xxx公司对应的网关。这时候我们如果找xxx公司的BryantChang，那就首先把数据发送到这个网关，然后通过ARPget到对应的MAC地址,将网络包发送到这个MAC地址，网关根据查询自己的路由表将包转发到下一跳…在若干跳之后最后发送到对应的目标机器上。目标机器将包收到后，将协议进行层层的拆解，及验证了这个包确实是找xxx公司的，也是找BryantChang的，然后比较重要的一环就是到底让这个人坐哪件事，也就是端口号，每个端口号实际对应着不同的程序，会将数据包发送到这个端口号，也就是让这个人唱歌，跳舞之类的。传输层的协议有两种，我用一句话简单说明下两种协议的不同。一种是“我想让在xxx公司的BryantChang去办件事，你帮我传达一下，他收到让他告我一声，我等他信”，而另一种，则是“我就想让xxx公司的BryantChang去办件事，你通知到就行了，他不用告诉我了。”这两种恰恰对应了对中间传话这个人两种信任度，第一种显然是觉得中间传话这个人不大靠谱，所以一定需要对方给我回复。而第二种则觉得中间人特别靠谱，我的消息肯定能够带到。这也正是两种著名的传输层协议TCP和UDP的设计初衷，UDP认为整个网络环境是十分可靠的，我发出去的消息对方是一定能收到的。而TCP则正好相反，TCP认为我发出去的消息有很大可能对方是收不到的，所以我一定要设计一大堆机制一定确保我的消息是发到了的。</p>
+<h1 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h1><p>UDP是无连接的，并且UDP协议直接继承了网络传输是按数据包进行传输的，并且是无状态，无拥塞控制的，只负责发数据，不负责数据不丢失，不能保证按顺序到达。介绍完了UDP的特点，简单看下UDP包的结构.<br><img src="/2019/07/07/net-protocol2/imgs/udp.png" title="helloworld结果"><br>(该图片来自网络)</p>
+<p>从图中就能够看出，UDP协议真的是相当简单，只包含源端口和目标端口，长度，校验，以及真正的数据本体。看上去是不是非常清爽，简单是UDP协议最大的一个优势，除此之外，UDP协议还有一些其他的优势</p>
+<ul>
+<li>资源相对比较紧张，网络状态比较好</li>
+<li>不需要一对一沟通，建立连接，可以广播</li>
+<li>需要低延迟，可以容忍少量的丢包</li>
+</ul>
+<p>但是显然，UDP的缺点也非常明显</p>
+<ul>
+<li>不保证可靠传输，数据包会有丢失，拥塞。传输的成功率完全取决于通道的靠谱程度</li>
+</ul>
+<p>在很多情况下，这种不可靠的机制看上去是很要命的，然而也不尽然，我们仔细思考UDP的特性，其实他是做了一个假设才把UDP设计成如此简单的模样。在很多情况下，上述的假设其实是成立的，只是在某些极端情况下会打破上面的假设。如果能够在正常情况下充分利用UDP的简易，在出现异常的情况做一些额外的处理，现实中确实有一些协议进行了类似的设计。</p>
+<ul>
+<li><p>Google的QUIC协议<br>传统的应用层HTTP和HTTPS协议都是基于TCP传输层协议的，TCP协议在后文中我会具体讲述，TCP在建立点对点的链接时需要有三次握手，同时需要各自初始化复杂的数据结构。而且可能HTTP会断开重连，如果重新建立连接，仍然十分耗时。HTTP为了解决这个问题，能够支持多个数据通道共享同一个连接，这样能够加快传输效率。然而TCP的固有属性却限制了这个特性的充分利用。由于TCP要求传输的严格有序性，因此即便是共享的通道，前一个包没有收到的时候，后面的包也不能被ack，哪怕这两个包属于不同的通道。某各通道的延迟会加剧整个连接所连接的所有通道的延迟。Google提出了QUIC协议，QUIC在下层传输层协议使用了UDP，QUIC在UDP协议的基础上自己实现了快速链接建立，减少重传延迟以及自适应的拥塞控制。</p>
+</li>
+<li><p>流媒体协议<br>在目前的自媒体时代，各种网络直播平台络绎不绝。目前最主流的视频传输的应用层协议采用的是RTMP，RTMP底层协同样采用了TCP。TCP的严格有序性同样会影响视频的传输。因为如果某一个包发生延迟，或丢包的话，那么后面的包会一直处于等待传输状态。实际上在视频传输过程中，并不是一定需要每一帧都成功传输</p>
+</li>
+</ul>
 
       
 
@@ -347,6 +368,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/09/05/raft/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          论文阅读:raft协议简介
+        
+      </div>
+    </a>
   
   
     <a href="/2019/06/02/net-protocol1/" id="article-nav-older" class="article-nav-link-wrap">
@@ -513,11 +543,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">basic</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color1">basic</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -526,6 +556,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">diary</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design,distributed-storage</a>
               </li>
             
             <div class="clearfix"></div>
