@@ -19,10 +19,21 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="如何在mac系统上使用Windows-to-go安装windows10系统 &amp;amp; 个人的软件推荐">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-04-04T16:17:27.702Z">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go2.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go3.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go7.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go9.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go10.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go11.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go4.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go5.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go12.png">
+<meta property="og:updated_time" content="2020-04-05T05:19:15.359Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="把你的windows装进U盘">
 <meta name="twitter:description" content="如何在mac系统上使用Windows-to-go安装windows10系统 &amp;amp; 个人的软件推荐">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/05/win-to-go/imgs/win_to_go1.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -232,12 +243,65 @@
       
         <p>如何在mac系统上使用Windows-to-go安装windows10系统 &amp; 个人的软件推荐<br><a id="more"></a></p>
 <p>最近因为疫情原因，上班需要两头骑车，通勤变得比原来更加耗费体力。为了解放自己的附中，决定把自己的装备进行全面的升级。自己入手了一台13寸的pro。当拿到的一刹那自己还是为他的轻薄所折服。真的是太薄了，赞一波。但是由于预算的原因自己把升级放到了内存上，上了16GB内存，磁盘只用了256GB，这样下来磁盘就成了自己最宝贵的资源。什么虚拟机，boot camp压根就不敢玩了。但其实自己还是偶尔有使用windows的需求，偶然在网上看到了win-to-go这个黑科技，瞬间激起了我巨大的好奇心。准备一试身手，经过了一个下午的把玩和折腾，这系统终于被我搞定了。所以这篇博客并不讲具体工具和技术，就讲讲如何把你的windows放进你的移动硬盘中，以及个人比较喜欢的一些软件。一件件来，先说win-to-go</p>
-<p>win-to-go原先是企业版特有的功能，旨在让企业版用户通过远程网络直接访问操作系统，后来这个工具带入到了普通版的windows中，有了这个工具，我们就可以轻松将操作系统装进我们的兜里。它有几个超级好的点：</p>
+<h1 id="win-to-go-安装流程"><a href="#win-to-go-安装流程" class="headerlink" title="win-to-go 安装流程"></a>win-to-go 安装流程</h1><p>win-to-go原先是企业版特有的功能，旨在让企业版用户通过远程网络直接访问操作系统，后来这个工具带入到了普通版的windows中，有了这个工具，我们就可以轻松将操作系统装进我们的兜里。它有几个超级好的点：</p>
 <ul>
 <li>对原生宿主机完全不会产生任何影响–以免误操作带来的宿主机系统崩溃变砖，得不偿失</li>
-<li></li>
+<li>完全不占用宿主机任何的磁盘空间，特别适合mac这种大多数人磁盘空间都不大的情况</li>
+<li>全驱动支持，不会在切换到windows系统之后让mac的硬件打折扣</li>
 </ul>
+<h2 id="所需工具"><a href="#所需工具" class="headerlink" title="所需工具"></a>所需工具</h2><p>下面就简单介绍下制作流程，其实网上有一大堆，包括视频教程，这里我为了文章的完整性简单提及，需要的工具和软件如下：</p>
+<ul>
+<li>硬件<ul>
+<li>一台windows主机</li>
+<li>mac电脑，至少三个usb接口或外接分线器，总之usb接口个数要足够</li>
+<li>一个传统的有线鼠标</li>
+</ul>
+</li>
+<li>软件<ul>
+<li>DiskGenius</li>
+<li>Bootice</li>
+<li>windows10纯净版镜像</li>
+</ul>
+</li>
+</ul>
+<h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><ul>
+<li>在msdn上下载纯净版镜像，并准备好上述软硬件</li>
+<li>在windows上主机上打开win-to-go工具</li>
+</ul>
+<img src="/2020/04/05/win-to-go/imgs/win_to_go1.png" title="Barrier Alignment">
+<img src="/2020/04/05/win-to-go/imgs/win_to_go2.png" title="Barrier Alignment">
+<img src="/2020/04/05/win-to-go/imgs/win_to_go3.png" title="Barrier Alignment">
+<ul>
+<li>在工具中检测到你需要装入的usb设备</li>
+<li>指定对应的镜像，然后就是等待镜像装入，一切都十分简单。</li>
+</ul>
+<p>下面的操作就都要移步到mac上进行了。<br>首先我们先禁用苹果新型芯片的安全启动功能，否则我们无法从其他设备引导系统。</p>
+<ul>
+<li>重启mac系统，按住cmd+r进入恢复模式</li>
+</ul>
+<img src="/2020/04/05/win-to-go/imgs/win_to_go7.png" title="Barrier Alignment">
 
+<img src="/2020/04/05/win-to-go/imgs/win_to_go9.png" title="Barrier Alignment">
+<img src="/2020/04/05/win-to-go/imgs/win_to_go10.png" title="Barrier Alignment">
+<img src="/2020/04/05/win-to-go/imgs/win_to_go11.png" title="Barrier Alignment">
+<p>这里需要注意的点是，在设定安全启动的时候需要将安全启动的等级调成最低，并允许从外部设备启动。之后正常进入mac系统来下载windows所需要的苹果电脑硬件驱动。</p>
+<p>找到启动窗口，找到启动转换助理，找到操作–&gt;下载windows驱动，这是我们就会得到一个WindowsSupport的文件夹，将这个文件夹放入到我们事先准备好的U盘中。然后我们准备真正进入windows</p>
+<img src="/2020/04/05/win-to-go/imgs/win_to_go4.png" title="Barrier Alignment">
+<img src="/2020/04/05/win-to-go/imgs/win_to_go5.png" title="Barrier Alignment">
+<p>插入之前做好的win-to-go移动硬盘以及有线鼠标，开机后按住alt建，进入引导启动选项</p>
+<img src="/2020/04/05/win-to-go/imgs/win_to_go12.png" title="Barrier Alignment">
+<p>选择EFI boot，然后就可以看到我们熟悉的windows启动界面了。</p>
+<p>进行一些简单的设置我们就可以进入到windows画面了</p>
+
+<p>此时我们将刚才存在U盘中的驱动安装到我们的windows系统，win-to-go就基本大功告成了。</p>
+<p>然而我们会发现，现在如果我们启动电脑的时候每次启动都需要按住alt键进入引导模式。那么有没有简单一点的方法呢？ 这答案显然是肯定的，refind能够很好的解决这个问题。这里面具体的教程我也是参考网上的一篇教程，这里其实对win-to-go本身没有太大影响，也可以不进行这一步，这里面我就把链接贴出来好了，有兴趣的可以自己去设置<br><a href="https://www.ithome.com/0/425/537.htm" target="_blank" rel="noopener">refind引导启动</a>。</p>
+<p>到这里，一个简单的win-to-go安装流程已经介绍完了。总体感觉还是比较简单的，而且重要的是，风险点不大，不太用担心自己一个操作失误把电脑系统搞崩溃掉。下面就来说说自己用到的一些软件。这个我自己觉得是仁者见仁的事情，仅代表个人观点，作为参考。</p>
+<h1 id="Mac个人推荐工具"><a href="#Mac个人推荐工具" class="headerlink" title="Mac个人推荐工具"></a>Mac个人推荐工具</h1><p>首先是一些日常软件，用于平常的娱乐和其他苹果设备的连接</p>
+<h2 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h2><ul>
+<li>爱思手机助手</li>
+</ul>
+<pre><code>这个工具
+</code></pre>
       
 
       
@@ -512,7 +576,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,7 +584,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
