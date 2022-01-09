@@ -19,12 +19,13 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="普通打工人FFA2021观后感">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2022/01/08/ffa2021/imgs/barrier.png">
 <meta property="og:image" content="http://yoursite.com/2022/01/08/ffa2021/imgs/bmq.png">
-<meta property="og:updated_time" content="2022-01-09T05:03:55.656Z">
+<meta property="og:updated_time" content="2022-01-09T05:56:50.251Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FFA2021的观后感">
 <meta name="twitter:description" content="普通打工人FFA2021观后感">
-<meta name="twitter:image" content="http://yoursite.com/2022/01/08/ffa2021/imgs/bmq.png">
+<meta name="twitter:image" content="http://yoursite.com/2022/01/08/ffa2021/imgs/barrier.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -235,8 +236,9 @@
         <p>普通打工人FFA2021观后感<br><a id="more"></a></p>
 <p>Flink一年一度的盛会FFA又开始了，这次因为疫情的因素，从线下挪到了线上，我们可以很方便的在家里看直播，省去了一些路途上的时间，但不好的是少了一些互动以及和行业大咖面对面交流的机会，但总体来说我个人还是觉得更方便了。作为数据集成中实时存储的开发维护者，会每年关注实时计算领域每年的最新动态，FFA和每年的云栖大会基本是我最核心的了解行业动态的途径了。针对云栖大会，对于每个section的讲述有点过于抽象，这里我就不过多说了，主要就针对这届FFA来说下自己看完其中的几个主题之后的一些感想。我主要从这么几个角度去展开我的这篇博客，首先简单流水账下自己看过的一些印象深刻的topic，其次则是从几个角度来说下自己看完这些topic后的感想，希望我这些“三手”的资料会对大家有一些帮助。</p>
 <h2 id="一些印象深刻的Topic"><a href="#一些印象深刻的Topic" class="headerlink" title="一些印象深刻的Topic"></a>一些印象深刻的Topic</h2><h3 id="主题演讲"><a href="#主题演讲" class="headerlink" title="主题演讲"></a>主题演讲</h3><p>第一天白天的Topic基本上都是比较有特点的，分别从不同的细分方向上给出了行业最佳动态。后面的分会场的topic大多数都是对这些方向的应用或者这些方向的具体技术实现，因此我会对这部分内容做比较详细的介绍。</p>
-<h4 id="Flink-Next"><a href="#Flink-Next" class="headerlink" title="Flink Next"></a>Flink Next</h4><p>首先是从Flink本身，莫问给出了Flink2021的总结，2021的两个大版本，主要包括统一API，细粒度资源管理，以及自适应流控，然后介绍了社区的一些建设动态。然后展开的分享了Flink具体技术上的演进，首先是从部署模式上，经历了从standalone到on yarn再到后续增加k8s的部署方式，为的就是更好的实现云原生，从运维的灵活性，资源弹性上有很多便利。然后从容错上，主要是focus在checkpoint的性能优化上面，从原理上给出拆解，给出关键步骤，并针对每个关键路径上可能存在的一些瓶颈，首先是解决反压情况下的ckp不可控的问题，通过实现自适应的网络流控机制，主要是通过在算子出现反压时，动态减小网络缓冲区大小，提升barrier对齐的效率。另一个则是解决执行take snapshot时间不可控的问题，主要是决定local的state文件数据量不可控的问题，提出了Log based ckp,基于Log来实现对ckp进行加速，写state的时候同时写state changelog和state backend，原本的snapshot就变成了state+state changelog的组合，将ckp制作和snapshot的备份解耦，ckp本身就会非常高效。其次则是其他语言接口的支持，例如PyFlink，主要是通过将原先跨进程的调用通过JNI java调用C代码，C代码中调用python的解析器执行python的udf。接着，Flink重点介绍了流批一体上面的演进优化，首先是从SQL层实现了统一的开发，接着进行更深入的整合，只保留DataStream，从low level api上进行统一，同一个flink可以灵活的访问流和批的存储，从数据shuffle上面，诞生了类似spark的remote shuffle service。这里面给出了几个具体场景，其中一个是Flink CDC，不过这部分在公司内部调研的结果来看，上到生产环境还有比较长的路要优化迭代。另一个是实时离线一体化的数仓。在这个场景中，主要目的是为了引出一个比较重要的feature，flink 的dynamic table，这个议题目前在讨论中，主要的动机则是MQ based的这种分发层时效性高，但并不利于分析，因此构建了flink内置的表，主要也是log+file的结构来设计，也是使用LSM的数据结构，flink的sql可以读写动态表。试图更进一步的完成统一。第一版会支持插件化，log store可以用backend到kafka。从终态上，会把这部分抽提成服务。</p>
-<h4 id="实时计算在字节跳动的发展和展望"><a href="#实时计算在字节跳动的发展和展望" class="headerlink" title="实时计算在字节跳动的发展和展望"></a>实时计算在字节跳动的发展和展望</h4><p>字节作为当今劲头非常强劲的公司，也已经毫无疑问的发展成头部的互连网公司，抖音，海外Tiktok业务，今日头条等都发展很好，来自字节基础架构部的负责人师锐介绍了实时计算在字节的发展和未来的展望。首先，给出了大体的数据规模，包括MAU,运营的地区，天级数据存储量以及实时推荐的性能要求。然后给出了主要的应用场景，包括实时特征计算，实时模型的训练，实时数仓，风控&amp;安全最后一个则是实时大屏的展示。然后讲述了字节在实时计算方面进行历史回顾，第一阶段主要是针对引擎的迁移。主要是从引擎的替代，到平台化建设，到资源指导再到容错能力的增强。19–21年开始重点推广flink，包括100%迁移，升级版本，推广sql再到批流一体的落地。包括元数据的统一化以及state&amp;ckp的能力。接下来详细的说明了在演进过程中的一些核心重点工作，首先是从调度，重点介绍了对yarn的优化，包括Gang scheduling一次性分配，负载均衡，容器化以及批流作业混布提升资源利用率。另一个重点工作则是消息队列BMQ，核心特性包括，兼容Kafka协议，存算分离，Native以及<br><img src="/2022/01/08/ffa2021/imgs/bmq.png" title="bmq"></p>
+<h4 id="Flink-Next"><a href="#Flink-Next" class="headerlink" title="Flink Next"></a>Flink Next</h4><p>首先是从Flink本身，莫问给出了Flink2021的总结，2021的两个大版本，主要包括统一API，细粒度资源管理，以及自适应流控，然后介绍了社区的一些建设动态。然后展开的分享了Flink具体技术上的演进，首先是从部署模式上，经历了从standalone到on yarn再到后续增加k8s的部署方式，为的就是更好的实现云原生，从运维的灵活性，资源弹性上有很多便利。然后从容错上，主要是focus在checkpoint的性能优化上面，从原理上给出拆解，给出关键步骤，并针对每个关键路径上可能存在的一些瓶颈，首先是解决反压情况下的ckp不可控的问题，通过实现自适应的网络流控机制，主要是通过在算子出现反压时，动态减小网络缓冲区大小，提升barrier对齐的效率。<br><img src="/2022/01/08/ffa2021/imgs/barrier.png" title="bmq"></p>
+<p>另一个则是解决执行take snapshot时间不可控的问题，主要是决定local的state文件数据量不可控的问题，提出了Log based ckp,基于Log来实现对ckp进行加速，写state的时候同时写state changelog和state backend，原本的snapshot就变成了state+state changelog的组合，将ckp制作和snapshot的备份解耦，ckp本身就会非常高效。其次则是其他语言接口的支持，例如PyFlink，主要是通过将原先跨进程的调用通过JNI java调用C代码，C代码中调用python的解析器执行python的udf。接着，Flink重点介绍了流批一体上面的演进优化，首先是从SQL层实现了统一的开发，接着进行更深入的整合，只保留DataStream，从low level api上进行统一，同一个flink可以灵活的访问流和批的存储，从数据shuffle上面，诞生了类似spark的remote shuffle service。这里面给出了几个具体场景，其中一个是Flink CDC，不过这部分在公司内部调研的结果来看，上到生产环境还有比较长的路要优化迭代。另一个是实时离线一体化的数仓。在这个场景中，主要目的是为了引出一个比较重要的feature，flink 的dynamic table，这个议题目前在讨论中，主要的动机则是MQ based的这种分发层时效性高，但并不利于分析，因此构建了flink内置的表，主要也是log+file的结构来设计，也是使用LSM的数据结构，flink的sql可以读写动态表。试图更进一步的完成统一。第一版会支持插件化，log store可以用backend到kafka。从终态上，会把这部分抽提成服务。</p>
+<h4 id="实时计算在字节跳动的发展和展望"><a href="#实时计算在字节跳动的发展和展望" class="headerlink" title="实时计算在字节跳动的发展和展望"></a>实时计算在字节跳动的发展和展望</h4><p>字节作为当今劲头非常强劲的公司，也已经毫无疑问的发展成头部的互连网公司，抖音，海外Tiktok业务，今日头条等都发展很好，来自字节基础架构部的负责人师锐介绍了实时计算在字节的发展和未来的展望。首先，给出了大体的数据规模，包括MAU,运营的地区，天级数据存储量以及实时推荐的性能要求。然后给出了主要的应用场景，包括实时特征计算，实时模型的训练，实时数仓，风控&amp;安全最后一个则是实时大屏的展示。然后讲述了字节在实时计算方面进行历史回顾，第一阶段主要是针对引擎的迁移。主要是从引擎的替代，到平台化建设，到资源指导再到容错能力的增强。19–21年开始重点推广flink，包括100%迁移，升级版本，推广sql再到批流一体的落地。包括元数据的统一化以及state&amp;ckp的能力。接下来详细的说明了在演进过程中的一些核心重点工作，首先是从调度，重点介绍了对yarn的优化，包括Gang scheduling一次性分配，负载均衡，容器化以及批流作业混布提升资源利用率。另一个重点工作则是消息队列BMQ，核心特性包括，兼容Kafka协议，存算分离，Native以及批流一体，主要是因为所有数据都在一份HDFS中，视图去兼容批流的消费。<br><img src="/2022/01/08/ffa2021/imgs/bmq.png" title="bmq"></p>
 
       
 
@@ -524,11 +526,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
