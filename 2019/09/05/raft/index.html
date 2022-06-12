@@ -19,19 +19,19 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="raft协议简介">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/log.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/replica_state_machine.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/log_stru.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/brain_break.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/joint_consistency.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/commit_point.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/prove.png">
-<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/time.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/log.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/replica_state_machine.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/log_stru.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/brain_break.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/joint_consistency.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/commit_point.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/prove.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/05/raft/imgs/time.png">
 <meta property="og:updated_time" content="2019-10-17T13:43:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文阅读:raft协议简介">
 <meta name="twitter:description" content="raft协议简介">
-<meta name="twitter:image" content="http://yoursite.com/2019/09/05/raft/09/05/raft/imgs/log.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/05/raft/imgs/log.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -254,9 +254,9 @@
 <p>刚才说到了错误的类型，那现在我们的目的就是找到一个共识算法，能够在上述所有错误出现时(包括拜占庭错误与非拜占庭错误)，都能够保证整个系统的决策都是一致的。很可惜FLP impossibility否定了这个想法的正确性，它首先认为，不存在一个完美无缺的错误发现（Failure Detector）机制，例如有台机器你发出去的任何请求他都不回应你，这是你也不知道他是网络故障还是宕机了。在这种大前提下，不存在一个完美的共识算法是的系统中任何节点出现任何问题时都满足分布性一致性。</p>
 <h2 id="现实中是如何解决的"><a href="#现实中是如何解决的" class="headerlink" title="现实中是如何解决的"></a>现实中是如何解决的</h2><p>既然上文提到没有算法能够解决所有错误情况下分布式系统的一致性问题，那么类似paxos和raft这种协议又是怎么做的呢？这岂不是自相矛盾？实际上，这类算法是对问题的边界进行了界定。他们的一个做法是，在问题上做一个边界，就是计算和通信只需要在“安全时间”内完成即可。他们认为大多数情况下，计算和通信都可以在安全时间内结束。如果系统出现抖动，比如failure detect错误等，系统会进入某种循环状态，不让系统轻易地做出决定。当系统满足某些条件时，跳出循环做出决策。同时利用系统实现上的一些trick让系统不至于陷入永远等待从而丧失可用性的状态(raft中通过对系统平均故障时间的估计来设置通信时间，选举超时时间)。</p>
 <h2 id="分布式共识算法核心理论基础"><a href="#分布式共识算法核心理论基础" class="headerlink" title="分布式共识算法核心理论基础"></a>分布式共识算法核心理论基础</h2><p>在正式谈raft之前，还需要简单介绍下分布式共识算法所基于的理论工具。分布式共识协议在复制状态机的背景下产生的。在该方法中，一组服务器上的状态机计算相同的副本，即便某台机器宕机依然会继续运行。复制状态机是基于日志实现的。在这里有必要唠叨两句日志的特性。日志可以看做一个简单的存储抽象，append only，按照时间完全有序，注意这里面的日志并不是log4j或是syslog打出来的业务日志，那个我们称之为应用日志，这里的日志是用于程序访问的存储结构。有了上面的限制，使用日志就能够保证这样一件事。如图所示</p>
-<img src="/2019/09/05/raft/09/05/raft/imgs/log.png" title="log">
+<img src="/2019/09/05/raft/imgs/log.png" title="log">
 <p>我有一个日志，里面存储的是一系列的对数据的操作，此时系统外部有一系列输入数据，输入到这个日志中，经过日志中一系列command操作，由于日志的确定性和有序性，保证最后得到的输出序列也应该是确定的。扩展到分布式的场景，此时每台机器上所有了这么一个日志，此时我需要做的事情就是保证这几份日志是完全一致的。详细步骤就引出了论文中的那张经典的复制状态机的示意图</p>
-<img src="/2019/09/05/raft/09/05/raft/imgs/replica_state_machine.png" title="log">
+<img src="/2019/09/05/raft/imgs/replica_state_machine.png" title="log">
 <p>如图所示，server中的共识模块负责接收由client发送过来的请求，将请求中对应的操作记录到自己的日志中，同时通知给其他机器，让他们也进行同样的操作最终保证所有的机器都在日志中写入了这条操作。然后返回给客户端写入成功。复制状态机用于解决分布式中系统中的各种容错问题，例如master的高可用，例如Chubby以及ZK都是复制状态机，对于分布式一致性算法，通常满足以下性质：</p>
 <ul>
 <li>在非拜占庭错误下，保证安全性(不会返回不正确的结果)</li>
@@ -301,7 +301,7 @@ InstallSnapshot:生成日志快照的RPC请求
 <p>下面分别介绍这三种可能的情况</p>
 <h3 id="自己赢得选举"><a href="#自己赢得选举" class="headerlink" title="自己赢得选举"></a>自己赢得选举</h3><p>所有的follower在leader选举期间以first-come-first-serve的方式把票投给一个指定的candidte。同时协议规定每个任期内最多有一个candidate能够获得多数的选票。协议约定，一旦有一个candidate获取超过一半的选票。这个candidate立刻成为leader，同时发送心跳RPC请求维护自己的leader地位。<br>第二种情况就是，candidate在等待投票的过程中，可能收到另外一个leader发过来的AppendEntries的rpc请求，这个candidate会对leader的合法性进行判断，如果leader带来的term不小于当前的term，那么candidate认定当前发请求的leader是合法的，自己会退回到follower角色。但如果RPC中的term低于目前的term，那么candidate会选择拒绝这个RPC请求。<br>最后一种情况就是，没有任何一个candidate获得大多数follower的投票，那么他们又会选举超时，将当前term增加1，启动新一轮的leader选举。会有机制保证不会一直在这个过程中循环下去。<br>raft协议采用了随机的选举超时时间，防止选票被瓜分导致当前term内的选举失败。raft一般设置选举超时时间为150ms–300ms之间的随机数。这样做的好处是，能把各个follower认定leader失效的时间分散化。更加容易是的某些follower成为candidate后获得多数选票的概率。同时，每次candidate发起一次选举之初都会重置一个随机的选举超时时间。减少选票被瓜分的可能性。之所以将超时时间设置为随机，主要是为了使整个协议更好理解一些。之前例如设置等级的方式会存在一些可用性的问题，因此选择了随机选举超时时间的机制。</p>
 <h2 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h2><p>上文介绍了leader选举，某个follower在选举超时后，会变为candidate发起新的一轮leader选举，当这个candidate获取了多数follower的投票之后。自动赢得选举，其他follower或candidate收到合法leader发送的心跳后会自动回退成为follower。在自己当选leader之后，就会自动开始承担整个系统的服务。所有client的每一个请求都包含一条将被复制状态机执行的命令。leader会将这条指令当成一个日志条目追加到日志中。然后会发起一条AppendEntries RPC给其他follower，进行日志条目的复制。当该条目安全的被复制之后，leader会正式在自己的状态机中执行这条指令，然后将执行结果返回给客户端。如果follower出现问题时，leader会不断的重试这个AppendEntries请求，知道所有的follower储存了这条日志条目。<br>如下图所示，日志如以下的形式进行组织，主要包含三部分，首先是日志需要被状态机执行的指令，第二个则是日志条目对应的任期。第三个则是标识日志位置的信息index。</p>
-<img src="/2019/09/05/raft/09/05/raft/imgs/log_stru.png" title="log">
+<img src="/2019/09/05/raft/imgs/log_stru.png" title="log">
 <p>这里面有一个概念叫做日志被”committed”，这个概念十分关键。Raft保证了所有被committed的日志最终都会被各个服务器持久化，并被其对应的状态机所应用。一旦某个日志条目被leader复制到多数的服务器上时，那么我们说这条日志被committed，同时，该日志条目之前的所有日志也是被提交的，包括其他此前leader创建的条目。这种提交方式在后面论证正确性的过程中也会证明是安全和正确的。Leader会持续跟踪他所知道的提交过的最新的日志条目(在AppendEntries请求中会带着这个索引号)，这样其他的节点就知道哪些日志应该被提交。follower一旦知道日志已经被提交，那么这条日志会被应用到它自己的状态机中。</p>
 <p>raft设计了日志机制来维护不同服务器之间高层次的一致性。这么做的目的是为了使得整个协议更加容易理解和可预测，同时这个也保证了协议的安全性。里面有如下的条目：</p>
 <ul>
@@ -313,7 +313,7 @@ InstallSnapshot:生成日志快照的RPC请求
 <p>文章的5.4是安全性的论证，这里面我留到博客的最后，先把协议的总体介绍完毕，后面再进行对于协议中的一些小细节进行介绍。我们首先介绍协议对集群成员变更的处理。</p>
 <h2 id="集群成员变更"><a href="#集群成员变更" class="headerlink" title="集群成员变更"></a>集群成员变更</h2><p>上面的协议都是假设集群中的节点是稳定的。但是实际上，集群中成员的变更是分布式系统中非常常见的现象。显然每当发生集群成员变更都需要重置协议，使得整个集群处于不可用的状态。这显然是不能被接受的，因此在进行协议设计的过程中一定需要考虑到成员变更这一正常现象的。</p>
 <p>对于整个集群来讲，是不能出现有两个leader同时在某个term被选出的，那样一定会出现问题(脑裂)，然而，如果直接生硬的将旧的集群配置更新为新的集群配置都会出现问题，论文中也有一个典型的事例说明了这一点。</p>
-<img src="/2019/09/05/raft/09/05/raft/imgs/brain_break.png" title="log">
+<img src="/2019/09/05/raft/imgs/brain_break.png" title="log">
 <p>这张图展示了集群配置变更的过程，在这个过程中，不同的服务器在不同的时刻更新服务器配置，因此就出现了两个leader同时被选出的状况，上面三个server同时使用的都是集群中原来就有的，后面两台机器是后来加入的，那么我们看到旧配置下的多数和新配置下的多数会产生分歧。那么也就是说两个不同的leader会在一个term内被选出，就会出现我上面说到过的那个问题。所以需要特殊的机制来处理集群变更，比如划分为两个阶段，一些协议采用的是第一阶段的过程中停掉旧的配置，这样就会使服务不可用。</p>
 <p>raft采用的是一种联合一致性的机制来处理这个问题，设置了一种过渡阶段，在这种机制下能够在不停服务的情况下集群配置能够进行平滑的迁移。这里面的联合一致性是指新，老配置的结合</p>
 <ul>
@@ -321,7 +321,7 @@ InstallSnapshot:生成日志快照的RPC请求
 <li>新，老配置的服务器都可以选举成为leader</li>
 <li>达成一直需要在两种配置上分别获取大多数的支持</li>
 </ul>
-<p>下面的一张图展示了转换过程<br><img src="/2019/09/05/raft/09/05/raft/imgs/joint_consistency.png" title="log"></p>
+<p>下面的一张图展示了转换过程<br><img src="/2019/09/05/raft/imgs/joint_consistency.png" title="log"></p>
 <p>其中，虚线表示创建但未提交的日志条目，实线表示最后被提交的日志条目。这些配置在日志复制过程中以特殊的日志条目来存储和通信。流程如下，leader首先创建了c_old_new的配置条目在自己的日志中，并提交到c_old_new中(c_old的大多数以及c_new的大多数)，随后他创建c_new中的条目然后提交到c_new的大多数。防止c_old或c_new同时做出决定。这里面有几个问题需要重点关注</p>
 <p>第一个问题，新的服务器在初始化过程中并没有任何日志条目。当这些服务器以这种状态加入到集群中，他们需要一定的时间来追赶日志，在这段时间内没有办法提交新的日志条目。为了避免这种可用性的间隔时间，raft在配置更新配置时使用了一个额外的阶段，在这个阶段，新的服务器加入到集群中，但是没有投票权(leader会把复制日志发送给他们，但是在决策过程中不考虑他们的决定)。一旦新的服务器追赶上了集群中的其他机器，重新配置他们就可以像正常处理流程一样进行。</p>
 <p>第二个问题是，集群的leader可能不是新配置中的一员。这种情况下，leader会在提交完c_new之后回退。这中情况下，有一段时间leader管理的集群汇总不包括自己。他参与复制日志但并不考虑自己的决策。当c_new被提交时，会发生领导人过渡，这时是最早新的配置可以独立工作的时间点。在这之前可能只能才c_old选出leader。</p>
@@ -333,7 +333,7 @@ InstallSnapshot:生成日志快照的RPC请求
 </ul>
 <p>说完了日志新旧程度的规定，继续聊安全性的问题。在一些一致性算法中，允许不包含前面所有被提交的日志的节点被选举为leader，这些算法中会用额外的的机制来识别丢失的日志，并推送给新的leader。或者选举能够在很短的时间内进行。但是作者认为这种方式的开销过大了，因此规定了所有有资格被选为leader的节点应当存储了所有被commit的。这个限制保证了在更改了leader之后，无需在使用额外的机制检测由于切换leader过程中所损失的日志条目并进行修复。那么raft究竟是如何实现这个约束的呢？</p>
 <p>raft规定，除非这个candidate包含了所有已经提交的日志条目，否则将阻止其投票，candidate为了能够赢得选举势必要联系集群中大部分节点，这意味着每一个已经提交的日志条目在这些服务器节点中至少存在于一个节点上。如果candidate的日志至少和大多数的服务器节点一样新，那么他一定有了所有提交的日志条目。所以在请求投票RPC中需要做如下的限制，RPC中包含了candidate的日志，投票人会拒绝那些日志没有自己新的投票请求。</p>
-<p>这里面还有一点限制，就是不能简单判断日志条目被复制到大多数服务器上，就说明这条日志可以被提交，因为可能一条已经被大多数节点的老条目，也可能被未来的leader覆盖掉，下面的图中说明了这一点<br><img src="/2019/09/05/raft/09/05/raft/imgs/commit_point.png" title="log"></p>
+<p>这里面还有一点限制，就是不能简单判断日志条目被复制到大多数服务器上，就说明这条日志可以被提交，因为可能一条已经被大多数节点的老条目，也可能被未来的leader覆盖掉，下面的图中说明了这一点<br><img src="/2019/09/05/raft/imgs/commit_point.png" title="log"></p>
 <p>图中是一个有5各节点的集群，首先在a中，S1是leader，将1复制到所有的服务器上，并且已经生成了2，复制到了S2上。但此时S1崩溃了，这是S5检测到，发起新的选举，任期号变为3，然后赢得了3和4的选票成为了新的leader，然后收到了一条不一样的日志条目放在了2处。到了c中，S5又crash了，此时S1重新启动，此时赢得了多数的选票，成为了新的leader，然后将自己在任期2中的日志复制到了S3上。此时实际上2这个日志已经被复制到了大多数机器上，同时生成了Term4日志。但是没等到正式提交，S1崩溃了，此时S5启动，他可以赢得S2，S3,S4的选票，由于他的日志任期号更新。这个时候他把自己的日志3复制到了其余所有的节点上。这个例子我们看到，旧的日志条目即便是被复制到了多数的服务器上，也可能被未来的leader覆盖掉。在e中，则是另一种情况，是说在C中的S1没有挂掉，而是将4复制到了大多数服务器上。4可以达到提交状态，这时候我们看到在4之前的那个日志2也一定被提交掉了。(由于leader的完整性)。</p>
 <p>因此一句话概括这个限制，就是raft永远不会通过计算副本手的方式去提交一个之前任期的日志条目。只有leader当前任期里的日志才会采用这种方式进行提交。即便在某些情况下，leader可以知道一个老的日志条目是否被提交。</p>
 <p>下面来总结一下raft保证安全性的两点限制</p>
@@ -341,12 +341,12 @@ InstallSnapshot:生成日志快照的RPC请求
 <li>当前任期内的日志条目必须被复制到了多数服务器上才能被提交</li>
 <li>一个candidate只有赢得了多数服务器的vote，才能成为leader，同时必须要求只有candidate比自己的日志新才能进行投票</li>
 </ul>
-<img src="/2019/09/05/raft/09/05/raft/imgs/prove.png" title="log">
+<img src="/2019/09/05/raft/imgs/prove.png" title="log">
 <p>下图给了一个例子，当前S1是leader(Term T),S1将日志复制到了S1,S2,S3上，之后发生了选举，S5赢得了S3,S4,S5的选票成为了term U的leader，由于也是赢得了大多数的投票，因此一定有一台机器保存了Term T的日志，又参与了Term U的投票(S3)同时我们要求，candidate一定要比自己的日志新，我才能给这个candidate投票，因此Term U中的candidate要比S3S4的日志新，因此S5日志一定是最新的。</p>
 <h2 id="其他情况"><a href="#其他情况" class="headerlink" title="其他情况"></a>其他情况</h2><p>截止到上文，raft基本的一些机制已经介绍完了，这里面还有一些情况在这里简单说明下</p>
 <p>首先是follower和candidate崩溃的情况，raft会在他们发生崩溃时无限重试这些请求，如果崩溃的机器重启了，就会收到一模一样的请求，Raft中的请求都是幂等的，所以正确性会有所保障。</p>
 <p>然后就是一些时间的设置，例如广播时间，选举超时时间。这些时间的设置也是有讲究的，如果设置不合理，也会导致整个系统不可用。例如如果消息交换的时间比服务器故障时间长，candidate就没有充分的时间来赢得选举，这会导致raft没有leader变得不可用。raft假设如果满足这个时间，就可以正常提供服务。</p>
-<img src="/2019/09/05/raft/09/05/raft/imgs/time.png" title="log">
+<img src="/2019/09/05/raft/imgs/time.png" title="log">
 <p>所谓的广播时间就是从一个服务器并行的发送rpc给集群中的其他服务器并接受到相应的平均时间，选举超时时间这个我们在上面提到过，平均故障时间是对于一台服务器而言，两次故障之间的平均时间。一般来说，广播时间要比选举的超时时间小一个数量级，扎样，leader才能发送稳定的心跳来组织foller开始进入选举状态。通过随机化的选举超时时间，这个不等式也使得瓜分选票的机会很小。选举的超时时间也比故障时间小上几个数量级，这样系统能够稳定运行。当leader crash掉后，整个系统大约相当于会在选举超时时间内不可用。</p>
 <p>广播时间和平均故障时间是系统决定的，但我们可以决定选举超时时间。raft的rpc需要接收到消息并将其保存在持久化的存储中，因此广播时间大约是0.5–20ms，这取决于存储的技术以及网络延迟。选举超时时间可设定为10–500ms，机器的平均故障时间会是几个月或更长，所以上述的不等式还是容易满足的。</p>
 <p>至此我们介绍完了raft的全部内容，还有个日志压缩的问题，本文由于篇幅有点长所以没有强调，有兴趣的同学可以自行在论文中一探究竟。这篇文章终于完成也是不易，由于raft这种协议的复杂性，所以我会不断地加深对它的理解，同时修正这个博客。希望和大家一起进步。</p>
@@ -638,11 +638,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -650,11 +650,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -662,11 +662,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

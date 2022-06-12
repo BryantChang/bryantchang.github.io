@@ -19,23 +19,23 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Docker简介以及常用使用命令">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_overview.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_os.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/hyper1.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/hyper2.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_docker.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/docker_arc.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/docker_helloworld.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/ls.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/build.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/images.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/result_no_redis.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/result_succ.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/vir_overview.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/vir_os.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/hyper1.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/hyper2.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/vir_docker.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/docker_arc.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/docker_helloworld.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/ls.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/build.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/images.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/result_no_redis.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/result_succ.png">
 <meta property="og:updated_time" content="2019-03-07T02:10:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker简介与简单使用方法">
 <meta name="twitter:description" content="Docker简介以及常用使用命令">
-<meta name="twitter:image" content="http://yoursite.com/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_overview.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/17/docker-utilization/imgs/vir_overview.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -246,17 +246,17 @@
         <p>Docker简介以及常用使用命令<br><a id="more"></a></p>
 <p>前一段花了一段时间研究Log4j2的源码，现在这个项目基本也告一段落，也算是度过了初入职场这一个阶段。之前在18年总结时说过19年自己要学会C++，所以接下来一段时间，会用一些文章和大家分享下自己学习C++过程中的新的，不过在正式写关于C++内容前，想先介绍一下docker，因为有了这个利器，自己搞个小开发环境会变得十分简单。而且在云化的时代，如果连docker都没用过甚至没听说过的话确实有点说不过去。所以我愿意单独拉出一篇文简单介绍一下docker的使用，后面的C++开发环境也会直接使用docker进行部署。本文主要分为3部分，什么是docker，为什么用docker以及docker的基本使用方法。闲言少叙，直奔主题~</p>
 <h2 id="什么是Docker"><a href="#什么是Docker" class="headerlink" title="什么是Docker"></a>什么是Docker</h2><p>至于给Docker的定义，我觉得还是直接引用官方的吧<a href="http://www.runoob.com/docker/docker-tutorial.html" target="_blank" rel="noopener">runoob</a>，Docker是一个用Go语言开发的一个开源容器引擎，Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
-<p>Docker作为虚拟化分支的一项重要的革新，有必要将Docker和其他虚拟化技术进行一下比较。下面是介绍虚拟化过程中最常见的一张图，它描述了计算机从软到硬的一个层次关系<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_overview.png" title="Overview"><br>这个图看似简单，其实它很清晰的描述了计算机资源的一种层次关系。最底层是基础设施层，基本都是硬件方面的构成，如CPU，内存，磁盘，这些支撑了计算机的基本运行，如果没有这些硬件，计算机也就不存在了。在硬件层上运行了格式的操作系统，他能够根据合理的将硬件资源合理的分配给上面的应用，并保证他们有条不紊的运行。在系统上自带一些系统的lib和可执行命令，这些可执行命令就是我们常用的linux命令(cd，cat，ls….太多了)，lib则包含了一些基本程序库，供我们自己编写的各种程序调用。最上面就是我们开发的各种Application了。</p>
+<p>Docker作为虚拟化分支的一项重要的革新，有必要将Docker和其他虚拟化技术进行一下比较。下面是介绍虚拟化过程中最常见的一张图，它描述了计算机从软到硬的一个层次关系<br><img src="/2019/02/17/docker-utilization/imgs/vir_overview.png" title="Overview"><br>这个图看似简单，其实它很清晰的描述了计算机资源的一种层次关系。最底层是基础设施层，基本都是硬件方面的构成，如CPU，内存，磁盘，这些支撑了计算机的基本运行，如果没有这些硬件，计算机也就不存在了。在硬件层上运行了格式的操作系统，他能够根据合理的将硬件资源合理的分配给上面的应用，并保证他们有条不紊的运行。在系统上自带一些系统的lib和可执行命令，这些可执行命令就是我们常用的linux命令(cd，cat，ls….太多了)，lib则包含了一些基本程序库，供我们自己编写的各种程序调用。最上面就是我们开发的各种Application了。</p>
 <h3 id="Docker与虚拟机"><a href="#Docker与虚拟机" class="headerlink" title="Docker与虚拟机"></a>Docker与虚拟机</h3><p>说完了基本的分层关系，下面就需要重点介绍两种比较重要的虚拟化技术，虚拟机和Docker，虽然感觉区别被讲烂了不过为了介绍的完整性还是简单提一句，还请大家耐心看完</p>
-<h4 id="Hypervisor与虚拟机"><a href="#Hypervisor与虚拟机" class="headerlink" title="Hypervisor与虚拟机"></a>Hypervisor与虚拟机</h4><p>从本质上看，虚拟机和Docker属于在不同层次上的虚拟，虚拟机则是虚拟到操作系统层次的，如下图所示。<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_os.png" title="Overview"><br>在宿主机的操作系统中，抽象出了一个hypervisor的概念，因为自己并没有涉猎过这个领域，所以扒一些现成的资料给我自己扫扫盲。<br>首先是hypervisor的定义，根据wiki上讲，Hypervisor 或者virtual machine monitor (VMM)是创造并且运行虚拟机的软件、固件、或者硬件，通俗的讲，hypervisor是一种将操作系统和硬件分离的一种方式,使得宿主机的硬件上能够同时运行多个虚拟机。<br>Hypervisor具有如下的优点</p>
+<h4 id="Hypervisor与虚拟机"><a href="#Hypervisor与虚拟机" class="headerlink" title="Hypervisor与虚拟机"></a>Hypervisor与虚拟机</h4><p>从本质上看，虚拟机和Docker属于在不同层次上的虚拟，虚拟机则是虚拟到操作系统层次的，如下图所示。<br><img src="/2019/02/17/docker-utilization/imgs/vir_os.png" title="Overview"><br>在宿主机的操作系统中，抽象出了一个hypervisor的概念，因为自己并没有涉猎过这个领域，所以扒一些现成的资料给我自己扫扫盲。<br>首先是hypervisor的定义，根据wiki上讲，Hypervisor 或者virtual machine monitor (VMM)是创造并且运行虚拟机的软件、固件、或者硬件，通俗的讲，hypervisor是一种将操作系统和硬件分离的一种方式,使得宿主机的硬件上能够同时运行多个虚拟机。<br>Hypervisor具有如下的优点</p>
 <ul>
 <li>提高主机硬件的使用率</li>
 <li>虚拟机移动性较强</li>
 <li>资源的隔离性，某台虚拟机的宕机不影响其他虚拟机的使用</li>
 <li>易保护，易恢复</li>
 </ul>
-<h5 id="Hypervisor种类"><a href="#Hypervisor种类" class="headerlink" title="Hypervisor种类"></a>Hypervisor种类</h5><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/hyper1.png" title="Overview">
-<img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/hyper2.png" title="Overview">
+<h5 id="Hypervisor种类"><a href="#Hypervisor种类" class="headerlink" title="Hypervisor种类"></a>Hypervisor种类</h5><img src="/2019/02/17/docker-utilization/imgs/hyper1.png" title="Overview">
+<img src="/2019/02/17/docker-utilization/imgs/hyper2.png" title="Overview">
 <p>如上面两张图所示，Hypervisor分为两类，一类是直接部署在硬件层面上(bare-metal hypervisors)，另一类则是部署在宿主机的操作系统上，算是一种软件(hosted hypervisors)。两种方式的特点与典型系统如下：</p>
 <ul>
 <li>bare-metal hypervisors 特点<ul>
@@ -285,9 +285,9 @@
 </ul>
 </li>
 </ul>
-<h4 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h4><p>与虚拟机不同，Docker是通过软件层的虚拟化实现了更加轻量级的虚拟化，其架构图如下<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/vir_docker.png" title="Overview"><br>初步看来，Docker所在的层级与虚拟机所在的层次相同，都是在宿主机的操作系统上部署，但是Docker完全是软件，不需要硬件进行支持，它利用的是操作系统自带的资源隔离机制对硬件资源进行隔离，例如Win中的Hyper-v，linux中的cgroup等，由docker的后端程序docker engine调用这些接口完成资源隔离。Docker在创建容器时并不运行完整的操作系统，使用的资源更少，部署，启动更快。但提供的隔离粒度不足，所以Docker更加适合单个用户使用，而虚拟机则更适合在多个用户混合的多租户类型的场景中执行。</p>
+<h4 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h4><p>与虚拟机不同，Docker是通过软件层的虚拟化实现了更加轻量级的虚拟化，其架构图如下<br><img src="/2019/02/17/docker-utilization/imgs/vir_docker.png" title="Overview"><br>初步看来，Docker所在的层级与虚拟机所在的层次相同，都是在宿主机的操作系统上部署，但是Docker完全是软件，不需要硬件进行支持，它利用的是操作系统自带的资源隔离机制对硬件资源进行隔离，例如Win中的Hyper-v，linux中的cgroup等，由docker的后端程序docker engine调用这些接口完成资源隔离。Docker在创建容器时并不运行完整的操作系统，使用的资源更少，部署，启动更快。但提供的隔离粒度不足，所以Docker更加适合单个用户使用，而虚拟机则更适合在多个用户混合的多租户类型的场景中执行。</p>
 <h2 id="为什么用Docker"><a href="#为什么用Docker" class="headerlink" title="为什么用Docker"></a>为什么用Docker</h2><p>其实这个问题我在介绍虚拟机与Docker的区别时已经提到，Docker由于其使用了更加轻量级的隔离机制，不论是在部署，启动恢复上均比虚拟机要快上数个数量级，因此，如果是个人用户想要快速构建某个特定的环境，比如想要测试某个代码在linux的运行情况，而使用的是mac系统或win系统，或者练习搭建环境等，通过Docker可以快速满足需求。</p>
-<h2 id="Docker简单使用方法"><a href="#Docker简单使用方法" class="headerlink" title="Docker简单使用方法"></a>Docker简单使用方法</h2><h3 id="Docker架构"><a href="#Docker架构" class="headerlink" title="Docker架构"></a>Docker架构</h3><p>介绍使用方法前，先明确Docker中的几个基本组件以及这些组件的交互关系。<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/docker_arc.png" title="Overview"></p>
+<h2 id="Docker简单使用方法"><a href="#Docker简单使用方法" class="headerlink" title="Docker简单使用方法"></a>Docker简单使用方法</h2><h3 id="Docker架构"><a href="#Docker架构" class="headerlink" title="Docker架构"></a>Docker架构</h3><p>介绍使用方法前，先明确Docker中的几个基本组件以及这些组件的交互关系。<br><img src="/2019/02/17/docker-utilization/imgs/docker_arc.png" title="Overview"></p>
 <ul>
 <li>Docker镜像：Docker 镜像是用于创建 Docker 容器的模板</li>
 <li>Docker容器(Container)：容器是独立运行的一个或一组应用</li>
@@ -311,7 +311,7 @@ yum <span class="token function">install</span> docker-io <span class="token com
 <h3 id="Docker-Hello-World"><a href="#Docker-Hello-World" class="headerlink" title="Docker Hello World"></a>Docker Hello World</h3><p>这个案例非常简单，只有一个命令</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker run hello-world
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>如果看到下图中的结果则说明成功<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/docker_helloworld.png" title="Overview"></p>
+<p>如果看到下图中的结果则说明成功<br><img src="/2019/02/17/docker-utilization/imgs/docker_helloworld.png" title="Overview"></p>
 <h3 id="Docker复杂使用"><a href="#Docker复杂使用" class="headerlink" title="Docker复杂使用"></a>Docker复杂使用</h3><p>这个应用主要是一个python的web服务，该服务用于统计用户访问量，用户访问量存储在redis中。下面正式开始部署</p>
 <p>首先先写一个Flask的python程序，主要的统计逻辑和前端展示都由这个文件提供，代码如下</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask
@@ -358,16 +358,16 @@ ENV NAME World
 # 在容器启动时运行 app.py
 CMD ["python", "app.py"]
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>最后的目录结构如下<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/ls.png" title="Overview"><br>完成之后开始构建，首先build镜像</p>
+<p>最后的目录结构如下<br><img src="/2019/02/17/docker-utilization/imgs/ls.png" title="Overview"><br>完成之后开始构建，首先build镜像</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker build -t bryantchangflasktest <span class="token keyword">.</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>其中 -t 的作用是指定镜像的名字<br>完成构建后，结果如下</p>
-<img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/build.png" title="Overview">
-<p>使用docker images查看已经构建的镜像<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/images.png" title="Overview"></p>
+<img src="/2019/02/17/docker-utilization/imgs/build.png" title="Overview">
+<p>使用docker images查看已经构建的镜像<br><img src="/2019/02/17/docker-utilization/imgs/images.png" title="Overview"></p>
 <p>完成构建后，接下来开始运行:</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker run -p 4001:80 bryantchangflasktest  <span class="token comment" spellcheck="true">##将4001端口映射到80端口</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>运行结果：<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/result_no_redis.png" title="Overview"></p>
+<p>运行结果：<br><img src="/2019/02/17/docker-utilization/imgs/result_no_redis.png" title="Overview"></p>
 <p>可以看到因为没有配置redis所以这里面的异常是我们预期内的，为了做后面的配置方便，我们将镜像上传到公共镜像，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker build -t bryantchangxy/bryantchangflasktest <span class="token keyword">.</span>
 docker push bryantchangxy/bryantchangflasktest:latest
@@ -411,7 +411,7 @@ redis:
 <p>最后部署镜像，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker-compose up -d
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>完成后，输入localhost:4001，终于看到了最终的结果<br><img src="/2019/02/17/docker-utilization/02/17/docker-utilization/imgs/result_succ.png" title="Overview"></p>
+<p>完成后，输入localhost:4001，终于看到了最终的结果<br><img src="/2019/02/17/docker-utilization/imgs/result_succ.png" title="Overview"></p>
 <p>对于docker-compose的使用，参见博客<a href="https://blog.csdn.net/u011781521/article/details/80464826" target="_blank" rel="noopener">docker-compose</a></p>
 <p>花了这么长时间，一边实践一边写，终于把这篇博客完成了，下面的文章中终于能够开心的开启C++的学习之旅了，敬请期待后面的文章</p>
 
@@ -702,11 +702,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -714,11 +714,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -726,11 +726,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

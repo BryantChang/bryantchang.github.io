@@ -19,16 +19,16 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="性能诊断套路之CPU篇，常见CPU指标以及相应原理">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/sys_stack.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/linux_perf_tools_full.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/process_state.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/cpu_cache.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/cpu_metric_s.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/sys_stack.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/linux_perf_tools_full.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/process_state.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/cpu_cache.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/cpu_metric_s.png">
 <meta property="og:updated_time" content="2019-03-17T14:12:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能瓶颈诊断--CPU篇(一）">
 <meta name="twitter:description" content="性能诊断套路之CPU篇，常见CPU指标以及相应原理">
-<meta name="twitter:image" content="http://yoursite.com/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/sys_stack.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/09/cpu-profile/imgs/sys_stack.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -238,8 +238,8 @@
       
         <p>性能诊断套路之CPU篇，常见CPU指标以及相应原理<br><a id="more"></a></p>
 <p>想了半天这篇文章该怎么开头，因为毕竟之前说后面要写两篇C++，然而工作之中面对越来越多的“疑难杂症”让我很崩溃，总是把这些问题推给组里的其他“大牛”也不是个办法，所以决心要用几周的时间好好get一下性能瓶颈诊断的技能。虽然可能过程会很艰苦，但是还是想尽力尝试。这一定会是以后工作中一笔宝贵的财富。同时我也在《极客学院》看了倪鹏飞老师的<a href="https://time.geekbang.org/column/intro/140" target="_blank" rel="noopener">Linux性能优化实战</a>。讲的真心非常有条理，所以我也把这几篇文章当做是这个课程的课程总结。不管是课程总结也好，还是自己的实战经验也罢，总是希望自己在完成这几篇文章之后，真正能够掌握性能瓶颈诊断的技能。我也按照倪老师的章节划分，按照CPU，内存，I/O以及网络每章总结成一篇文章。希望能和大家一起总结和学习。这篇文章首先我将从整体来简单介绍性能瓶颈，随后我将总结一些CPU性能问题的排查方法。开头有点长了，直接进入正题</p>
-<h2 id="性能诊断概述"><a href="#性能诊断概述" class="headerlink" title="性能诊断概述"></a>性能诊断概述</h2><p>性能诊断问题其实一直都是各类工程师，尤其是后台工程师(系统开发工程师)的痛点，因为正常的代码在上线前都是经过很严格的测试，包括功能测试以及覆盖一定场景的性能测试。一些表面上比较明显的bug都会在上线前被避免，往往上线之后的一些性能问题都是一些相当隐晦的bug引发的，还有可能是因为其他与这个代码交互的其他系统给我们的系统带来性能问题。再或者说是由于基础设施的一些异常情况造成了系统异常。上面只是提到了问题本身的隐晦和难以排查。然而，这不足成为性能诊断被大多数工程师谈其色变的原因。更加主要的原因个人认为还是下面一个。在我18年的年终总结<a href="https://bryantchang.github.io/2018/12/31/summary-2018/" target="_blank" rel="noopener">2018年技术盘点</a>中提到过，每个程序都会运行在特定的系统栈中，在这一点上，倪老师的课程中同样提到了，我在这里直接引用其中的一张图。如下所示。<br><img src="/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/sys_stack.png" title="sys_stack"></p>
-<p>倪老师将他分成了5层，而个人更习惯分为4层，分别为代码层，运行时环境层，操作系统层以及硬件层。由于系统栈的复杂，可能一个层面的问题最后会通过其他层面指标的异常中获得，例如一个最简单的，Java中的死锁，可能在代码层完全通过静态分析是无法明显的分析出来，而通过jstack这类的运行时环境层的工具很方便的能够分析出。相信很多人都看到过性能大师Brendan Gregg绘制的一张经典性能分析工具的图谱。第一次看到这张图是我研一的时候，不知道大家是什么感受，反正我的第一感觉是胆怯和头大，我勒个去，这都是些什么鬼。。。所以研一那段时间也就用了几个简单的工具就为了完成任务而完成任务，就应付过去了。<br><img src="/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/linux_perf_tools_full.png" title="sys_stack"></p>
+<h2 id="性能诊断概述"><a href="#性能诊断概述" class="headerlink" title="性能诊断概述"></a>性能诊断概述</h2><p>性能诊断问题其实一直都是各类工程师，尤其是后台工程师(系统开发工程师)的痛点，因为正常的代码在上线前都是经过很严格的测试，包括功能测试以及覆盖一定场景的性能测试。一些表面上比较明显的bug都会在上线前被避免，往往上线之后的一些性能问题都是一些相当隐晦的bug引发的，还有可能是因为其他与这个代码交互的其他系统给我们的系统带来性能问题。再或者说是由于基础设施的一些异常情况造成了系统异常。上面只是提到了问题本身的隐晦和难以排查。然而，这不足成为性能诊断被大多数工程师谈其色变的原因。更加主要的原因个人认为还是下面一个。在我18年的年终总结<a href="https://bryantchang.github.io/2018/12/31/summary-2018/" target="_blank" rel="noopener">2018年技术盘点</a>中提到过，每个程序都会运行在特定的系统栈中，在这一点上，倪老师的课程中同样提到了，我在这里直接引用其中的一张图。如下所示。<br><img src="/2019/03/09/cpu-profile/imgs/sys_stack.png" title="sys_stack"></p>
+<p>倪老师将他分成了5层，而个人更习惯分为4层，分别为代码层，运行时环境层，操作系统层以及硬件层。由于系统栈的复杂，可能一个层面的问题最后会通过其他层面指标的异常中获得，例如一个最简单的，Java中的死锁，可能在代码层完全通过静态分析是无法明显的分析出来，而通过jstack这类的运行时环境层的工具很方便的能够分析出。相信很多人都看到过性能大师Brendan Gregg绘制的一张经典性能分析工具的图谱。第一次看到这张图是我研一的时候，不知道大家是什么感受，反正我的第一感觉是胆怯和头大，我勒个去，这都是些什么鬼。。。所以研一那段时间也就用了几个简单的工具就为了完成任务而完成任务，就应付过去了。<br><img src="/2019/03/09/cpu-profile/imgs/linux_perf_tools_full.png" title="sys_stack"></p>
 <p>直到自己工作后，看到大佬们查问题的方式，他们真的是能够相当熟练的使用那些工具，而我像一个小迷妹一样在边上看着，但是这是工作岗位，作为一个基础平台研发人员，总不能出了问题就交给其他人。因此自己下了这个决心，一定要把这个硬骨头啃下。</p>
 <p>之前提到过，一个程序是要运行在特定的系统栈上，程序系统栈在复杂的同时也是互通的，有时候从一个层面不能分析出来的问题可以通过其他层次的一些异常进行解决。这里我们重点关注操作系统层，其实最终程序的执行都是由操作系统来调度，同时分配资源，从资源的角度可以分为CPU，内存，I/O网络，有趣的是，往往一些代码的bug最终都会影响到这些资源的使用。通过操作系统资源的异常再向上层层递进最终能够揪出隐藏在代码里面的“罪魁祸首”。这似乎让我们看到搞定这件事的一丝曙光。在倪老师的课程中也基本是这样的逻辑，也是通过CPU，内存，I/O，网络的异常入手解决问题。所以我的博文也是分别围绕这些异常展开，介绍一些可能引发这些异常的原因以及排查手段和解决措施，从这三个维度来试图建立一个性能问题排查的套路！ 这一篇就先从CPU开始讲起。在介绍的过程中可能会涉及到一些相关的操作系统原理的知识点，我会连同这些原理一同进行简单的介绍。由于内容比较多，所以暂时决定分为两篇文来写，第一篇主要介绍常见的CPU指标以及涉及的操作系统原理，第二篇则聚焦于如何获取和观测这些指标，包括普通的程序以及Java程序，因为Java拥有一套比较完善的诊断工具，使用这些工具对Java程序进行Profiling会更加方便。</p>
 <h2 id="CPU核心指标"><a href="#CPU核心指标" class="headerlink" title="CPU核心指标"></a>CPU核心指标</h2><p>总结了一下倪老师课程中所提到的CPU指标，同时结合自己在公司中经常接触的CPU指标，总结了一些常见的CPU指标，我将分别简单介绍这些CPU指标的定义以及其中涉及的基本原理。</p>
@@ -256,7 +256,7 @@ S：Interrruptible Sleep的缩写，可中断状态睡眠，进程因等待某�
 I：idle缩写用在不可中断睡眠的内核线程上，硬件交互导致的不可中断进程为D，但某些内核线程可能没有任何负载，使用Idle来区分这种状态，注意D状态会导致平均负载升高，但是I状态的进程不会。(例如等待socket连接，等待信号量)
 T：进程停止状态，可以发送SIGSTOP信号来停止进程。这个暂停的进程可以通过发送SIGCONT信号让进城继续运行
 X：死亡状态，这个状态指示一个返回状态，在任务列表无法看到这种状态的进程。
-</code></pre><p>下图为进程状态转换图<br><img src="/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/process_state.png" title="sys_stack"></p>
+</code></pre><p>下图为进程状态转换图<br><img src="/2019/03/09/cpu-profile/imgs/process_state.png" title="sys_stack"></p>
 <p>看完进程状态的转换，再次回到平均负载的概念，下面举一个例子来解释一下平均负载的具体含义。假设平均负载为2</p>
 <pre><code>当某台机器有2个CPU，那么则意味着所有的CPU刚好被完全占用
 当CPU有4个时，意味着50%的CPU空闲
@@ -286,7 +286,7 @@ X：死亡状态，这个状态指示一个返回状态，在任务列表无法�
 </ul>
 <p>在每次系统调用中，CPU需要在陷入内核态之前，首先也需要把用户态的代码执行位置保存在CPU的PC中，然后开始执行内核态代码，执行完毕后，继续执行用户态的其他操作。我们会发先，特权模式切换中，虽然从头到尾执行的都是同一个进程，但同样涉及到了CPU切换。他应该算是进程内的CPU上下文切换。那么它与进程的上下文切换有什么不同呢？</p>
 <p>在操作系统中，进程并不是直接使用物理内存来运行程序的，而是使用操作系统分配给其的虚拟内存(在后面介绍内存问题诊断时会详细说明，现在大家有个概念就好)，不同的虚拟内存可能会使用一样的物理内存，所以在CPU准备执行其他进程之前，需要把当前进程的虚拟内存一并进行保存。同时还需要保存分配给这个进程的用户栈(一般存储一些方法的入口地址，变量等)。在加载下一个进程的过程中，除了加载该进程的内核态外同时需要刷线进程的虚拟内存以及用户栈。而每次的上下文切换需要经历几十纳秒甚至若干微秒，对于CPU执行而言，这是一个不小的性能开销。在程序大量进行上下文切换的情况下，CPU的时间片大部分都浪费在保存和恢复现场的环节，真正运行程序的时间会减少，这会导致比较平均负载的显著增高。同时在Linux中通过TLB来管理虚拟内存到物理内存的映射关系。当虚拟内存被刷新后，TLB也会被更新，在多核的技术下，这会极大的降低程序的执行效率，因为在现代的多核技术中，缓存(L3 Cache)是被所有核共享的，如下图所示，正常情况下，所有的CPU会先从缓存中获取数据，如果缓存被标记为不可用或访问的数据不存在，则会访问内存。在TLB被更新后，缓存中的TLB数据会失效，各个CPU核需要重新从主存中重新载入。所以某一个程序的进程上下文切换不仅影响了自身的执行效率，同时也影响了其他CPU核上的进程的执行效率。</p>
-<img src="/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/cpu_cache.png" title="sys_stack">
+<img src="/2019/03/09/cpu-profile/imgs/cpu_cache.png" title="sys_stack">
 <p>上面描述了进程上下文切换的性能隐患，那么什么时候会发生进程上下文切换呢？从概念上讲，进程上下文切换是指CPU前后执行了不同的进程，所以一定是在CPU执行了调度算法时会发生切换。前面在介绍CPU进程状态转换时，曾经介绍过，并不是所有满足条件(R)的进程都处于正在运行的状态，CPU为这些进程分配了一个就绪队列，队列中的进程按照优先级和等待CPU的时间排序。每次调度时会挑选优先级高的进程或者等待CPU时间最长的进程进行调度。下面简单梳理下在何种场景下，及昵称会被调度到CPU下运行</p>
 <pre><code>1、在前一个进程的CPU时间片耗尽时，CPU将切换上下文，调度等待CPU的进程执行
 2、在当前进程系统资源不足(如内存等)时，需要等到资源满足后才能运行，此时当前进程会被挂起，CPU此时会调度其他进程运行
@@ -309,7 +309,7 @@ SHCED_NORMAL：普通的分时进程
 <h3 id="CPU使用率"><a href="#CPU使用率" class="headerlink" title="CPU使用率"></a>CPU使用率</h3><p>一般意义上，我们通常所说的CPU使用率定义如下：CPU使用率，是除了空闲时间外其他时间占总花间的百分比，为了计算CPU使用率，性能工具会隔一段时间去两次值，做差后在计算这段时间内的CPU平均使用率。这里简单介绍一下CPU时间，为了维护CPU时间，Linux通过事先定义节拍率(HZ)，触发时间中断并使用全局变量Jiffies记录开机以来的节拍数，每发生一次中断,Jiffies变量+1。但是这个节拍率是内核变量，用户空间的程序无法直接访问，为了方便用户空间进程使用这个变量，系统提供了用户空间的节拍率USER_HZ。</p>
 <h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断是系统用来相应硬件设备请求的一种机制，它会打断进程的正常调度和执行，然后调用内核中的中断处理程序来响应请求。中断处理总体可以分为两个阶段，上半部以及下半部，上半部分是，用于处理硬件请求，称为硬中断，用来快速处理中断，在中断禁止模式下运行。下半部则是软中断，延迟执行上半部分未完成的工作，通常由内核线程执行。下面通过一个例子来说明，例如网卡接收数据，当网卡接收到数据后会通过硬件中断的方式通知内核程序有新数据了。这是对于上半部分，直接将网卡数据读入内存，然后更新寄存器状态，然后直接发送软中断信号，通知内核线程进行后半部操作。在收到信号后，线程从内存中获取数据，按照网络协议栈，对数据进行逐层的解析和处理，最后发送给应用程序。</p>
 <p>至此，我介绍了常见的CPU指标以及其中涉及的原理。为了让大家更直观的了解这些指标，我用了一张思维导图进行诠释，如图所示</p>
-<img src="/2019/03/09/cpu-profile/03/09/cpu-profile/imgs/cpu_metric_s.png" title="cpu_metric">
+<img src="/2019/03/09/cpu-profile/imgs/cpu_metric_s.png" title="cpu_metric">
 <p>相信大家通过这篇文章，对这些CPU指标有了初步的了解。在下一篇文章中，我将介绍这些CPU指标的查看方式以及涉及的工具，并用一些实例总结系统CPU问题的常见步骤和套路。</p>
 
       
@@ -599,11 +599,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,11 +611,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,11 +623,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

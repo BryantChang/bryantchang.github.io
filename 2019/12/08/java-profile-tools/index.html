@@ -19,28 +19,28 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="简单介绍两款Java测试和性能监控神器">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/result.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/result1.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/arthas_start.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/arthas_help.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/monitor_common.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/monitor_include.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_common.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_include.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/jad.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/watch_common.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/watch_include.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/jad_append.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/include_intro.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_memento.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_serialize.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_proxy.png">
-<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_source.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/result.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/result1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/arthas_start.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/arthas_help.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/monitor_common.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/monitor_include.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/trace_common.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/trace_include.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/jad.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/watch_common.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/watch_include.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/jad_append.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/include_intro.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/trace_memento.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/trace_serialize.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/trace_proxy.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/trace_source.png">
 <meta property="og:updated_time" content="2019-12-25T08:20:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java神器--JMH &amp; Arthas">
 <meta name="twitter:description" content="简单介绍两款Java测试和性能监控神器">
-<meta name="twitter:image" content="http://yoursite.com/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/result.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/08/java-profile-tools/imgs/result.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -282,8 +282,8 @@
 
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>代码逻辑及其简单，就是调用logger.info每次打印10000条日志，然后记录耗时。两者的对比如下</p>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/result.png" title="helloworld结果">
-<p>对比结果<br><img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/result1.png" title="helloworld结果"></p>
+<img src="/2019/12/08/java-profile-tools/imgs/result.png" title="helloworld结果">
+<p>对比结果<br><img src="/2019/12/08/java-profile-tools/imgs/result1.png" title="helloworld结果"></p>
 <p>从这两张图片中我们能够看到同样的逻辑，两个程序的耗时差距相差了数十倍，但看图片，貌似仅仅是logger的名称不一样。对上面的实验结果进行分析，我们可能会有两个疑问</p>
 <ul>
 <li>上面的代码测试是否标准，规范</li>
@@ -399,8 +399,8 @@ LogBenchMarkMain.testLog8   avgt    5  0.776 ± 0.070   s/op
 <p>我们首先通过jps找到程序的进程号，然后直接通过arthas给到的as.sh对我们运行的程序进行字节码增强，然后启动arthas，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">./as.sh pid
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/arthas_start.png" title="helloworld结果">
-<p>这个就是arthas的启动界面了，我们使用help命令查看工具所支持的功能<br><img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/arthas_help.png" title="helloworld结果"></p>
+<img src="/2019/12/08/java-profile-tools/imgs/arthas_start.png" title="helloworld结果">
+<p>这个就是arthas的启动界面了，我们使用help命令查看工具所支持的功能<br><img src="/2019/12/08/java-profile-tools/imgs/arthas_help.png" title="helloworld结果"></p>
 <p>可以看到，arthas支持查看当前jvm的状态，查看当前的线程状态，监控某些方法的调用时间，trace，profile生成火焰图等，功能一应俱全<br>我们这里也只将几个比较常用的命令，其他的命令如果大家感兴趣可以详见官网<a href="https://alibaba.github.io/arthas/" target="_blank" rel="noopener">arthas官网</a>。这篇文章主要介绍下面几个功能</p>
 <ul>
 <li>反编译代码</li>
@@ -418,11 +418,11 @@ LogBenchMarkMain.testLog8   avgt    5  0.776 ± 0.070   s/op
 <ul>
 <li>使用普通appender</li>
 </ul>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/monitor_common.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/monitor_common.png" title="helloworld结果">
 <ul>
 <li>使用include appender</li>
 </ul>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/monitor_include.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/monitor_include.png" title="helloworld结果">
 <p>我们可以看到，使用include appeder的打印日志方法要比普通的appender高出了3倍，这就不禁让我们有了疑问，究竟这两个方法各个步骤耗时如何呢。下面我们就介绍第二条命令，trace方法。</p>
 <h3 id="trace命令-amp-jad命令"><a href="#trace命令-amp-jad命令" class="headerlink" title="trace命令 &amp; jad命令"></a>trace命令 &amp; jad命令</h3><p>这两个程序的log4j2配置文件如下</p>
 <pre class="line-numbers language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
@@ -505,16 +505,16 @@ LogBenchMarkMain.testLog8   avgt    5  0.776 ± 0.070   s/op
 <ul>
 <li>使用普通appender</li>
 </ul>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_common.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/trace_common.png" title="helloworld结果">
 <ul>
 <li>使用include appender</li>
 </ul>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_include.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/trace_include.png" title="helloworld结果">
 <p>我们立刻可以发现，两个trace的热点方法不一样，在使用include的appender中，耗时最长的方法时org.apache.logging.log4j.core.impl.Log4jLogEvent类中的createMemento方法，那么怎么才能知道这个方法到底做了啥呢，那就请出我们下一个常用命令jad，这个命令能够反编译出对应方法的代码。这里我们jad一下上面说的那个createMemento方法，命令很简单</p>
 <pre class="line-numbers language-bash"><code class="language-bash">jad org.apache.logging.log4j.core.impl.Log4jLogEvent createMemento
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>结果如下</p>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/jad.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/jad.png" title="helloworld结果">
 <p>我们发现，这个方法中有个includeLocation参数，这个和我们的看到的两个appender的唯一不同的配置相吻合，我们此时应该有这个猜想，会不会就是这个参数导致的呢？为了验证这个猜想，我们引出下一个命令,watch</p>
 <h3 id="watch命令"><a href="#watch命令" class="headerlink" title="watch命令"></a>watch命令</h3><p>watch命令能够观察到某个特定方法的入参，返回值等信息，我们使用这个命令查看一下这个createMemento方法的入参，如果两个程序的入参不同，那基本可以断定是这个原因引起命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">watch</span> org.apache.logging.log4j.core.impl.Log4jLogEvent createMemento <span class="token string">"params"</span> -x 2 -n 5 -b -f
@@ -529,15 +529,15 @@ LogBenchMarkMain.testLog8   avgt    5  0.776 ± 0.070   s/op
 <ul>
 <li>使用普通logger</li>
 </ul>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/watch_common.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/watch_common.png" title="helloworld结果">
 <ul>
 <li>使用include</li>
 </ul>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/watch_include.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/watch_include.png" title="helloworld结果">
 <p>果不其然，这两个参数果然是一个true一个false，我们简单看下这个参数是如何传进来的，我们jad一下AsyncAppender的append方法</p>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/jad_append.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/jad_append.png" title="helloworld结果">
 <p>我们发现这个includeLocation正是appender的一个属性，也就是我们xml中配置的那个属性。查看官网的相关分析，我们看到这个参数会使log的性能下降5–10倍</p>
-<img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/include_intro.png" title="helloworld结果">
+<img src="/2019/12/08/java-profile-tools/imgs/include_intro.png" title="helloworld结果">
 <p>不过为了一探究竟，我还是静态跟了一下这段代码</p>
 <p>这个includeLocation会在event的createMemento中被用到，在序列化生成对象时会创建一个LogEventProxy，代码如下</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token function">LogEventProxy</span><span class="token punctuation">(</span><span class="token keyword">final</span> LogEvent event<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> includeLocation<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -595,16 +595,16 @@ LogBenchMarkMain.testLog8   avgt    5  0.776 ± 0.070   s/op
 <p>我们看到他会从整个的调用栈中去寻找调用这个方法的代码行，其性能可想而知。我们用arthas监控一下，验证一下。</p>
 <p>首先我们trace crateMemento方法</p>
 <pre><code>trace -n 5 org.apache.logging.log4j.core.impl.Log4jLogEvent createMemento
-</code></pre><img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_memento.png" title="helloworld结果">
+</code></pre><img src="/2019/12/08/java-profile-tools/imgs/trace_memento.png" title="helloworld结果">
 <p>发现热点方法时org.apache.logging.log4j.core.impl.Log4jLogEvent的serialize()，继续trace下去</p>
 <pre><code>trace -n 5 org.apache.logging.log4j.core.impl.Log4jLogEvent serialize
-</code></pre><img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_serialize.png" title="helloworld结果">
+</code></pre><img src="/2019/12/08/java-profile-tools/imgs/trace_serialize.png" title="helloworld结果">
 <p>看到热点是org.apache.logging.log4j.core.impl.Log4jLogEvent:LogEventProxy的构造方法，继续trace</p>
 <pre><code>trace -n 5 org.apache.logging.log4j.core.impl.Log4jLogEvent$LogEventProxy &lt;init&gt;
-</code></pre><img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_proxy.png" title="helloworld结果"> 
+</code></pre><img src="/2019/12/08/java-profile-tools/imgs/trace_proxy.png" title="helloworld结果"> 
 <p>发现是getSource方法，继续</p>
 <pre><code>trace -n 5 trace -n 5 org.apache.logging.log4j.core.LogEvent getSource
-</code></pre><img src="/2019/12/08/java-profile-tools/12/08/java-profile-tools/imgs/trace_source.png" title="helloworld结果"> 
+</code></pre><img src="/2019/12/08/java-profile-tools/imgs/trace_source.png" title="helloworld结果"> 
 <p>热点终于定位到了，是org.apache.logging.log4j.core.impl.Log4jLogEvent的calcLocation函数，和我们静态跟踪的代码一样。</p>
 <p>至此我们通过结合JMH和arthas共同定位出了一个线上的性能问题。不过我介绍的只是冰山一角，更多常用的命令还希望大家通过官网自己了解和实践，有了几次亲身实践之后，这个工具也就玩熟了。</p>
 <p>真不容易，现在已经是深夜，又完成了一篇博客的撰写，心里美滋滋。大家晚安！！</p>
@@ -896,11 +896,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -908,11 +908,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -920,11 +920,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

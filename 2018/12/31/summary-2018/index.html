@@ -19,13 +19,13 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="2018技术盘点">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/12/31/summary-2018/imgs/skill_2018.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/12/31/summary-2018/imgs/skill_2019.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2018.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2019.png">
 <meta property="og:updated_time" content="2018-12-31T15:44:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2018年技术盘点">
 <meta name="twitter:description" content="2018技术盘点">
-<meta name="twitter:image" content="http://yoursite.com/2018/12/31/summary-2018/12/31/summary-2018/imgs/skill_2018.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/31/summary-2018/imgs/skill_2018.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -236,7 +236,7 @@
         <p>2018技术盘点<br><a id="more"></a></p>
 <p>2018年的最后一天，安安静静的在家里进行这一年的盘点，这一年发生的事情着实不少。印象深刻的也很多，下午花了4个小时盘点了这一年生活方面的点滴。作为一个码农，2018年作为自己正式迈入码农圈的第一个半年，在技术方面自然也学到了不少东西。所以借着2018年最后几个小时，对这半年来自己在技术上的成长做一次盘点，为后续的职业生涯奠定一个风向标。</p>
 <h2 id="个人技能树"><a href="#个人技能树" class="headerlink" title="个人技能树"></a>个人技能树</h2><p>对于个人总结而言主要分为两个维度，首先是从业务的角度，其次是从个人成长的角度。然而对于博客而言，今天就先暂时不对业务方面进行总结了，毕竟业务方面已经通过绩效评价已经总结过了。这篇博客则对个人这半年来在技术上的成长进行盘点。</p>
-<h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>下图主要展示了在这半年的时间中个人涉猎的技术。下文则具体总结自己对于这些技术的掌握情况。<br><img src="/2018/12/31/summary-2018/12/31/summary-2018/imgs/skill_2018.png" title="Blink Architecture"></p>
+<h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>下图主要展示了在这半年的时间中个人涉猎的技术。下文则具体总结自己对于这些技术的掌握情况。<br><img src="/2018/12/31/summary-2018/imgs/skill_2018.png" title="Blink Architecture"></p>
 <h3 id="日志收集链路"><a href="#日志收集链路" class="headerlink" title="日志收集链路"></a>日志收集链路</h3><p>在日志收集链路中，自己主要针对日志收集SDK Log4j2以及收集的通道性的组件Flume进行了解</p>
 <h4 id="Log4j2"><a href="#Log4j2" class="headerlink" title="Log4j2"></a>Log4j2</h4><p>对于Log4j2，自己通过源码的学习，了解了其中LogManager的启动原理，了解了其中最核心的组件LogContext，Configure之间的关系。其次，更细节的，掌握了其中Plugin的开发流程以及Plugin的核心管理组件PluginManager的工作原理。最后，研读了AsyncAppender以及AsyncLogger的源码。对于Log4j这一Java最为常用的日志组件有了全方位的认识以及更深入的理解。对于之前的一些打印日志出现的异常，现在已经能够比较快速地定位到源码层次的问题所在。</p>
 <h4 id="Flume"><a href="#Flume" class="headerlink" title="Flume"></a>Flume</h4><p>Flume在整个日志收集链路扮演者一个十分重要的角色，主要功能个人理解为前后解耦的一级消息队列，负责中转前端日志组件发来的日志，然后通过source-&gt;channel-&gt;sink的传输模型将消息发送到后端日志存储，例如Kafka，Pulsar等。通过半年的工作，对Flume的原理有了更深入的理解，然而在源码方面，感觉还是有所欠缺，目前对于源码层次的掌握，只存在于Flume的启动流程。其中对于Supervisor的设计模式对后续的其他代码的开发具有比较大的借鉴意义。</p>
@@ -247,7 +247,7 @@
 <h3 id="数据存储系统通用原理"><a href="#数据存储系统通用原理" class="headerlink" title="数据存储系统通用原理"></a>数据存储系统通用原理</h3><p>今年下半年的一个重要发现就是看了一本好书《Desingning Data Intensive Applications》这本书真的是我这几年发现的少见的好书，虽然很厚，但是每一页都十分重要，相比现在大多数技术书都是你抄我，我抄你这种模式真的是少见了，这本书首先一点就是介绍的十分全面，从纵向维度，主要包括数据结构，数据存储，数据查询进行阐述，横向维度，则设计单机数据存储系统以及分布式系统，其中还包括一些分布式系统中一些特有的问题进行描述，包括分布式事务，分布式锁等方面。第二则是十分易懂，自己曾经看过一些相关的数，感觉没有一本书能像这本书一样能把一个十分晦涩的原理介绍的十分清晰地，这充分体现了作者的底蕴，毕竟自己理解很容易，能让人理解却绝非易事。在19年，自己希望吧所剩的看完后，再重新看一遍这本书，对于每一张进行整理，最后尽可能多的理解这些原理，最后达到玩转存储系统的目的。</p>
 <h3 id="系统栈处理问题"><a href="#系统栈处理问题" class="headerlink" title="系统栈处理问题"></a>系统栈处理问题</h3><p>对于这一方面，更应该是细水长流的问题，这点我深信不疑。我曾在毕业论文里就谈到过，大数据处理系统的一个非常重要的特点就是，系统栈十分复杂，各个层级之间会相互影响。所以作为大数据系统的开发者，遇到旁人所说的“疑难杂症”的概率会高于其他业务线，因为越是底层的系统，和操作系统打交道越多，自己一直觉得，大数据系统中，从尽可能要节约成本的角度出发，一定要尽可能的压榨干每一台提供服务的服务器的一切资源。如何从操作系统的指标中快速地发现系统异常的具体原因的技能应该是我们每个系统开发者必须具备的能力，否则早晚会面临淘汰。在这个方面，自己只能一点点的根据外部的资料以及平时组内查问题的套路得到一些经验，这里极客时间倪鹏飞老师的《Linux性能优化指南》是个不错的选择。</p>
 <h3 id="编程语言与框架"><a href="#编程语言与框架" class="headerlink" title="编程语言与框架"></a>编程语言与框架</h3><p>最后则是一些实战性的东西，这里主要和我这半年来所涉及的工程有关，这些东西的学习感觉本着实用的原则即可，随着工程一点点的进行总结积累。</p>
-<h2 id="自己期待的技能树"><a href="#自己期待的技能树" class="headerlink" title="自己期待的技能树"></a>自己期待的技能树</h2><img src="/2018/12/31/summary-2018/12/31/summary-2018/imgs/skill_2019.png" title="Blink Architecture">
+<h2 id="自己期待的技能树"><a href="#自己期待的技能树" class="headerlink" title="自己期待的技能树"></a>自己期待的技能树</h2><img src="/2018/12/31/summary-2018/imgs/skill_2019.png" title="Blink Architecture">
 <p>还有2小时就到新的一年了，通过了这半年的适应，自己也算是适应了职场的工作节奏，对于自己所研究的方向也有了初步的认识，所以在19年到来之际，列出了自己期望达到的技能树。</p>
 <h3 id="硬实力"><a href="#硬实力" class="headerlink" title="硬实力"></a>硬实力</h3><p>我主要将自己需要具备的能力分为两个大的能力，软实力与硬实力，硬实力则是自己身为一个大数据系统开发人员，尤其偏向存储方向的开发人员应该掌握的技能。<br>首先明确自己的主攻方向，大数据处理平台数据收集一环，这一环作为大数据处理平台的源头，虽说看似涉及的绝对核心引擎以及开源组件有限，但是却是相当关键，因为如果数据不存在了，后面的一切能力等于空谈。作为数据收集链路而言，个人将其分为以下的三个环节，分别为上报，介质以及传输通道。对于上报而言，主要还是通过通用的日志上报组件进行上报，对于Java而言，最核心的就是Log4j，因此对于这款组件的掌握需要全面，透彻。而介质可以理解为组件将日志最终打印到那里，是直接通过网络上报，还是缓存在本地磁盘中。这里更像提得是第二种情况，对于磁盘文件的监控，其实是一个非常复杂和困难的，因为这涉及了linux系统在文件操作时所做的具体操作，只有抓住这些操作的核心特征，才能够对各种事件进行准确的识别。<br>完成了收集，需要一个存储引擎最终将日志进行保存，以便后续的消费，这里的存储引擎应特质那些具有时效性的实时存储，例如Kafka，Pulsar，bk等等，自己需要对这些引擎进行探究，以便能够根据实际场景灵活选取。这里之所以将离线存储也放进来，是为了通过对比实时存储以及离线存储找出其中的异同，存储最终都是和存储介质打交道，只不过上层逻辑不同，对存储介质的读写方式有差异。所以试图总结出开发存储系统中的共性问题，对于解决个性问题显然是个利远大于弊的方式。<br>作为工程师而言，不应将自己的边界定的过于狭窄，需要把边界放的宽一些，作为日志下游的消费方，计算，查询引擎必不可少，作为实时存储来讲，如何针对计算引擎以及部署方式优化存储引擎也十分重要，因此个人认为需要对计算和查询引擎有一些原理上的掌握。</p>
 <h3 id="软实力"><a href="#软实力" class="headerlink" title="软实力"></a>软实力</h3><p>相比硬实力而言，软实力基本是一些更抽象化的内容，根据提升方面的不同，自己同样分为两块，一块是技术方面的软实力，另一方面则覆盖面更广一些，包括自己的性格，习惯等。这里的技术软实力我还是想具体一点说，基本应该就是如何从系统栈的角度解决问题，代码的运行，尤其是大数据程序的运行一定脱离不开其所在的系统栈，不仅仅是软件栈，还包括操作系统以及硬件的交互，对一个系统的优化或排查问题应当从整体的系统栈出发，从包括代码层，运行时环境层，操作系统层以及硬件层综合考虑，往往比“头疼医头，脚疼医脚”的这种局部治疗方法从长期看能够取得更加好的效果，当然这也是存在代价的，因为从整体考虑问题的方式在最开始一定会比之前的方式考虑时间要长，但在一些优先级不高的问题上，自己认为有必要坚持这种全局的思考问题的方式。<br>其次就是如何提高自己其他方面的软实力，包括性格，个人职业规划如何思考问题等方面，这些则应该敦促自己多看一些相关书籍时常为自己充电，让自己时刻保持一个积极乐观，对世界充满好奇的方式在自己的职业生涯一步一个脚印的踏踏实实的行走。</p>
@@ -540,11 +540,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -552,11 +552,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -564,11 +564,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

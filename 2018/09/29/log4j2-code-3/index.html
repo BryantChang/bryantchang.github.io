@@ -19,12 +19,12 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Configuration的获取以及初始化">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/09/29/log4j2-code-3/09/29/log4j2-code-3/imgs/node_dependency.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/29/log4j2-code-3/imgs/node_dependency.png">
 <meta property="og:updated_time" content="2018-09-29T10:52:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2源码解析(3)--Configuration">
 <meta name="twitter:description" content="Configuration的获取以及初始化">
-<meta name="twitter:image" content="http://yoursite.com/2018/09/29/log4j2-code-3/09/29/log4j2-code-3/imgs/node_dependency.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/09/29/log4j2-code-3/imgs/node_dependency.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -482,7 +482,7 @@ XMLConfiguration
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>从Node的定义来看可以看出这是一个典型的属性结构，每个Node都有一个parent节点，有一个children的节点列表，通过getParent和getChildren可以方便的操作整颗Node树</p>
 <p>再来说这个方法，可以很清晰的看出，这是一个深度优先遍历整个xml dom并构建Node树的过程，主要是设置attribute，type，children，parent等一系列信息，其中type是后续要载入的java对象的全限定符。经过该方法，我们上面的配置文件被解析成了如下的一棵Node树,如下图所示。</p>
-<img src="/2018/09/29/log4j2-code-3/09/29/log4j2-code-3/imgs/node_dependency.png" title="helloworld结果">
+<img src="/2018/09/29/log4j2-code-3/imgs/node_dependency.png" title="helloworld结果">
 <p>完成了Node树的构造，就需要根据这颗树来构造对应的Appender和Logger，这个方法由doConfigure方法完成，具体的定义如下：</p>
 <pre class="line-numbers language-java"><code class="language-java"> <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doConfigure</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token function">preConfigure</span><span class="token punctuation">(</span>rootNode<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -863,11 +863,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -875,11 +875,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -887,11 +887,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

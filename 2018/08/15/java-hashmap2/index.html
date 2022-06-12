@@ -19,15 +19,15 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="HashMap原理解析–JDK1.8">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap1.png">
-<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap2.jpg">
-<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap3.jpg">
-<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap4.png">
+<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap1.png">
+<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap2.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap3.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap4.png">
 <meta property="og:updated_time" content="2019-03-07T03:54:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HashMap漫谈(2)">
 <meta name="twitter:description" content="HashMap原理解析–JDK1.8">
-<meta name="twitter:image" content="http://yoursite.com/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/08/15/java-hashmap2/imgs/hashmap1.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -278,7 +278,7 @@
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>JDK1.8中，使用了Node&lt;K,V&gt;作为基本数据结构，仔细来看这个数据结构，似乎是和JDK1.7中的Entry相同，只是换了个名字，这里我们暂时认为是一样的，那么HashMap的大体结构应该是这样的</p>
-<img src="/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap1.png" title="1.8HashMap">
+<img src="/2018/08/15/java-hashmap2/imgs/hashmap1.png" title="1.8HashMap">
 <h2 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h2><p>虽然jdk的版本变化，但是我们用户初始化的方式是没有变化的，仍然是通过这个方法实现</p>
 <pre class="line-numbers language-java"><code class="language-java">Map map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -451,8 +451,8 @@
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们以cap=15为例做了个例子，如图所示</p>
-<img src="/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap2.jpg" title="1.8HashMap">
-<img src="/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap3.jpg" title="1.8HashMap">
+<img src="/2018/08/15/java-hashmap2/imgs/hashmap2.jpg" title="1.8HashMap">
+<img src="/2018/08/15/java-hashmap2/imgs/hashmap3.jpg" title="1.8HashMap">
 <p>回到这个方法，总体来说，这个方法的逻辑如下：</p>
 <pre><code>1、计算新桶数组的容量 newCap 和新阈值 newThr
 2、根据计算出的 newCap 创建新的桶数组，桶数组 table 也是在这里进行初始化的
@@ -491,7 +491,7 @@
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里我们假设cap从8扩大到16，那么oldCap就应该是8，newCap就是16，假设有4个hash，35，27，19，43，遍历链表，分别计算hash &amp; oldCap</p>
 <p>那么通过计算可知：35 &amp; 8 = 0;19 &amp; 8 = 0;27 &amp; 8 != 0;43 &amp; 8 != 0<br>这样我们看lo应该是等于0的不等于0的是loIndex + oldCap的位置，最后可以转变为如下的图</p>
-<img src="/2018/08/15/java-hashmap2/08/15/java-hashmap2/imgs/hashmap4.png" title="1.8HashMap">
+<img src="/2018/08/15/java-hashmap2/imgs/hashmap4.png" title="1.8HashMap">
 <p>至此我们就看完了resize的过程。</p>
 <p>下面我们看一下treeifyBin方法的实现</p>
 <h2 id="treeifyBin"><a href="#treeifyBin" class="headerlink" title="treeifyBin"></a>treeifyBin</h2><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">treeifyBin</span><span class="token punctuation">(</span>Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> tab<span class="token punctuation">,</span> <span class="token keyword">int</span> hash<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -936,11 +936,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -948,11 +948,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -960,11 +960,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -19,15 +19,15 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Django框架的一些进阶使用方法">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/06/15/django-adv/imgs/django_prj.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/06/15/django-adv/imgs/ex_1.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/06/15/django-adv/imgs/ex_2.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/06/15/django-adv/imgs/ex_3.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/django_prj.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_1.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_2.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/ex_3.png">
 <meta property="og:updated_time" content="2019-03-07T03:53:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django进阶">
 <meta name="twitter:description" content="Django框架的一些进阶使用方法">
-<meta name="twitter:image" content="http://yoursite.com/2018/06/15/django-adv/06/15/django-adv/imgs/django_prj.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/15/django-adv/imgs/django_prj.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -240,7 +240,7 @@
 <pre class="line-numbers language-bash"><code class="language-bash">python manage.py startapp calc
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>完成后项目目录树如下：</p>
-<img src="/2018/06/15/django-adv/06/15/django-adv/imgs/django_prj.png" title="项目目录树">
+<img src="/2018/06/15/django-adv/imgs/django_prj.png" title="项目目录树">
 <p>修改calc中的views.py</p>
 <h2 id="参数形式-http-127-0-0-1-8080-add-a-4-amp-b-5"><a href="#参数形式-http-127-0-0-1-8080-add-a-4-amp-b-5" class="headerlink" title="参数形式 http://127.0.0.1:8080/add/?a=4&amp;b=5"></a>参数形式 <a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a></h2><pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>shortcuts <span class="token keyword">import</span> render
 <span class="token keyword">from</span> django<span class="token punctuation">.</span>http <span class="token keyword">import</span> HttpResponse
@@ -266,8 +266,8 @@ urlpatterns <span class="token operator">=</span> <span class="token punctuation
 <span class="token punctuation">]</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>重新部署项目，验证效果</p>
-<p><a href="http://127.0.0.1:8080/add/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/</a><br><img src="/2018/06/15/django-adv/06/15/django-adv/imgs/ex_1.png" title="默认情况"></p>
-<p>增加参数<br><a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a><br><img src="/2018/06/15/django-adv/06/15/django-adv/imgs/ex_2.png" title="默认情况"></p>
+<p><a href="http://127.0.0.1:8080/add/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/</a><br><img src="/2018/06/15/django-adv/imgs/ex_1.png" title="默认情况"></p>
+<p>增加参数<br><a href="http://127.0.0.1:8080/add/?a=4&amp;b=5" target="_blank" rel="noopener">http://127.0.0.1:8080/add/?a=4&amp;b=5</a><br><img src="/2018/06/15/django-adv/imgs/ex_2.png" title="默认情况"></p>
 <h2 id="路径法http-127-0-0-1-8080-add-4-5"><a href="#路径法http-127-0-0-1-8080-add-4-5" class="headerlink" title="路径法http://127.0.0.1:8080/add/4/5/"></a>路径法<a href="http://127.0.0.1:8080/add/4/5/" target="_blank" rel="noopener">http://127.0.0.1:8080/add/4/5/</a></h2><p>在views.py中添加函数add2</p>
 <pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">add2</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">:</span>
     c <span class="token operator">=</span> int<span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">+</span> int<span class="token punctuation">(</span>b<span class="token punctuation">)</span>
@@ -281,7 +281,7 @@ urlpatterns <span class="token operator">=</span> <span class="token punctuation
     url<span class="token punctuation">(</span>r<span class="token string">'^add2/(\d+)/(\d+)/$'</span><span class="token punctuation">,</span> calc_view<span class="token punctuation">.</span>add2<span class="token punctuation">,</span> name<span class="token operator">=</span><span class="token string">'add2'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">##增加相应的路由</span>
 <span class="token punctuation">]</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>最终结果验证：<a href="http://127.0.0.1:8080/add2/1/2/" target="_blank" rel="noopener">http://127.0.0.1:8080/add2/1/2/</a><br><img src="/2018/06/15/django-adv/06/15/django-adv/imgs/ex_3.png" title="结果验证"></p>
+<p>最终结果验证：<a href="http://127.0.0.1:8080/add2/1/2/" target="_blank" rel="noopener">http://127.0.0.1:8080/add2/1/2/</a><br><img src="/2018/06/15/django-adv/imgs/ex_3.png" title="结果验证"></p>
 <h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2>
       
 
@@ -570,11 +570,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -582,11 +582,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -594,11 +594,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

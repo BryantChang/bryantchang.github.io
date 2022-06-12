@@ -19,12 +19,12 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="《趣谈网络协议》学后总结二">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/07/07/net-protocol2/07/07/net-protocol2/imgs/udp.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/07/net-protocol2/imgs/udp.png">
 <meta property="og:updated_time" content="2019-12-08T05:59:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="苦练基本功--网络篇2">
 <meta name="twitter:description" content="《趣谈网络协议》学后总结二">
-<meta name="twitter:image" content="http://yoursite.com/2019/07/07/net-protocol2/07/07/net-protocol2/imgs/udp.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/07/net-protocol2/imgs/udp.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -236,7 +236,7 @@
 <p>上一篇文章主要讲了要在家中搭建一个能够上网的环境所涉及的一些网络协议，主要讲到了物理层，数据链路层，以及网络层，包括与对端设备通信的基础MAC地址，具有定位功能的IP地址，IP地址是如何被设置到计算机上，其中涉及的DHCP协议。拥有了这两个地址之后如果有多台机器进行通信，如何通过交换机形成简单的局域网，不同局域网之间如何让通过路由器组成广域网。以及在通信的过程中，IP是如何与MAC协同工作打到通信目的的。实际上，有了上面设备和协议，我们有了一个通信的基础。但我们发现，实际上我们的数据还并没有真正发出去，正是因为少了传输层，只有有了传输层，数据真正的发出去了，上面的应用层才能够真正提供自己的职责。这篇文章中，我将主要讲述传输层以及应用层的几个关键的协议，包括DNS,HTTP,HTTPS，VPN等每天都被我们反复提到以及使用的应用层协议。相信通过这篇文章，一个正常的网络通信流程就应该会比较清晰的呈现在各位眼前了。下面直接进入主题。</p>
 <h1 id="传输层，网络传输的重要一环"><a href="#传输层，网络传输的重要一环" class="headerlink" title="传输层，网络传输的重要一环"></a>传输层，网络传输的重要一环</h1><p>上面我们已经介绍过了物理层，这一层主要是实际数据的传输，数据链路层保证的是数据传输过程中的通常，例如多路信道控制，MAC地址保证数据能够传输到正确的设备对应的网卡上，交换机保证了多台机器组成的局域网LAN范围内正确的进行通信。IP地址保证了我们能够在茫茫的网络中找到其中的任意一台机器。路由器保证了不同局域网之间的能够进行通信。然而我们却发现，这些东西完全没有给应用层的接口，我们回想下网络程序运行的流程，这里先简单回顾一下，后面还会详细讲解，假设这是一个简单的c-s架构的，首先我们会在server端创建一个socket，然后监听一个端口，然后我们就可以在client端向server所在的IP以及端口发送数据。这就完成了一个最简单的client端与server端的通信。因此，除了有我们前面提到的MAC地址和IP,还需要有一个具体的端口，当数据根据到达指定IP对应MAC地址对应的网卡时，操作系统会将数据发送给指定的端口，每个端口都对应一个特定的网络程序。数据到达了指定端口后，也就到达了指定程序，程序对这些数据进行处理。处理完再把返回结果以类似的方式发送给发送方。所以我会把端口比喻为一个人能做的不同的事情。哪个端口来了数据，可能就相当于让这个人做这件事。</p>
 <p>那么整个的网络数据传输过程就可以被抽象成下面的过程：我想让现在在xxx公司的BryantChangXY同学为我们唱一首歌，来自xxx公司就相当于IP地址，我们通过路由协议协议找到xxx公司对应的网关。这时候我们如果找xxx公司的BryantChang，那就首先把数据发送到这个网关，然后通过ARPget到对应的MAC地址,将网络包发送到这个MAC地址，网关根据查询自己的路由表将包转发到下一跳…在若干跳之后最后发送到对应的目标机器上。目标机器将包收到后，将协议进行层层的拆解，及验证了这个包确实是找xxx公司的，也是找BryantChang的，然后比较重要的一环就是到底让这个人坐哪件事，也就是端口号，每个端口号实际对应着不同的程序，会将数据包发送到这个端口号，也就是让这个人唱歌，跳舞之类的。传输层的协议有两种，我用一句话简单说明下两种协议的不同。一种是“我想让在xxx公司的BryantChang去办件事，你帮我传达一下，他收到让他告我一声，我等他信”，而另一种，则是“我就想让xxx公司的BryantChang去办件事，你通知到就行了，他不用告诉我了。”这两种恰恰对应了对中间传话这个人两种信任度，第一种显然是觉得中间传话这个人不大靠谱，所以一定需要对方给我回复。而第二种则觉得中间人特别靠谱，我的消息肯定能够带到。这也正是两种著名的传输层协议TCP和UDP的设计初衷，UDP认为整个网络环境是十分可靠的，我发出去的消息对方是一定能收到的。而TCP则正好相反，TCP认为我发出去的消息有很大可能对方是收不到的，所以我一定要设计一大堆机制一定确保我的消息是发到了的。</p>
-<h1 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h1><p>UDP是无连接的，并且UDP协议直接继承了网络传输是按数据包进行传输的，并且是无状态，无拥塞控制的，只负责发数据，不负责数据不丢失，不能保证按顺序到达。介绍完了UDP的特点，简单看下UDP包的结构.<br><img src="/2019/07/07/net-protocol2/07/07/net-protocol2/imgs/udp.png" title="helloworld结果"><br>(该图片来自网络)</p>
+<h1 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h1><p>UDP是无连接的，并且UDP协议直接继承了网络传输是按数据包进行传输的，并且是无状态，无拥塞控制的，只负责发数据，不负责数据不丢失，不能保证按顺序到达。介绍完了UDP的特点，简单看下UDP包的结构.<br><img src="/2019/07/07/net-protocol2/imgs/udp.png" title="helloworld结果"><br>(该图片来自网络)</p>
 <p>从图中就能够看出，UDP协议真的是相当简单，只包含源端口和目标端口，长度，校验，以及真正的数据本体。看上去是不是非常清爽，简单是UDP协议最大的一个优势，除此之外，UDP协议还有一些其他的优势</p>
 <ul>
 <li>资源相对比较紧张，网络状态比较好</li>
@@ -542,11 +542,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -554,11 +554,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -566,11 +566,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

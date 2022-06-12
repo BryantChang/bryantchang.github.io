@@ -19,17 +19,17 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="详解Log4j2中AsyncLogger的实现原理">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/function.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/data.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/sync_sync.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/async_sync.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/sync_async.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/async_async.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/function.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/data.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/sync_sync.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/async_sync.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/sync_async.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/async_async.png">
 <meta property="og:updated_time" content="2019-02-05T11:12:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2异步那些事(2)--AsyncLogger">
 <meta name="twitter:description" content="详解Log4j2中AsyncLogger的实现原理">
-<meta name="twitter:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/function.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/15/log4j2-asyncLogger/imgs/function.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -240,7 +240,7 @@
         <p>详解Log4j2中AsyncLogger的实现原理<br><a id="more"></a></p>
 <p>这应该算是Log4j这个系列文章中又一篇比较重要的文章，这篇文章主要是从整个的打日志的流程中讲述Logger和Appender，在工作时处理客服时，被问到的问题最多的就是：Logger和Appender本质的区别是什么，包括在组内做技术分享的时候，还是会被问到这个问题。这使我意识到，我需要一张图清晰的展示Logger和Appender的区别。另外一个目的则是介绍AsyncLogger的实现原理。</p>
 <h2 id="Logger和Appender究竟什么鬼"><a href="#Logger和Appender究竟什么鬼" class="headerlink" title="Logger和Appender究竟什么鬼"></a>Logger和Appender究竟什么鬼</h2><p>首先，我就先来解开迷雾，从我的理解解读下Logger和Appender，我主要从两个不同的角度来解读，一个是从这两个组件本来的功能来阐述二者的关系与区别；<br>第二个是从数据形态的变化来解读，了解数据经过这两个组件时数据形态会发生怎样的变化。</p>
-<h3 id="功能角度分析"><a href="#功能角度分析" class="headerlink" title="功能角度分析"></a>功能角度分析</h3><img src="/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/function.png" title="Logger与Appender功能上的区别">
+<h3 id="功能角度分析"><a href="#功能角度分析" class="headerlink" title="功能角度分析"></a>功能角度分析</h3><img src="/2019/01/15/log4j2-asyncLogger/imgs/function.png" title="Logger与Appender功能上的区别">
 <p>在上面这张图中大致描述了两种组件的功能，所谓Logger，在我的理解上是如何对这条日志进行处理，根据这条日志在自己业务的定位对其进行分类，这个可以通过Logger接口提供的方法中看出，Logger中提供了info(),error(),trace()一系列方法，这一系列方法能够将这条待打印的消息进行有效的分类。同时可以通过配置对一些消息进行过滤，例如可以通过Logger配置中的Filter属性，并且可以在Filter属性中设置match，mismatch条件，对日志进行更灵活的配置。从Logger与Appender的对应关系看，应该属于多对多的关系，即一个logger可以引用多个Appender，同时，多个Logger可以同时引用一个Appender。对于Appender来说，这个组件更多的则是负责各类型的日志最后具体落到了哪种持久化存储中，通过配置</p>
 <h3 id="数据形态的变化–从logger-info-开始"><a href="#数据形态的变化–从logger-info-开始" class="headerlink" title="数据形态的变化–从logger.info()开始"></a>数据形态的变化–从logger.info()开始</h3><p>在以前的文章中，我曾举例说明了Log4j2的一般性使用步骤，首先通过LoggerManager.getLogger()获取特定的logger实例，然后调用logger中的接口方法实际进行日志的打印。这里我们以logger.info()方法为例梳理日志从开始的String状态到最终落地的流程。</p>
 <h4 id="logger-info-关键流程"><a href="#logger-info-关键流程" class="headerlink" title="logger.info()关键流程"></a>logger.info()关键流程</h4><p>友情提示，这里的logger.info()是以core包中的普通Logger为例，对于今天的主角AsyncLogger，由于Disruptor队列的特殊使用方法，它的打印日志函数调用会有所不同，下面我会重点介绍，毕竟今天主要还是讲Logger是如何异步起来的嘛…</p>
@@ -250,7 +250,7 @@ logMessageSafely()//将String形态的封装成Message
 config.log()//获取对应的LoggerConfig，将Message形态的日志封装成最终的LogEvent形态
 callAppenders()//调用Appander的append方法
 logParent()//调用父一级logger继续打印日志
-</code></pre><p>上面我们在代码层面梳理了整个logger打印日志的流程，为了更加形象的描述整个流程，下面我再用一张图来描述一下数据的形态变化：<br><img src="/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/data.png" title="数据形态变化"></p>
+</code></pre><p>上面我们在代码层面梳理了整个logger打印日志的流程，为了更加形象的描述整个流程，下面我再用一张图来描述一下数据的形态变化：<br><img src="/2019/01/15/log4j2-asyncLogger/imgs/data.png" title="数据形态变化"></p>
 <p>通过上面的描述，我梳理了整个打印日志的流程，同时从两个不同的角度描述了Logger与Appender的关系与区别。那么下面主角来了，当Logger遇到异步会碰撞出怎样的火花呢？</p>
 <h2 id="当Logger碰上Async：AsyncLogger"><a href="#当Logger碰上Async：AsyncLogger" class="headerlink" title="当Logger碰上Async：AsyncLogger"></a>当Logger碰上Async：AsyncLogger</h2><p>这是另一个具有异步体质的组件，与AsyncAppender不同，AsyncLogger使用的是第三方的异步PC框架LMAX，其中的核心阻塞队列采用了Disruptor，我在前面的文章<a href="https://bryantchang.github.io/2019/01/15/disruptor/" target="_blank" rel="noopener">Disruptor实践</a>中已经简单，Disruptor有两种方式，一种是普通的方式，也是我再那篇文章重点介绍的；另一种则是Translator方法，这种方法是保证publish方法一定会成功执行。这里我们简单看一下相关的源码：</p>
 <p>前面的流程基本类似，这里不过多赘述，从LogMessage方法开始，会出现不同，下面来简单看一下这个方法</p>
@@ -332,13 +332,13 @@ disruptor<span class="token punctuation">.</span><span class="token function">ha
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里面我们就已经看到了strategy.log()那么后面毫无疑问会和普通的Logger一样了。</p>
 <h2 id="回头看世界–异步下的日志记录"><a href="#回头看世界–异步下的日志记录" class="headerlink" title="回头看世界–异步下的日志记录"></a>回头看世界–异步下的日志记录</h2><p>至此我们已经梳理了整个AsyncLogger的工作原理。最后我再来用几张图描述一下配置了不同Logger与Appender后的数据流作为整篇文章的收尾。在分析之前我们首先分类日志打印过程中的线程分类，分别为用户线程，logger后台线程以及appender后台线程。用户线程则是用户程序中所引用的logger线程，logger后台线程则是AsyncLogger的消费线程。而Appender后台线程则是AsyncAppender的后台线程。</p>
-<h3 id="同步Logger，同步Appender"><a href="#同步Logger，同步Appender" class="headerlink" title="同步Logger，同步Appender"></a>同步Logger，同步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/sync_sync.png" title="同步Logger，同步Appender">
+<h3 id="同步Logger，同步Appender"><a href="#同步Logger，同步Appender" class="headerlink" title="同步Logger，同步Appender"></a>同步Logger，同步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/imgs/sync_sync.png" title="同步Logger，同步Appender">
 <p>这种配置下，用户线程需要等到msg最终落地，用户线程才能够返回。</p>
-<h3 id="异步Logger，同步Appender"><a href="#异步Logger，同步Appender" class="headerlink" title="异步Logger，同步Appender"></a>异步Logger，同步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/async_sync.png" title="异步Logger，同步Appender">
+<h3 id="异步Logger，同步Appender"><a href="#异步Logger，同步Appender" class="headerlink" title="异步Logger，同步Appender"></a>异步Logger，同步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/imgs/async_sync.png" title="异步Logger，同步Appender">
 <p>在这种配置下，用户线程只需要等到封装好Message即可返回，不需要等待调用append过程，而logger后台线程需要等到消息落入到存储介质才能返回。</p>
-<h3 id="同步Logger，异步Appender"><a href="#同步Logger，异步Appender" class="headerlink" title="同步Logger，异步Appender"></a>同步Logger，异步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/sync_async.png" title="同步Logger，异步Appender">
+<h3 id="同步Logger，异步Appender"><a href="#同步Logger，异步Appender" class="headerlink" title="同步Logger，异步Appender"></a>同步Logger，异步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/imgs/sync_async.png" title="同步Logger，异步Appender">
 <p>这种配置下，用户线程需要等到Appender的append方法，将msg放入异步Appender的阻塞队列中，后续有Appender后台线程负责日志落地</p>
-<h3 id="异步Logger，异步Appender"><a href="#异步Logger，异步Appender" class="headerlink" title="异步Logger，异步Appender"></a>异步Logger，异步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/01/15/log4j2-asyncLogger/imgs/async_async.png" title="异步Logger，异步Appender">
+<h3 id="异步Logger，异步Appender"><a href="#异步Logger，异步Appender" class="headerlink" title="异步Logger，异步Appender"></a>异步Logger，异步Appender</h3><img src="/2019/01/15/log4j2-asyncLogger/imgs/async_async.png" title="异步Logger，异步Appender">
 <p>这种配置下，用户线程只需要等待message封装好即可返回，AsyncLogger后台线程会负责将msg放入AsyncAppender的阻塞队列中，AsyncAppender后台线程负责具体日志落地</p>
 <p>至此，我将我对于Appender与Logger的理解做出了自己的呈现，同时也介绍了异步Logger的工作原理，可能还有些疏忽，后续随着不断的理解深入继续补充，敬请关注~~</p>
 
@@ -629,11 +629,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -641,11 +641,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -653,11 +653,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

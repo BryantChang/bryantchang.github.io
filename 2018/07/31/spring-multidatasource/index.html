@@ -19,14 +19,14 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Spring多数据源配置">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi1.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi2.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi3.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi1.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi2.png">
+<meta property="og:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi3.png">
 <meta property="og:updated_time" content="2019-03-07T03:52:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring+Jpa多数据源配置">
 <meta name="twitter:description" content="Spring多数据源配置">
-<meta name="twitter:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/31/spring-multidatasource/imgs/multi1.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -237,7 +237,7 @@
         <p>Spring多数据源配置<br><a id="more"></a></p>
 <p>今天临下班时遇到了一个需求，我的管理平台需要从不同的数据库中获取数据信息，这就需要进行Spring的多数据源配置，对于这种配置，第一次永远都是痛苦的，不过经历了这次的折磨，今后肯定会对这种配置印象深刻。我们这里简单回顾一下流程。</p>
 <p>我们配置了两个数据库，一个是公司的数据库，另一个是我本地的一个数据库。首先是application.yml的配置(其中对于公司的数据库我们采取了假的地址，而本机的数据库是真是存在对应的表和库的)</p>
-<p>数据库信息：<br><img src="/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi1.png" title="本地数据库"><br>数据表信息：<br><img src="/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi2.png" title="本地数据库"></p>
+<p>数据库信息：<br><img src="/2018/07/31/spring-multidatasource/imgs/multi1.png" title="本地数据库"><br>数据表信息：<br><img src="/2018/07/31/spring-multidatasource/imgs/multi2.png" title="本地数据库"></p>
 <p>1、application.yml</p>
 <pre class="line-numbers language-yaml"><code class="language-yaml"><span class="token key atrule">datasource</span><span class="token punctuation">:</span>
     <span class="token key atrule">primary</span><span class="token punctuation">:</span>
@@ -435,7 +435,7 @@
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>测试结果<br><img src="/2018/07/31/spring-multidatasource/07/31/spring-multidatasource/imgs/multi3.png" title="本地数据库"></p>
+<p>测试结果<br><img src="/2018/07/31/spring-multidatasource/imgs/multi3.png" title="本地数据库"></p>
 <h2 id="一些坑"><a href="#一些坑" class="headerlink" title="一些坑"></a>一些坑</h2><pre><code>不仅仅是dao层扫描的包需要区分，对于实体类所在的包，不同的DataSource的配置中也需要区分开
 </code></pre><p>对于这种套路性的东西，总结一遍是非常必要的，下次可以节省许多不必要的时间，对于内部原理，我将在完成对Ioc和Aop分析后反过来分析其原理。</p>
 
@@ -726,11 +726,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -738,11 +738,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -750,11 +750,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

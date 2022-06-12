@@ -19,15 +19,15 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="简介Logger和Appender的异步化配置和基本原理">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/11/18/log4j-async/imgs/getLogger.svg">
-<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/11/18/log4j-async/imgs/info.svg">
-<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/11/18/log4j-async/imgs/AsyncAppender.svg">
-<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/11/18/log4j-async/imgs/full.svg">
+<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/imgs/getLogger.svg">
+<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/imgs/info.svg">
+<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/imgs/AsyncAppender.svg">
+<meta property="og:image" content="http://yoursite.com/2018/11/18/log4j-async/imgs/full.svg">
 <meta property="og:updated_time" content="2019-01-15T09:14:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="log4j2异步那些事(1)--AsyncAppender">
 <meta name="twitter:description" content="简介Logger和Appender的异步化配置和基本原理">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/18/log4j-async/11/18/log4j-async/imgs/getLogger.svg">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/18/log4j-async/imgs/getLogger.svg">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -243,8 +243,8 @@
 logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>这篇文章主要聚焦于异步性的实现，所以对于获取logger和调用info操作的通用流程我直接用两张流程图给出：</p>
-<img src="/2018/11/18/log4j-async/11/18/log4j-async/imgs/getLogger.svg" title="getLogger">
-<img src="/2018/11/18/log4j-async/11/18/log4j-async/imgs/info.svg" title="记录日志流程">
+<img src="/2018/11/18/log4j-async/imgs/getLogger.svg" title="getLogger">
+<img src="/2018/11/18/log4j-async/imgs/info.svg" title="记录日志流程">
 <p>了解了通用流程后，我将分别介绍异步Appender和异步Logger的原理</p>
 <h2 id="异步Appender-AsyncAppender"><a href="#异步Appender-AsyncAppender" class="headerlink" title="异步Appender AsyncAppender"></a>异步Appender AsyncAppender</h2><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>我们以官方文档的两个配置为例来介绍异步Appender的配置，配置文件如下</p>
 <pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>Configuration</span> <span class="token attr-name">status</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>warn<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>MyApp<span class="token punctuation">"</span></span> <span class="token attr-name">packages</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -282,7 +282,7 @@ logger<span class="token punctuation">.</span><span class="token function">info<
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>配置中配置了两个Appender，一个为FileAppender另一个则是异步Appender，使用<code>&lt;Async&gt;</code>标签进行声明，在AsyncAppender中引用了FileAppender，那么存在疑问，一般的Appender都会有一个明确的输出位置，而对于这个异步Appender都需要引用一个其他的Appender才将msg最终输出。下面的介绍将会彻底解开这个疑问。</p>
 <h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p>下图展示了AsyncAppender的架构</p>
-<img src="/2018/11/18/log4j-async/11/18/log4j-async/imgs/AsyncAppender.svg" title="getLogger">
+<img src="/2018/11/18/log4j-async/imgs/AsyncAppender.svg" title="getLogger">
 <p>AsyncAppender的核心部件是一个阻塞队列，logger将数据通过append方法放入到阻塞队列中，随后后台线程从队列中取出数据然后进行后续的操作</p>
 <h3 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h3><p>上文简单介绍了架构，下面从源码角度来详细阐述AsyncAppender的流程</p>
 <h4 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h4><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">AsyncAppender</span> <span class="token keyword">extends</span> <span class="token class-name">AbstractAppender</span> <span class="token punctuation">{</span>
@@ -334,7 +334,7 @@ logger<span class="token punctuation">.</span><span class="token function">info<
 <pre><code>1、创建LogEvent的复制对象memento
 2、将event放入队列
 </code></pre><p>虽然只有简单两步，也需要注意一个边界情况，那就是当阻塞队列满时Appender的处理，这里我首先给出流程，然后结合代码进行简要说明。</p>
-<img src="/2018/11/18/log4j-async/11/18/log4j-async/imgs/full.svg" title="getLogger">
+<img src="/2018/11/18/log4j-async/imgs/full.svg" title="getLogger">
 <p>如流程图所示，首先会判断用户是否设置了blocking选项，如果未选择blocking选项，则Appender直接会将msg放入errorAppender中，如果用户没有配置这些Appender，则会直接丢弃这些消息，如果设置了这个属性，则会按照一定的策略来处理这些消息。策略可以分为3种，他们分别为：</p>
 <pre><code>1、Default---等待直到队列有空闲，退化为同步操作
 2、Discard---按照日志级别丢弃一部分日志
@@ -752,11 +752,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -764,11 +764,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -776,11 +776,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

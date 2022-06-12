@@ -19,28 +19,28 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="性能诊断套路之CPU篇，常见CPU指标获取方式以及CPU瓶颈诊断套路">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/top.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/top_n.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/pidstat.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/vmstat.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/pidstatw.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/interrupts.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/softirq.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/cpu_metric.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread1.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread2.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread4.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread5.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread6.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread7.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread8.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread9.png">
-<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread11.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/top.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/top_n.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/pidstat.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/vmstat.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/pidstatw.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/interrupts.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/softirq.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/cpu_metric.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread1.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread2.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread4.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread5.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread6.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread7.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread8.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread9.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/thread11.png">
 <meta property="og:updated_time" content="2019-04-01T08:49:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能瓶颈诊断--CPU篇(二）">
 <meta name="twitter:description" content="性能诊断套路之CPU篇，常见CPU指标获取方式以及CPU瓶颈诊断套路">
-<meta name="twitter:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/top.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/17/cpu-profile-two/imgs/top.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -252,7 +252,7 @@
 <p>上一篇文章中，我简单介绍了常见的CPU指标，介绍了这些指标的定义以及这些指标涉及的原理，那么这篇文章就到了实战的环节。我将介绍这些常用指标的获取方式以及相关的工具。并且会用几个示例总结出系统CPU瓶颈的诊断套路和经验，包括传统的程序以及java程序。这篇文章可能涉及很多性能工具，我尽量不让这篇文章成为简单的工具罗列，会尽可能将这些工具串起来，写的有意思一些。好，下面开始探索之旅。</p>
 <p>简单回顾一下上篇文章中我提到的CPU性能指标，主要包括以下几个，CPUload，CPU使用率，上下文切换以及中断，那么这篇文章也就分别介绍这些指标的获取工具。</p>
 <h2 id="CPU使用率-amp-load"><a href="#CPU使用率-amp-load" class="headerlink" title="CPU使用率&amp;load"></a>CPU使用率&amp;load</h2><p>这里面我稍微调换一下顺序，其实当系统发生瓶颈时，我们第一会关注的还是CPU使用率以及平均负载情况，使用的工具一般也是最常用的即top。下面一张图简单展示top的界面</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/top.png" title="top">
+<img src="/2019/03/17/cpu-profile-two/imgs/top.png" title="top">
 <p>top个人把它定位成一个万金油的性能监控工具，因为这个工具能够反映出的性能指标覆盖面是最广的，我们一块一块的来看，首先是上面的第一行，第一行展示了当前CPU的基本信息，包括了以下的信息</p>
 <pre><code>CPU启动时间 用户数量 平均负载(1min,5min,15min)
 </code></pre><p>接下来第二行展示了当前系统运行的进程情况，包括了不同状态下的进程数</p>
@@ -266,7 +266,7 @@ wa--iowait(%) CPU等待I/O时间
 hi--irq(%) 处理硬件中断CPU时间
 si--softirq(%) 处理软中断CPU时间
 st--steal(%) 系统在虚拟机中执行时，被其他虚拟机占用的CPU时间
-</code></pre><p>这里面多提一句，当我们使用top时，按下1键会看到每个CPU核的使用情况，如下图所示<br><img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/top_n.png" title="top"></p>
+</code></pre><p>这里面多提一句，当我们使用top时，按下1键会看到每个CPU核的使用情况，如下图所示<br><img src="/2019/03/17/cpu-profile-two/imgs/top_n.png" title="top"></p>
 <p>第四行第五行展示了系统的内存的使用情况，这里先不做过多的书名，等到内存诊断的相关介绍时会再详细说明.</p>
 <p>下面就是具体进程的详细情况了。但是我们可能会发现，top有一点不足，就是无法看到每个进程的详细CPU使用状况，实际上是有办法看到这些信息的，传统的方法就是直接去proc中寻找答案，proc是Linux系统中进程用户态与内核态的通信机制，Linux系统为每一个正在运行的进程在proc文件系统中建立一个目录项，里面记录了这个进程的一些状态，包括CPU，内存或者I/O等方面的信息，其中与CPU相关的为/proc/pid/stat，下面是一个具体实例</p>
 <pre class="line-numbers language-bash"><code class="language-bash">23179 <span class="token punctuation">(</span>java<span class="token punctuation">)</span> S 1 23148 23148 0 -1 4202496 55881 7994 4 3 1406 1390 3 2 20 0 82 0 4889246558 2946691072 101260 18446744073709551615 4194304 4196284 140734144683328 140734144665984 140017989423869 0 0 3 16800972 18446744073709551615 0 0 17 2 0 0 0 0 0
@@ -275,14 +275,14 @@ st--steal(%) 系统在虚拟机中执行时，被其他虚拟机占用的CPU时�
 <pre class="line-numbers language-bash"><code class="language-bash">yum -y <span class="token function">install</span> sysstat
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>我们输入pidstat查看一下，结果如下图所示</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/pidstat.png" title="top">
+<img src="/2019/03/17/cpu-profile-two/imgs/pidstat.png" title="top">
 <p>其中每一项的含义如下</p>
 <pre><code>PID：进程号
 %usr：用户空间CPU使用率
 %system：内核空间CPU使用率
 %guest：运行虚拟机的CPU时间
 </code></pre><h2 id="CPU上下文切换"><a href="#CPU上下文切换" class="headerlink" title="CPU上下文切换"></a>CPU上下文切换</h2><p>下面一个重要的指标则是上下切换的指标监控，由于上下问切换在上篇文章中提到，这也是一个会有很大性能开销的动作，所以需要相关的工具来监控上下文切换频率。这里介绍两个工具，vmstat以及pidstat -w，首先介绍vmstat，下面是输入命令后的结果</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/vmstat.png" title="top">
+<img src="/2019/03/17/cpu-profile-two/imgs/vmstat.png" title="top">
 <p>这个命令中也存在一些和CPU相关的指标，详细含义如下</p>
 <pre><code>cs:上下文切换
 us:用户态CPU时间
@@ -298,13 +298,13 @@ b:不可中断态进程数
 <pre><code>自愿上下文切换：指进程无法获得所需的资源，导致的上下文切换。例如在内存，I/O等资源无法得到满足时会进行自愿的上下文切换
 非自愿上下文切换：进程由于到达时间片被系统强制调度，进而发生的上下文切换，例如在大量进程在争抢CPU时会发生比较多的非自愿上下文切换
 </code></pre><p>下图展示了pidstat -w的效果，其中cswch/s为自愿上下文切换的频率，nvcswch/s是非自愿上下文切换的频率。</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/pidstatw.png" title="top">
+<img src="/2019/03/17/cpu-profile-two/imgs/pidstatw.png" title="top">
 <p>如果需要了解某个线程，进程的信息，可以加入以下的参数</p>
 <pre class="line-numbers language-bash"><code class="language-bash">pidstat -wt -p pid  internal
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h2><p>作为上下文切换中比较特殊的一种，中断同样是一种比较重要的切换类型，也需要给与足够的重视，在top工具中我们可以看到和中断相关的CPU使用率，其中hi代表了硬中断使用率，si则代表了软中断的使用率。至于详细的中断信息，在/proc文件系统中有明确的答案，其中/proc/interrupts记录了硬件中断的相关信息，而/proc/softirqs记录了软中断的相关信息。 下面两张图展示了/proc/interrupts与/proc/softirqs的执行情况</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/interrupts.png" title="interrupts">
-<p>这里介绍一下软中断，因为硬件中断的第一要义就是快速，所以如果进程切换到硬件中断，会非常快的恢复。软中断则是为了异步，所以更可能会引发性能问题，其中几个指标的含义如下：<br><img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/softirq.png" title="interrupts"></p>
+<img src="/2019/03/17/cpu-profile-two/imgs/interrupts.png" title="interrupts">
+<p>这里介绍一下软中断，因为硬件中断的第一要义就是快速，所以如果进程切换到硬件中断，会非常快的恢复。软中断则是为了异步，所以更可能会引发性能问题，其中几个指标的含义如下：<br><img src="/2019/03/17/cpu-profile-two/imgs/softirq.png" title="interrupts"></p>
 <pre><code>HI:处理最高优先级的中断
 TIMER:时钟中断相关的tasklet
 NET_TX:把数据包传送到网卡
@@ -314,34 +314,34 @@ SCSI:SCSI命令后台中断处理
 TASKLET:常规tasklet处理
 RCU_SOFTIRQ:RCU锁中断
 </code></pre><p>OK，讲到这里我对应前一篇文章中的相关指标进行了更详细的分类，下面我将上一篇文章中的思维导图进行一些扩充，对每个大的性能指标进行了更加精细的分类，同时，将每个指标对应的检测工具也一并放进图中，具体如下图所示</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/cpu_metric.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/cpu_metric.png" title="interrupts">
 <p>简单介绍完获取CPU指标的主流工具，下面通过一些简单的实例进一步巩固这些工具的使用。在这部分中，我们使用一个用于进行系统压力测试的标准测试工具sysbench，这个工具能够对系统产生不同维度的压力，在不同的角度对系统进行压力测试，包括CPU，内存以及I/O等等。下面我使用sysbench模拟对系统资源的某种压力，然后使用上述介绍的工具反推出可能是什么类型的压力。</p>
 <h2 id="性能工具初体验"><a href="#性能工具初体验" class="headerlink" title="性能工具初体验"></a>性能工具初体验</h2><p>我们执行了sysbench命令，在另一个终端使用工具来看现在系统的变化，我们首先使用top观察系统总体的变化</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread1.png" title="interrupts">
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread2.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread1.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread2.png" title="interrupts">
 <p>通过这两张图可以看到，有两个比较明显的变化，首先是系统平均负载，可以看到1min，3min，15min负载均有了不同程度的升高，这说明处于就绪状态的进程数有了增多。第二个明显的变化在于各个状态的CPU使用率。尤其是sys的使用率，从之前的2.8%直接飙升至53.3%，这里我们根据前面对CPU相关原理分析的时候提到过，在CPU进行上下文切换时会保存上下文，会陷入到内核态。所以我们有个初步的推断，可能是某些程序导致了CPU中排队的进程或线程增多导致了系统的变化。所以为了探究CPU进程的排队的情况和上下文切换的情况，我们分别使用两个工具，分别为vmstat，pidstat。</p>
 <p>首先在命令运行时，我们使用vmstat查看系统的CPU的排队情况。如图所示</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread4.png" title="interrupts">
-<p>执行命令后<br><img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread5.png" title="interrupts"></p>
+<img src="/2019/03/17/cpu-profile-two/imgs/thread4.png" title="interrupts">
+<p>执行命令后<br><img src="/2019/03/17/cpu-profile-two/imgs/thread5.png" title="interrupts"></p>
 <p>在分析图片前，首先再介绍下vmstat中关于进程数的两个指标，r和b，r统计的CPU中处于就绪状态的进程数。而b则统计了处于阻塞状态的进程数。现在我们再来审视上面两张图，在命令执行之前，处于就绪状态的进程/线程数(r)均为0，而在命令开始执行之后，处于就绪状态的任务开始增加，从0开始变成7-8左右。这初步验证了之前的判断，是这个sysbench命令增加了系统中的就绪队列的任务数，那么对于刚才sys%使用率很高的原因，我们判断是由于大量任务在争抢CPU时间片，使得CPU进行频繁的上下文切换，这里应该是由于进程到达特定的时间片而进行的非自愿上下文切换。为了验证这一点，我们使用能够统计上下文切换频率的pidstat。我们首先执行命令，通过top获取到命令对应的进程号。如图所示：</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread6.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread6.png" title="interrupts">
 <p>随后使用pidstat查看sysbench进程涉及到的上下文切换频率指标。具体命令如下：</p>
 <pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">watch</span> -d <span class="token string">"pidstat -wt -p 23862  1"</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这里面，watch指令是通过定时执行某条指令，并把与上一次不相同的内容通过高亮的形式进行展示。而对于我们执行指令后的结果，如图所示</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread7.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread7.png" title="interrupts">
 <p>我们发现，总体上看，非自愿上下文切换的频率的变化幅度要高于自愿上下文切换的频率变化幅度。通过上面一顿工具的使用，我们大致定位到了系统到底发生了什么，应该就是sysbench命令使得CPU中处于就绪态的任务升高，加剧了任务对于CPU时间片的抢占。下面我们正式揭面我们刚才执行的sysbench命令。命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">sysbench --threads<span class="token operator">=</span>30 --max-time<span class="token operator">=</span>300 threads run
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这个命令的目的就是模拟30个线程的调度。在前面对于中断部分的描述中我们能够看到，过多的进程/线程调度，系统会频繁的进行上下文切换</p>
 <h2 id="性能工具拓展"><a href="#性能工具拓展" class="headerlink" title="性能工具拓展"></a>性能工具拓展</h2><p>下面一个案例我们将会诊断一个java程序的性能问题，选用这个的原因主要是我想要介绍一些java程序性能问题的排查工具。</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread8.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread8.png" title="interrupts">
 <p>从图中能够看出，CPU平均负载有显著的升高，最终稳定在9.97左右，同时用户态的CPU使用率非常高，几乎达到了100%，然后，我们通过top查看我们java进程的线程使用情况，然后查看该进程中各个线程的CPU使用情况，命令如下。</p>
 <p>了解了系统总体的状态，下面我们将对这个进程进行详细的分析。首先，我们使用top命令分析这个java进程中各个线程的CPU使用情况，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">top</span> -H -p pid
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>查看到结果如下</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread9.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread9.png" title="interrupts">
 <p>从图中能够看出，有10个线程的CPU使用率相对较高。下面，我们需要了解进程运行的状态，由于这是一个Java程序，因此我们有特定的方法了解出当前java进程的执行状态，这就是jstack。jstack能够获取当前java程序执行的快照，我们通过这个命令，查看当前各个线程的执行情况，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">jstack -l pid
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -365,7 +365,7 @@ RCU_SOFTIRQ:RCU锁中断
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>哈哈，我们终于看到了这个“傻傻”的方法，原来是个死循环导致的CPU使用率增高。至此，我们通过一些性能工具排查出了这个系统存在的性能问题，这个问题在我们看来，可能显得比较“幼稚”，这里我的目的完全只是为了通过这个简单的实例来告诉大家一些排查系统性能问题的通用套路。这里，我无法覆盖到所有的性能工具的使用以及所有的排查套路，这里我稍稍使用并修改倪老师课件中的一张图，这张图比较清晰的展示了排查CPU问题的一些套路与系统工具的对应关系。</p>
-<img src="/2019/03/17/cpu-profile-two/03/17/cpu-profile-two/imgs/thread11.png" title="interrupts">
+<img src="/2019/03/17/cpu-profile-two/imgs/thread11.png" title="interrupts">
 <p>从这张图中，我们能够看到，其实一个系统故障的排查真的是有一定的套路可循的。当我们的系统出现性能问题时，这种问题可能是我们通过监控告警得知，或是一些系统性能指标的下降，例如吞吐降低，相应时间变长等。当出现问题时，我们遵循的一个也是从一般到特殊的思路，首先通过Top，vmstat等方式获取到系统总体状态，然后找到需要排查的异常进程，通过pidstat，/prpc中的相应指标进行详细分析。最后我们再从代码层面对进程进行深入分析，相应的工具包括perf，jstack，pstack等。</p>
 <p>前后拖拖拉拉写了这么久，终于把CPU相关的性能分析博客完成了，下面会继续内存和网络，加油！</p>
 
@@ -656,11 +656,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -668,11 +668,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -680,11 +680,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

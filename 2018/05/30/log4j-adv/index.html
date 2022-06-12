@@ -19,14 +19,14 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Log4j的进阶使用">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/asyncappender.png">
-<meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/console_appender.png">
-<meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/file_appender.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/asyncappender.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/console_appender.png">
+<meta property="og:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/file_appender.png">
 <meta property="og:updated_time" content="2018-07-21T04:21:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Log4J进阶">
 <meta name="twitter:description" content="Log4j的进阶使用">
-<meta name="twitter:image" content="http://yoursite.com/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/asyncappender.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/05/30/log4j-adv/imgs/asyncappender.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -326,7 +326,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="AsyncAppender异步记录日志"><a href="#AsyncAppender异步记录日志" class="headerlink" title="AsyncAppender异步记录日志"></a>AsyncAppender异步记录日志</h2><p>通过生产者消费者的模式异步将Logging Event传送到对应的Appender中<br>工作原理：如下图：<br><img src="/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/asyncappender.png" title="AsyncAppender"><br>生产者：app向AsyncAppender发送的Log Event<br>中转：Buffer与DiscardSummary<br>消费者：Dispatcher和各个dst Appender</p>
+<h2 id="AsyncAppender异步记录日志"><a href="#AsyncAppender异步记录日志" class="headerlink" title="AsyncAppender异步记录日志"></a>AsyncAppender异步记录日志</h2><p>通过生产者消费者的模式异步将Logging Event传送到对应的Appender中<br>工作原理：如下图：<br><img src="/2018/05/30/log4j-adv/imgs/asyncappender.png" title="AsyncAppender"><br>生产者：app向AsyncAppender发送的Log Event<br>中转：Buffer与DiscardSummary<br>消费者：Dispatcher和各个dst Appender</p>
 <p>当logging Event进入AsyncAppender时，这个Appender会调用append方法，该方法在放入到buffer前，会检查buffer的大小。当消费能力不及生产能力时，AsyncAppender会把超出Buffer的Logging Event转发到DiscardSummary中，作为消费速度一旦跟不上生成速度，中转buffer的溢出处理的一种方案。</p>
 <p>Dispatcher则是将Buffer中的log event取出，送到对应的appender中，该组件实现了Runnable接口，是AsyncAppender的后台线程。<br>其他AsyncAppender的内容参考<a href="https://www.jianshu.com/p/502d70386371" target="_blank" rel="noopener">https://www.jianshu.com/p/502d70386371</a></p>
 <p>注意：</p>
@@ -545,9 +545,9 @@
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>在控制台中看到的结果：</p>
-<img src="/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/console_appender.png" title="helloworld结果">
+<img src="/2018/05/30/log4j-adv/imgs/console_appender.png" title="helloworld结果">
 <p>在文件中看到的结果：</p>
-<img src="/2018/05/30/log4j-adv/05/30/log4j-adv/imgs/file_appender.png" title="helloworld结果">
+<img src="/2018/05/30/log4j-adv/imgs/file_appender.png" title="helloworld结果">
 
       
 
@@ -836,11 +836,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -848,11 +848,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -860,11 +860,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

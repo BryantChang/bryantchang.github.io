@@ -19,13 +19,13 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="从具体实例分析Spring初始化流程">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2018/08/04/spring3/08/04/spring3/imgs/spring3-1.png">
-<meta property="og:image" content="http://yoursite.com/2018/08/04/spring3/08/04/spring3/imgs/spring3-2.png">
+<meta property="og:image" content="http://yoursite.com/2018/08/04/spring3/imgs/spring3-1.png">
+<meta property="og:image" content="http://yoursite.com/2018/08/04/spring3/imgs/spring3-2.png">
 <meta property="og:updated_time" content="2019-03-07T03:53:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring Ioc原理(2)">
 <meta name="twitter:description" content="从具体实例分析Spring初始化流程">
-<meta name="twitter:image" content="http://yoursite.com/2018/08/04/spring3/08/04/spring3/imgs/spring3-1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/08/04/spring3/imgs/spring3-1.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -238,7 +238,7 @@
 <p>在博客中<a href="https://bryantchang.github.io/2018/07/28/spring1/" target="_blank" rel="noopener">Spring初识</a>中，我们介绍了Spring进行Bean管理的实例，我们简单回顾一下。在BookService中的代码首先新建ClassPathXmlApplicationContext实例，随后通过该实例的getBean()方法获取对象的实例。本篇博客中，我们直接从ClassPathXmlApplicationContext类入手详解Spring的初识化流程。</p>
 <p>##ClassPathXmlApplicationContext类的继承关系</p>
 <p>我们在IDEA中通过快捷键”Shift+option+command+U”就能看到类的继承关系图。</p>
-<img src="/2018/08/04/spring3/08/04/spring3/imgs/spring3-1.png" title="ClassPathXmlApplicationContext继承关系">
+<img src="/2018/08/04/spring3/imgs/spring3-1.png" title="ClassPathXmlApplicationContext继承关系">
 <p>我们可以看出来，ClassPathXmlApplicationContext的继承关系为ClassPathXmlApplicationContext&lt;-AbstractApplicationContext&lt;-AbstractRefreshableConfigApplicationContext&lt;-AbstractRefreshableApplicationContext&lt;-AbstractApplicationContext<br>我们暂且记住这条继承线，后面的文章中能够用到。</p>
 <p>##ClassPathXmlApplicationContext初始化流程</p>
 <p>在前面的博客中，我们是通过如下的代码创建实例：</p>
@@ -398,7 +398,7 @@
 <pre><code>1、判断是否存在BeanFactory，如果有的话销毁当前的BeanFactory。
 2、创建新的 BeanFactory，加载 Bean 定义、注册 Bean 等等。
 </code></pre><p>对于ApplicationContext，虽然他继承了BeanFactory但是并不能理解为其实现类，其内部有一个BeanFactory实例，对于BeanFactory(DefaultListableBeanFactory)的相关操作均委托给这个实例进行，然而为何要初始化这个类的实例呢，我们再一次回到继承图上，这次我们把目光聚焦在BeanFactory上</p>
-<img src="/2018/08/04/spring3/08/04/spring3/imgs/spring3-2.png" title="BeanFactory继承关系">
+<img src="/2018/08/04/spring3/imgs/spring3-2.png" title="BeanFactory继承关系">
 <p>我们可以看到，BeanFactory的直接接口有三个，分别为ListableBeanFactory,HierarchicalBeanFactory,AutowireCapableBeanFactory，而对于这三个接口，ConfigurableListableBeanFactory则直接继承了这三个接口，对于AutowireCapableBeanFactory有一个直接实现类，AbstractAutowireCapableBeanFactory。然而这个实现类并不具有ConfigurableListableBeanFactory的属性。而DefaultListableBeanFactory既直接实现了ConfigurableListableBeanFactory，同时实现了ConfigurableListableBeanFactory，具有了上述BeanFactory的所有属性，因此ApplicationContext选择了使用这个类的实例来进行BeanFactory的相关操作。</p>
 <p>这篇文章先讲到这里，下一篇中将详细介绍BeanFactory的一个核心数据结构BeanDefination，然后将继续介绍Spring的初始化流程以及Bean的创建流程。</p>
 
@@ -689,11 +689,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -701,11 +701,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -713,11 +713,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">

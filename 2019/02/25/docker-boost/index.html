@@ -19,19 +19,19 @@
 <meta property="og:site_name" content="BryantChang的博客">
 <meta property="og:description" content="Docker进阶 &amp;amp; C++ boost入门">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_search.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_hello_world.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_boost_hello.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_login.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_commit.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_push.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/show.png">
-<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_search_image.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_search.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_hello_world.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_boost_hello.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_login.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_commit.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_push.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/show.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_search_image.png">
 <meta property="og:updated_time" content="2019-02-26T13:00:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Docker搭建C++ Boost开发环境">
 <meta name="twitter:description" content="Docker进阶 &amp;amp; C++ boost入门">
-<meta name="twitter:image" content="http://yoursite.com/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_search.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/25/docker-boost/imgs/docker_search.png">
   
     <link rel="alternative" href="/atom.xml" title="BryantChang的博客" type="application/atom+xml">
   
@@ -245,7 +245,7 @@
 <pre class="line-numbers language-bash"><code class="language-bash">docker search centos6.5
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这里出现了一系列备选的image选项，从中选取任意一个就可以，这里我选择了star数最多的，与github类似，star代表了这个镜像的流行程度和靠谱程度</p>
-<img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_search.png" title="Overview">
+<img src="/2019/02/25/docker-boost/imgs/docker_search.png" title="Overview">
 <p>下面就可以直接使用docker run来运行这个image，具体到我这里，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker run -it --name<span class="token operator">=</span><span class="token string">"bryantchang_boost_proj"</span> --user root -p 2200:22 --privileged<span class="token operator">=</span>true --cap-add<span class="token operator">=</span>SYS_PTRACE --cap-add<span class="token operator">=</span>SYS_TIME --security-opt seccomp<span class="token operator">=</span>unconfined -v /Users/bryantchang/Desktop/codes/tools/docker/srcs:/home/bryantchang/docker_proj hasedon/centos6.5 /bin/bash
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -281,7 +281,7 @@ yum -y <span class="token function">install</span> gcc-c++ <span class="token co
 <pre class="line-numbers language-bash"><code class="language-bash">g++ -o main main.cpp
 ./main
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>效果如下<br><img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_hello_world.png" title="Overview"><br>程序运行成功，说明环境安装完成。至于gdb，直接输入gdb就可以看到是否安装成功</p>
+<p>效果如下<br><img src="/2019/02/25/docker-boost/imgs/docker_hello_world.png" title="Overview"><br>程序运行成功，说明环境安装完成。至于gdb，直接输入gdb就可以看到是否安装成功</p>
 <p>其次，安装boost库，安装方法也十分简单，首先下载boost的压缩包,这里我们安装的是1.64.0</p>
 <pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">wget</span> http://ufpr.dl.sourceforge.net/project/boost/boost/1.64.0/boost_1_64_0.tar.bz2
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -299,26 +299,26 @@ yum -y <span class="token function">install</span> gcc-c++ <span class="token co
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>还是按照之前的方式进行编译，并运行，运行结果如下<br><img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_boost_hello.png" title="Overview"></p>
+<p>还是按照之前的方式进行编译，并运行，运行结果如下<br><img src="/2019/02/25/docker-boost/imgs/docker_boost_hello.png" title="Overview"></p>
 <p>到此，我们完成了boost库的安装，接下来则是保存当前的镜像状态，将这个镜像提交到个人的dockerhub，如果没有dockerhub的话，需要类似github一样在<a href="hub.docker.com">Docker hub仓库</a>注册新的账户，注册完后，在本机输入下面命令连上dockerhub的提交客户端,如果出现如下信息，说明登录成功</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker login
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_login.png" title="Overview">
+<img src="/2019/02/25/docker-boost/imgs/docker_login.png" title="Overview">
 <p>下面我们完成最后一步，将image提交到个人仓库</p>
 <h2 id="调教当前image到docker-hub"><a href="#调教当前image到docker-hub" class="headerlink" title="调教当前image到docker hub"></a>调教当前image到docker hub</h2><p>与github类似，提交到docker镜像仓库也有两步，commit和push，commit为本地提交，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker commit -a bryantchangxy -m <span class="token string">"boost commit"</span> bryantchang_boost_proj bryantchangxy/gcc_boost:latest
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>其中 -a为提交的用户，-m 为提交时的摘要，bryantchang_boost_proj这个名字则是你运行的container的名字，如果没有的话就要填写当前运行container id bryantchangxy/gcc_boost:latest则是你自己仓库下的某个具体的某个项目，完成后会生成一个sha256的代码用于标示本次提交</p>
-<img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_commit.png" title="Overview">
+<img src="/2019/02/25/docker-boost/imgs/docker_commit.png" title="Overview">
 <p>完成后，正式push到个人仓库，命令如下</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker push bryantchangxy/gcc_boost:latest
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_push.png" title="Overview">
-<p>成功后就可在个人的仓库中看到自己的image了<br><img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/show.png" title="Overview"></p>
+<img src="/2019/02/25/docker-boost/imgs/docker_push.png" title="Overview">
+<p>成功后就可在个人的仓库中看到自己的image了<br><img src="/2019/02/25/docker-boost/imgs/show.png" title="Overview"></p>
 <p>同时还能够通过docker search搜索到自己的的image</p>
 <pre class="line-numbers language-bash"><code class="language-bash">docker search gcc_boost
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<img src="/2019/02/25/docker-boost/02/25/docker-boost/imgs/docker_search_image.png" title="Overview">
+<img src="/2019/02/25/docker-boost/imgs/docker_search_image.png" title="Overview">
 <p>大功告成，最后为我的image做个广告，自己在这个景象中安装了常用语言的编译，执行环境，如java，scala，go等还有mvn等一系列工具，欢迎大家下载，star个人的docker hub地址为<a href="https://hub.docker.com/u/bryantchangxy" target="_blank" rel="noopener">docker hub个人主页</a>后面有一些好玩的东西，我也会以image的方式放到这个仓库中，欢迎大家关注。后面的文章将正式围绕boost这个准标准库的特性展开。</p>
 
       
@@ -608,11 +608,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
+                <a href="javascript:void(0)" class="js-tag color5">Code</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Code</a>
+                <a href="javascript:void(0)" class="js-tag color2">Webapp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,11 +620,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">diary</a>
+                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">欢迎</a>
+                <a href="javascript:void(0)" class="js-tag color1">diary</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -632,11 +632,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
+                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Log4j</a>
+                <a href="javascript:void(0)" class="js-tag color3">kafka, client，producer</a>
               </li>
              
               <li class="article-tag-list-item">
